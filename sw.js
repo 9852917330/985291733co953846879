@@ -1,25 +1,22 @@
-const CACHE_NAME = 'millionaire-cache-v13';
+const CACHE_NAME = 'millionaire-cache-v14-force-new-icon';
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./millionaire.html",
   "./manifest.webmanifest",
-  "./btc-icon-192-v13.png",
-  "./btc-icon-512-v13.png",
-  "./btc-apple-touch-icon-v13.png",
-  "./btc-og-image-v13.png",
-  "./btc-thumbnail-v13.png",
+  "./millionaire-icon-192-v14.png",
+  "./millionaire-icon-512-v14.png",
+  "./millionaire-apple-touch-icon-v14.png",
+  "./millionaire-og-image-v14.png",
+  "./millionaire-thumbnail-v14.png",
+  "./millionaire-favicon-v14.ico",
+  "./favicon.ico",
   "./icon-192.png",
   "./icon-512.png",
   "./apple-touch-icon.png",
   "./og-image.png",
-  "./thumbnail.png",
-  "./btc-icon-192-v11.png",
-  "./btc-icon-512-v11.png",
-  "./btc-apple-touch-icon-v11.png",
-  "./btc-og-image-v11.png",
-  "./btc-thumbnail-v11.png"
+  "./thumbnail.png"
 ];
-
 
 self.addEventListener("install", event => {
   self.skipWaiting();
@@ -44,10 +41,10 @@ self.addEventListener("fetch", event => {
       fetch(request, { cache: "no-store" })
         .then(response => {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(request).then(match => match || caches.match("./millionaire.html") || caches.match("./index.html")))
     );
     return;
   }

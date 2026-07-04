@@ -1,10 +1,10 @@
 {
-  "id": "./?app=Millionaire-v13",
+  "id": "./millionaire.html?app=Millionaire-v14-force-new-install",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, số lượng, lịch sử giao dịch và coin chuẩn.",
   "lang": "vi",
-  "start_url": "./?v=13-millionaire",
+  "start_url": "./millionaire.html?v=14-force-new-icon",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -12,13 +12,13 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "./btc-icon-192-v13.png",
+      "src": "./millionaire-icon-192-v14.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./btc-icon-512-v13.png",
+      "src": "./millionaire-icon-512-v14.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -26,11 +26,25 @@
   ],
   "screenshots": [
     {
-      "src": "./btc-thumbnail-v12.png",
+      "src": "./millionaire-thumbnail-v14.png",
       "sizes": "1200x675",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Millionaire"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Millionaire",
+      "short_name": "Millionaire",
+      "url": "./millionaire.html?v=14-force-new-icon",
+      "icons": [
+        {
+          "src": "./millionaire-icon-192-v14.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
