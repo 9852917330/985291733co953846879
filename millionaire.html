@@ -4382,6 +4382,13 @@
     return `<td class="sector-cell"><span class="sector-chip">${sector}</span></td>`;
   }
 
+
+  const MANUAL_FUNDAMENTAL_FALLBACKS = {
+    // Chỉ dùng khi CEX không trả vốn hóa/cung và nguồn market-data bị thiếu hoặc rate-limit.
+    // Giá vẫn luôn lấy từ CEX; vốn hóa dự phòng = giá CEX live × cung lưu hành.
+    GRAM:{circulatingSupply:2_710_000_000,totalSupply:5_210_000_000,source:"CMC/CoinGecko · supply dự phòng"}
+  };
+
   const ASSETS = {
     BTC:    {name:"Bitcoin",     primary:"binance", binance:"BTCUSDT",    okx:"BTC-USDT",    bybit:"BTCUSDT", cg:"bitcoin",                    d:2},
     ETH:    {name:"Ethereum",    primary:"binance", binance:"ETHUSDT",    okx:"ETH-USDT",    bybit:"ETHUSDT", cg:"ethereum",                   d:2},
@@ -4393,7 +4400,7 @@
     SOL:    {name:"Solana",      primary:"binance", binance:"SOLUSDT",    okx:"SOL-USDT",    bybit:"SOLUSDT", cg:"solana",                     d:3},
     LINK:   {name:"Chainlink",   primary:"binance", binance:"LINKUSDT",   okx:"LINK-USDT",   bybit:"LINKUSDT", cg:"chainlink",                  d:4},
     SUI:    {name:"Sui",         primary:"binance", binance:"SUIUSDT",    okx:"SUI-USDT",    bybit:"SUIUSDT", cg:"sui",                        d:6},
-    GRAM:   {name:"GRAM",        primary:"okx",     binance:null,         okx:"GRAM-USDT",   bybit:null, cg:null, d:6},
+    GRAM:   {name:"GRAM",        primary:"okx",     binance:null,         okx:"GRAM-USDT",   bybit:null, cg:"gram", d:6},
     RENDER: {name:"Render",      primary:"binance", binance:"RENDERUSDT", okx:"RENDER-USDT", bybit:"RENDERUSDT", cg:"render-token",               d:4},
     NEAR:   {name:"NEAR",        primary:"binance", binance:"NEARUSDT",   okx:"NEAR-USDT",   bybit:"NEARUSDT", cg:"near",                       d:4},
     MNT:    {name:"Mantle",      primary:"bybit",   binance:"MNTUSDT",    okx:"MNT-USDT",    bybit:"MNTUSDT", cg:"mantle",                     d:6},
@@ -4848,6 +4855,51 @@
     state.marketMeta[symbol]={...current,...patch,updatedAt:Number(patch.updatedAt)||Date.now()};
   }
 
+  function applyManualFundamentalFallback(symbol){
+    const fallback=MANUAL_FUNDAMENTAL_FALLBACKS[symbol];
+    if(!fallback)return false;
+    const current=state.marketMeta[symbol]||{};
+    const next={...current};
+    let changed=false;
+
+    if(!(Number(next.circulatingSupply)>0)&&Number(fallback.circulatingSupply)>0){
+      next.circulatingSupply=Number(fallback.circulatingSupply);
+      changed=true;
+    }
+    if(!(Number(next.totalSupply)>0)&&Number(fallback.totalSupply)>0){
+      next.totalSupply=Number(fallback.totalSupply);
+      changed=true;
+    }
+    if(!(Number(next.maxSupply)>0)&&Number(fallback.maxSupply)>0){
+      next.maxSupply=Number(fallback.maxSupply);
+      changed=true;
+    }
+
+    const price=Number(state.live[symbol]?.price);
+    const derivedMarketCapSource=`${fallback.source} · vốn hóa = giá CEX × cung lưu hành`;
+    const marketCapIsDerived=String(next.marketCapSource||"").includes("giá CEX × cung lưu hành");
+    if(Number.isFinite(price)&&price>0&&Number(next.circulatingSupply)>0&&(!(Number(next.marketCap)>0)||marketCapIsDerived)){
+      next.marketCap=price*Number(next.circulatingSupply);
+      next.marketCapSource=derivedMarketCapSource;
+      changed=true;
+    }
+
+    if(Number.isFinite(circulationRatio(next))&&!isExchangeFundamentalSource(next.circulationSource||next.fundamentalsSource)){
+      next.circulationSource=`${fallback.source} · lưu hành dự phòng`;
+      changed=true;
+    }
+
+    if(changed){
+      next.fundamentalsSource=[
+        next.marketCapSource||"Vốn hóa: chưa có",
+        next.circulationSource||"Lưu hành: chưa có"
+      ].join(" · ");
+      next.fundamentalsUpdatedAt=Date.now();
+      state.marketMeta[symbol]=next;
+    }
+    return changed;
+  }
+
   function updateExchangeTrendMeta(symbol,candles,source){
     const rows=(candles||[])
       .filter(c=>Number.isFinite(c?.ts)&&Number.isFinite(c?.close)&&c.close>0)
@@ -4891,6 +4943,7 @@
     if(old&&old.exchange===update.exchange&&update.exchangeTs&&old.exchangeTs&&update.exchangeTs<old.exchangeTs)return;
 
     state.live[symbol]={...update,receivedAt:now};
+    applyManualFundamentalFallback(symbol);
     if(symbol===state.historyBenchmark)updateHistoryChartLatency();
     scheduleRender();
     scheduleRotationRender();
@@ -5186,7 +5239,10 @@
     const byId=Object.fromEntries((rows||[]).map(row=>[row.id,row]));
     for(const symbol of trackedSymbols){
       const asset=ASSETS[symbol],row=byId[asset?.cg];
-      if(!row)continue;
+      if(!row){
+        applyManualFundamentalFallback(symbol);
+        continue;
+      }
       const current=state.marketMeta[symbol]||{};
       const next={...current};
 
@@ -5225,6 +5281,7 @@
       ].join(" · ");
       next.fundamentalsUpdatedAt=row.last_updated?Date.parse(row.last_updated):now;
       state.marketMeta[symbol]=next;
+      applyManualFundamentalFallback(symbol);
       // Tuyệt đối không đọc current_price, total_volume hoặc trường biến động giá từ CoinGecko.
     }
     try{localStorage.setItem(ICON_KEY,JSON.stringify(state.icons))}catch(_){}
