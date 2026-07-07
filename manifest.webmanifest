@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v14-force-new-install",
+  "id": "./millionaire.html?app=Millionaire-v15-ethfi-cro",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, số lượng, lịch sử giao dịch và coin chuẩn.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=14-force-new-icon",
+  "start_url": "./millionaire.html?v=15-ethfi-cro",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=14-force-new-icon",
+      "url": "./millionaire.html?v=15-ethfi-cro",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",

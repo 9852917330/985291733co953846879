@@ -3918,7 +3918,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 23 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 25 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -3992,7 +3992,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 23 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 25 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4027,10 +4027,10 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">26 tài sản · gồm 23 coin xoay và 3 coin chuẩn</div></div><section class="toolbar">
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">28 tài sản · gồm 25 coin xoay và 3 coin chuẩn</div></div><section class="toolbar">
 <div class="toolbar-summary">
 <span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
-<span class="badge badge-count">Danh sách so sánh: <strong>26 tài sản</strong></span>
+<span class="badge badge-count">Danh sách so sánh: <strong>28 tài sản</strong></span>
 <span class="badge badge-total">Mô hình vốn: <strong>100% một coin</strong></span>
 <span class="badge badge-anchor">Mốc mặc định: <strong id="latestTradeAnchorInfo">Đang đọc lần xoay gần nhất…</strong></span>
 </div>
@@ -4076,7 +4076,7 @@
 </div>
 </div>
 </section><section class="stats">
-<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">26 tài sản</div><div class="s">23 coin xoay + OKB, BTC, ETH</div></div>
+<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">28 tài sản</div><div class="s">25 coin xoay + OKB, BTC, ETH</div></div>
 <div class="stat"><div class="k">Tổng giá trị hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
 <div class="stat"><div class="k">Coin mạnh nhất</div><div class="v" id="bestCoin">—</div><div class="s" id="bestCoinInfo">—</div></div>
 <div class="stat"><div class="k">Khoảng cách mạnh/yếu</div><div class="v" id="spreadValue">—</div><div class="s" id="spreadInfo">—</div></div>
@@ -4092,7 +4092,7 @@
 <h2>Bảng danh mục coin</h2>
 <span>OKB · SOL · BNB · LINK · AAVE · UNI · HYPE · SUI · AVAX · TAO · RENDER · ONDO · NEAR · GRAM · MNT · DOGE · PENDLE · MORPHO · JUP · INJ · ENA · EIGEN · AERO · VIRTUAL</span>
 </div>
-<span>26 tài sản</span>
+<span>28 tài sản</span>
 </div>
 <div class="quality-legend">
 <span class="quality-legend-label">Nhãn chất lượng tổng hợp:</span>
@@ -4263,7 +4263,7 @@
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
   const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v5_16coin_standardized";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["SOL","BNB","LINK","AAVE","UNI","HYPE","SUI","AVAX","TAO","RENDER","ONDO","NEAR","GRAM","MNT","DOGE","PENDLE","MORPHO","JUP","INJ","ENA","EIGEN","AERO","VIRTUAL"];
+  const ROTATION_SYMBOLS = ["SOL","BNB","CRO","LINK","AAVE","UNI","HYPE","SUI","AVAX","TAO","RENDER","ONDO","NEAR","GRAM","MNT","DOGE","PENDLE","MORPHO","JUP","INJ","ENA","EIGEN","ETHFI","AERO","VIRTUAL"];
   const BENCHMARK_SYMBOLS = ["OKB","BTC","ETH",...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...BENCHMARK_SYMBOLS];
   // MNT không còn nằm trong bảng danh mục/ứng viên, nhưng vẫn được theo dõi giá
@@ -4303,10 +4303,10 @@
   // Chỉ hiển thị % khi có nguồn công khai đủ rõ; các coin phát hành liên tục được ghi theo cơ chế thay vì tạo ngày giả.
   const ASSET_SECTORS = {
     OKB:"Sàn giao dịch", BTC:"L1 · Store of Value", ETH:"L1 · Smart contract",
-    SOL:"L1 · Hiệu năng cao", BNB:"L1 · Sàn giao dịch", LINK:"Oracle · Hạ tầng",
+    SOL:"L1 · Hiệu năng cao", BNB:"L1 · Sàn giao dịch", CRO:"L1 · Sàn giao dịch", LINK:"Oracle · Hạ tầng",
     AAVE:"DeFi · Lending", HYPE:"Perp DEX · L1", SUI:"L1 · Move",
     TAO:"AI phi tập trung", RENDER:"AI · DePIN GPU", UNI:"DeFi · DEX",
-    GRAM:"Consumer · OKX", EIGEN:"Restaking · AVS", AERO:"DeFi · DEX Base",
+    GRAM:"Consumer · OKX", EIGEN:"Restaking · AVS", ETHFI:"Restaking · Liquid restaking", AERO:"DeFi · DEX Base",
     ONDO:"RWA", MNT:"L2 · Ethereum", PENDLE:"DeFi · Yield",
     MORPHO:"DeFi · Lending", JUP:"DeFi · Solana", ENA:"Stablecoin · Yield",
     VIRTUAL:"AI · Agent economy", NEAR:"L1 · AI", AVAX:"L1 · Subnet", INJ:"L1 · Trading DeFi", DOGE:"Meme · PoW"
@@ -4318,6 +4318,7 @@
     ETH:{mode:"flow",label:"Theo block",detail:"Staking issuance"},
     SOL:{mode:"flow",label:"Liên tục",detail:"Staking emission"},
     BNB:{mode:"none",label:"Không unlock",detail:"Burn định kỳ"},
+    CRO:{mode:"unknown",label:"Theo hệ sinh thái",detail:"Cronos / Crypto.com ecosystem"},
     LINK:{mode:"unknown",label:"Không cố định",detail:"Treasury distribution"},
     AAVE:{mode:"none",label:"Không cliff lớn",detail:"Ecosystem reserve"},
     HYPE:{mode:"date",date:"2026-06-29",pct:1.4,detail:"Core contributors"},
@@ -4327,6 +4328,7 @@
     UNI:{mode:"flow",label:"Lạm phát",detail:"~2%/năm"},
     GRAM:{mode:"unknown",label:"Theo thị trường",detail:"GRAM-USDT trên OKX"},
     EIGEN:{mode:"date",date:"2026-07-01",pct:2.0,detail:"Investors + contributors"},
+    ETHFI:{mode:"unknown",label:"Vesting",detail:"Investors + contributors + ecosystem"},
     AERO:{mode:"flow",label:"Hằng tuần",detail:"~0,67%/tuần"},
     ONDO:{mode:"date",date:"2027-01-18",pct:17.1,detail:"Vesting cliff"},
     MNT:{mode:"unknown",label:"Không cố định",detail:"Mantle Treasury DAO"},
@@ -4447,6 +4449,10 @@
   QUALITY_FACTORS.ENA={backing:96,team:91,adoption:90,capital:96,credibility:85,growth:92,narrative:94};
   STANDARD_PROFILES.VIRTUAL={product:88,moat:84,valueCapture:76,tokenomics:70,decentralization:58,durability:72,execution:90,reason:"Virtuals có vị thế nổi bật trong AI-agent economy; VIRTUAL là base pair, routing currency, phương tiện thanh toán và token staking. Rủi ro chính là phụ thuộc narrative và 35% ecosystem treasury do DAO kiểm soát."};
   QUALITY_FACTORS.VIRTUAL={backing:91,team:90,adoption:82,capital:92,credibility:86,growth:94,narrative:98};
+  STANDARD_PROFILES.CRO={product:82,moat:80,valueCapture:74,tokenomics:72,decentralization:46,durability:82,execution:84,reason:"CRO hưởng lợi từ hệ sinh thái Crypto.com và Cronos, có utility sàn/chain và thanh khoản tương đối tốt; rủi ro chính là mức độ tập trung và phụ thuộc tăng trưởng của hệ sinh thái."};
+  QUALITY_FACTORS.CRO={backing:88,team:84,adoption:86,capital:92,credibility:82,growth:76,narrative:72};
+  STANDARD_PROFILES.ETHFI={product:84,moat:78,valueCapture:77,tokenomics:52,decentralization:60,durability:72,execution:84,reason:"Ether.fi thuộc mảng liquid restaking/restaking, có narrative và adoption tốt; rủi ro chính là lịch vesting, cạnh tranh LRT và value capture của token."};
+  QUALITY_FACTORS.ETHFI={backing:92,team:84,adoption:82,capital:90,credibility:84,growth:88,narrative:90};
 
   const state = {
     live:{},anchor:{prices:{},sources:{},capturedAt:{}},icons:{},marketMeta:{},

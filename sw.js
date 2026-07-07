@@ -1,4 +1,4 @@
-const CACHE_NAME = 'millionaire-cache-v14-force-new-icon';
+const CACHE_NAME = 'millionaire-cache-v15-ethfi-cro';
 const APP_SHELL = [
   "./",
   "./index.html",
