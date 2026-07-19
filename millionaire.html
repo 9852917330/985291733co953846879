@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v17-30coin-rotation-millionaire-html"/>
+<meta name="app-build" content="v18-30coin-quantity-growth-millionaire-html"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -3813,6 +3813,24 @@
   @media(max-width:850px){.brand-logo.brand-logo-inline{width:38px!important;height:38px!important;min-width:38px!important;max-width:38px!important;flex-basis:38px!important;border-radius:10px!important}}
   @media(max-width:620px){.brand-logo.brand-logo-inline{width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important;flex-basis:36px!important;border-radius:10px!important}}
 </style>
+
+<style id="portfolio-quantity-growth-v18">
+  #page-comparison .coin-quantity-growth{
+    display:block!important;
+    margin-top:4px!important;
+    font-size:12px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    letter-spacing:.01em!important;
+    white-space:nowrap!important;
+  }
+  #page-comparison .coin-quantity-growth.pos{color:var(--ui-green,#0ECB81)!important}
+  #page-comparison .coin-quantity-growth.neg{color:var(--ui-red,#F6465D)!important}
+  #page-comparison .coin-quantity-growth.neu{color:var(--ui-text-2,#848E9C)!important}
+  @media(max-width:720px){
+    #page-comparison .coin-quantity-growth{font-size:11px!important;margin-top:3px!important}
+  }
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4600,6 +4618,21 @@
     }
   }
 
+
+  function quantityGrowthFromFirst(symbol){
+    const latest=currentHoldingTrade();
+    const latestLive=latest?Number(state.live[latest.buyCoin]?.price):null;
+    const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
+    const baseline=state.historyButtonBaselines?.[symbol]||{};
+    const live=Number(state.live[symbol]?.price);
+    const firstQty=Number(baseline.firstQty);
+    const currentQty=Number.isFinite(nav)&&nav>0&&live>0?nav/live:null;
+    const pct=Number.isFinite(firstQty)&&firstQty>0&&Number.isFinite(currentQty)
+      ?(currentQty/firstQty-1)*100
+      :null;
+    return {pct,firstQty,currentQty,nav};
+  }
+
   function renderHistoryBenchmarkButtons(){
     const host=$("historyBenchmarkButtons");
     if(!host)return;
@@ -4618,11 +4651,7 @@
 
     // Tất cả coin, kể cả coin đang nắm giữ, được xếp đúng theo % tăng/giảm so với mốc đầu tiên.
     const rankedSymbols=visibleHistorySymbols.map((symbol,originalIndex)=>{
-      const baseline=baselines[symbol]||{};
-      const live=state.live[symbol]?.price;
-      const firstQty=baseline.firstQty;
-      const currentQty=Number.isFinite(nav)&&live>0?nav/live:null;
-      const pct=Number.isFinite(firstQty)&&firstQty>0&&Number.isFinite(currentQty)?(currentQty/firstQty-1)*100:null;
+      const {pct}=quantityGrowthFromFirst(symbol);
       return {symbol,pct,originalIndex,isCurrentHolding:symbol===latest?.buyCoin};
     }).sort((a,b)=>{
       const aValid=Number.isFinite(a.pct);
@@ -8275,10 +8304,13 @@
       const valueText=hasValue?formatUSD(r.currentValue):(hasLive?"Thiếu giá mốc":"Đang tải live");
       const returnText=hasReturn?`${r.returnPct>=0?"+":""}${r.returnPct.toFixed(2)}%`:"—";
       const dailyText=hasDaily?`${r.daily7amPct>=0?"+":""}${r.daily7amPct.toFixed(2)}%`:(state.daily7am.loading?"Đang tải":"—");
+      const quantityGrowthPct=quantityGrowthFromFirst(r.symbol).pct;
+      const quantityGrowthClass=Number.isFinite(quantityGrowthPct)?(quantityGrowthPct>0?"pos":quantityGrowthPct<0?"neg":"neu"):"neu";
+      const quantityGrowthText=Number.isFinite(quantityGrowthPct)?`${quantityGrowthPct>0?"+":""}${quantityGrowthPct.toFixed(2)}%`:"—";
 
       return `<tr class="${rowClasses}">
         <td><span class="rank">${i+1}</span></td>
-        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><strong class="${nameClasses}">${r.symbol}</strong><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
+        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><strong class="${nameClasses}">${r.symbol}</strong><span class="coin-quantity-growth ${quantityGrowthClass}" title="Số lượng tương đương so với mốc đầu tiên">${quantityGrowthText}</span><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
         <td><span class="value-pill ${valueClass} ${hasValue?"":"value-pending"}">${valueText}</span></td>
         <td class="num ${pnlClass}"><strong>${returnText}</strong></td>
         <td class="num ${dailyClass}" title="${escapeHTML(state.daily7am.sources?.[r.symbol]||state.daily7am.errors?.[r.symbol]||'Đang tải đúng nến 07:00')}"><strong>${dailyText}</strong><small class="daily-7am-note">${formatDaily7amLabel()}</small></td>
