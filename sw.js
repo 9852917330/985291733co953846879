@@ -1,4 +1,4 @@
-const CACHE_NAME = 'millionaire-cache-v16-gram-fundamentals';
+const CACHE_NAME = 'millionaire-cache-v17-30coin-rotation';
 const APP_SHELL = [
   "./",
   "./index.html",

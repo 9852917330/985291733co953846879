@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v14-millionaire-new-url-id-millionaire-html"/>
+<meta name="app-build" content="v17-30coin-rotation-millionaire-html"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -3918,7 +3918,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 25 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 30 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -3992,7 +3992,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 25 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 30 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4027,10 +4027,10 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">28 tài sản · gồm 25 coin xoay và 3 coin chuẩn</div></div><section class="toolbar">
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">30 tài sản · một rổ xoay thống nhất</div></div><section class="toolbar">
 <div class="toolbar-summary">
 <span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
-<span class="badge badge-count">Danh sách so sánh: <strong>28 tài sản</strong></span>
+<span class="badge badge-count">Danh sách so sánh: <strong>30 tài sản</strong></span>
 <span class="badge badge-total">Mô hình vốn: <strong>100% một coin</strong></span>
 <span class="badge badge-anchor">Mốc mặc định: <strong id="latestTradeAnchorInfo">Đang đọc lần xoay gần nhất…</strong></span>
 </div>
@@ -4076,23 +4076,23 @@
 </div>
 </div>
 </section><section class="stats">
-<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">28 tài sản</div><div class="s">25 coin xoay + OKB, BTC, ETH</div></div>
+<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">30 tài sản</div><div class="s">Một rổ duy nhất · BTC, ETH và OKB cũng là ứng viên xoay</div></div>
 <div class="stat"><div class="k">Tổng giá trị hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
 <div class="stat"><div class="k">Coin mạnh nhất</div><div class="v" id="bestCoin">—</div><div class="s" id="bestCoinInfo">—</div></div>
 <div class="stat"><div class="k">Khoảng cách mạnh/yếu</div><div class="v" id="spreadValue">—</div><div class="s" id="spreadInfo">—</div></div>
-<div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/17</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
+<div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/30</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Coin chuẩn được đưa vào chính bảng $100 để so sánh trực tiếp, nhưng không tự động trở thành ứng viên xoay nếu nằm ngoài rổ xoay.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 30 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>OKB · SOL · BNB · LINK · AAVE · UNI · HYPE · SUI · AVAX · TAO · RENDER · ONDO · NEAR · GRAM · MNT · DOGE · PENDLE · MORPHO · JUP · INJ · ENA · EIGEN · AERO · VIRTUAL</span>
+<span>BTC · ETH · SOL · BNB · HYPE · DOGE · LINK · GRAM · SUI · AVAX · NEAR · INJ · MNT · SEI · TAO · RENDER · VIRTUAL · ONDO · AAVE · UNI · PENDLE · MORPHO · JUP · AERO · ENA · ETHFI · OKB · ARB · ZRO · EIGEN</span>
 </div>
-<span>28 tài sản</span>
+<span>30 tài sản</span>
 </div>
 <div class="quality-legend">
 <span class="quality-legend-label">Nhãn chất lượng tổng hợp:</span>
@@ -4257,18 +4257,18 @@
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v8_gram_direct";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v9_30coin_exact";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v5_16coin_standardized";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v6_30coin_standardized";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["SOL","BNB","CRO","LINK","AAVE","UNI","HYPE","SUI","AVAX","TAO","RENDER","ONDO","NEAR","GRAM","MNT","DOGE","PENDLE","MORPHO","JUP","INJ","ENA","EIGEN","ETHFI","AERO","VIRTUAL"];
-  const BENCHMARK_SYMBOLS = ["OKB","BTC","ETH",...ROTATION_SYMBOLS];
-  const COMPARISON_SYMBOLS = [...BENCHMARK_SYMBOLS];
-  // MNT không còn nằm trong bảng danh mục/ứng viên, nhưng vẫn được theo dõi giá
-  // để lịch sử giao dịch và coin đang nắm giữ không bị mất dữ liệu.
-  const LEGACY_TRACKED_SYMBOLS = ["MNT"];
+  const ROTATION_SYMBOLS = ["BTC","ETH","SOL","BNB","HYPE","DOGE","LINK","GRAM","SUI","AVAX","NEAR","INJ","MNT","SEI","TAO","RENDER","VIRTUAL","ONDO","AAVE","UNI","PENDLE","MORPHO","JUP","AERO","ENA","ETHFI","OKB","ARB","ZRO","EIGEN"];
+  const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
+  const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
+  // Rổ hiển thị và rổ xoay dùng cùng một nguồn dữ liệu gồm đúng 30 coin.
+  // Cấu hình coin cũ vẫn giữ trong ASSETS để đọc được lịch sử Sheet nếu cần.
+  const LEGACY_TRACKED_SYMBOLS = [];
   const TRACKED_SYMBOLS = [...new Set([...COMPARISON_SYMBOLS,...LEGACY_TRACKED_SYMBOLS])];
   const STRATEGY_SYMBOLS = ROTATION_SYMBOLS;
   const DEFAULT_BENCHMARK = "BTC";
@@ -4278,7 +4278,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v43_sr_confirmed_zones";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v44_30coin_sr_confirmed_zones";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4309,7 +4309,8 @@
     GRAM:"Consumer · OKX", EIGEN:"Restaking · AVS", ETHFI:"Restaking · Liquid restaking", AERO:"DeFi · DEX Base",
     ONDO:"RWA", MNT:"L2 · Ethereum", PENDLE:"DeFi · Yield",
     MORPHO:"DeFi · Lending", JUP:"DeFi · Solana", ENA:"Stablecoin · Yield",
-    VIRTUAL:"AI · Agent economy", NEAR:"L1 · AI", AVAX:"L1 · Subnet", INJ:"L1 · Trading DeFi", DOGE:"Meme · PoW"
+    VIRTUAL:"AI · Agent economy", NEAR:"L1 · AI", AVAX:"L1 · Subnet", INJ:"L1 · Trading DeFi", DOGE:"Meme · PoW",
+    SEI:"L1 · Trading", ARB:"L2 · Ethereum", ZRO:"Hạ tầng · Cross-chain"
   };
 
   const TOKEN_UNLOCKS = {
@@ -4340,7 +4341,10 @@
     JUP:{mode:"unknown",label:"Theo governance",detail:"Community reserve · DAO-controlled"},
     ENA:{mode:"unknown",label:"Vesting",detail:"Core contributors + investors"},
     VIRTUAL:{mode:"flow",label:"DAO emission",detail:"Ecosystem treasury ≤10%/năm"},
-    DOGE:{mode:"flow",label:"Theo block",detail:"PoW mining emission"}
+    DOGE:{mode:"flow",label:"Theo block",detail:"PoW mining emission"},
+    SEI:{mode:"unknown",label:"Vesting + staking",detail:"Foundation, ecosystem và validator emission"},
+    ARB:{mode:"unknown",label:"Vesting / DAO",detail:"Team, investors và DAO treasury"},
+    ZRO:{mode:"unknown",label:"Vesting",detail:"Core contributors, investors và ecosystem"}
   };
 
   function formatUnlockDate(iso){
@@ -4460,6 +4464,12 @@
   QUALITY_FACTORS.CRO={backing:88,team:84,adoption:86,capital:92,credibility:82,growth:76,narrative:72};
   STANDARD_PROFILES.ETHFI={product:84,moat:78,valueCapture:77,tokenomics:52,decentralization:60,durability:72,execution:84,reason:"Ether.fi thuộc mảng liquid restaking/restaking, có narrative và adoption tốt; rủi ro chính là lịch vesting, cạnh tranh LRT và value capture của token."};
   QUALITY_FACTORS.ETHFI={backing:92,team:84,adoption:82,capital:90,credibility:84,growth:88,narrative:90};
+  STANDARD_PROFILES.SEI={product:86,moat:78,valueCapture:72,tokenomics:60,decentralization:68,durability:75,execution:88,reason:"Sei là L1 tối ưu cho giao dịch với hiệu năng cao và hệ sinh thái DeFi riêng; rủi ro chính là cạnh tranh L1 gay gắt, phân phối token và độ bền nhu cầu ứng dụng."};
+  QUALITY_FACTORS.SEI={backing:93,team:90,adoption:79,capital:94,credibility:86,growth:88,narrative:89};
+  STANDARD_PROFILES.ARB={product:94,moat:90,valueCapture:62,tokenomics:58,decentralization:84,durability:91,execution:92,reason:"Arbitrum có hệ sinh thái L2, thanh khoản và hạ tầng Orbit mạnh; điểm trừ là value capture của ARB còn hạn chế và nguồn cung tiếp tục được phân phối."};
+  QUALITY_FACTORS.ARB={backing:98,team:95,adoption:92,capital:98,credibility:95,growth:85,narrative:86};
+  STANDARD_PROFILES.ZRO={product:91,moat:88,valueCapture:73,tokenomics:60,decentralization:76,durability:85,execution:93,reason:"LayerZero là hạ tầng interoperability được tích hợp rộng; ZRO có utility quản trị và cơ chế kinh tế đang phát triển, nhưng vẫn chịu rủi ro vesting và cạnh tranh cross-chain."};
+  QUALITY_FACTORS.ZRO={backing:97,team:94,adoption:87,capital:97,credibility:92,growth:90,narrative:91};
 
   const state = {
     live:{},anchor:{prices:{},sources:{},capturedAt:{}},icons:{},marketMeta:{},
@@ -4468,7 +4478,7 @@
     qualitySelected:null,
     anchorAutoLatest:true,anchorLatestTradeKey:"",selectedAnchorTradeKey:"",
     anchorTs:null,anchorDate:"",anchorTime:"07:00",
-    sort:localStorage.getItem("crypto100Sort28")||"currentValue",
+    sort:localStorage.getItem("crypto100Sort30")||"currentValue",
     available:{binance:new Set(),okx:new Set(),bybit:new Set()},
     binanceWS:null,okxWS:null,bybitWS:null,okxPing:null,bybitPing:null,
     binanceReconnect:0,okxReconnect:0,bybitReconnect:0,
@@ -8561,7 +8571,7 @@
   $("sortMode").value=state.sort;
   $("sortMode").addEventListener("change",e=>{
     state.sort=e.target.value;
-    localStorage.setItem("crypto100Sort28",state.sort);
+    localStorage.setItem("crypto100Sort30",state.sort);
     render();
   });
 
