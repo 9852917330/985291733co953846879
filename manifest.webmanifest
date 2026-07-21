@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v22-full-width-chart-fix",
+  "id": "./millionaire.html?app=Millionaire-v23-autofit-symbol-pane-bg",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=22-full-width-chart-fix",
+  "start_url": "./millionaire.html?v=23-autofit-symbol-pane-bg",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=22-full-width-chart-fix",
+      "url": "./millionaire.html?v=23-autofit-symbol-pane-bg",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",

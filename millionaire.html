@@ -10512,7 +10512,7 @@
 
 
 
-<!-- ===== V22 FULL-WIDTH RESPONSIVE LIGHTWEIGHT CHART ===== -->
+<!-- ===== V23 AUTO-FIT SYMBOL SCALE AND OSCILLATOR PANE BACKGROUNDS ===== -->
 <style id="v21-tradingview-lightweight-styles">
   .coin-symbol-line{
     display:flex!important;align-items:center!important;gap:6px!important;
@@ -10601,10 +10601,15 @@
   .tv-study-btn[data-tv-study="macd"]{--study-color:#0ECB81}
 
   .tv-chart-host{position:relative;flex:1 1 auto;width:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden}
-  .lwc-chart-container{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden}
-  .lwc-chart-container>div{width:100%!important;height:100%!important;max-width:none!important}
+  .lwc-chart-container{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden;isolation:isolate}
+  .lwc-chart-container::before,.lwc-chart-container::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:0;display:none;border-top:1px solid rgba(132,142,156,.08)}
+  .lwc-chart-container.has-rsi:not(.has-macd)::before{display:block;bottom:28px;height:calc((100% - 28px)*.25);background:#10161D}
+  .lwc-chart-container.has-macd:not(.has-rsi)::after{display:block;bottom:28px;height:calc((100% - 28px)*.25);background:#111922}
+  .lwc-chart-container.has-rsi.has-macd::before{display:block;bottom:calc(28px + (100% - 28px)*.20);height:calc((100% - 28px)*.20);background:#10161D}
+  .lwc-chart-container.has-rsi.has-macd::after{display:block;bottom:28px;height:calc((100% - 28px)*.20);background:#111922}
+  .lwc-chart-container>div{position:relative!important;z-index:1!important;width:100%!important;height:100%!important;max-width:none!important}
   /* Isolate Lightweight Charts from the dashboard's global portfolio-table rules. */
-  .lwc-chart-container table{width:100%!important;min-width:0!important;max-width:none!important;border-collapse:separate!important;border-spacing:0!important;table-layout:auto!important;background:#0B0E11!important}
+  .lwc-chart-container table{width:100%!important;min-width:0!important;max-width:none!important;border-collapse:separate!important;border-spacing:0!important;table-layout:auto!important;background:transparent!important}
   .lwc-chart-container tbody{display:table-row-group!important;background:transparent!important}
   .lwc-chart-container tr{display:table-row!important;background:transparent!important}
   .lwc-chart-container td,.lwc-chart-container th{display:table-cell!important;padding:0!important;border:0!important;min-width:0!important;max-width:none!important;text-align:left!important;white-space:normal!important;background:transparent!important}
@@ -10941,13 +10946,56 @@
     return true;
   }
 
+  function forceMainPriceAutoscale(){
+    if(!chart||!candleSeries)return;
+    const options={autoScale:true,mode:LWC.PriceScaleMode?.Normal??0,invertScale:false,scaleMargins:{top:.08,bottom:.08}};
+    try{candleSeries.priceScale().applyOptions(options)}catch(_){}
+    try{chart.priceScale("right").applyOptions(options)}catch(_){}
+  }
+
+  function fitLatestCandles(){
+    if(!chart||!candles.length)return;
+    forceMainPriceAutoscale();
+    const width=Math.max(320,chartContainer.getBoundingClientRect().width||900);
+    const visibleBars=Math.max(72,Math.min(180,Math.floor((width-96)/7.2)));
+    const lastIndex=candles.length-1;
+    const from=Math.max(0,lastIndex-visibleBars+1);
+    const to=lastIndex+6;
+    try{chart.timeScale().setVisibleLogicalRange({from,to})}
+    catch(_){try{chart.timeScale().fitContent()}catch(__){}}
+    requestAnimationFrame(forceMainPriceAutoscale);
+  }
+
+  function scheduleDefaultChartView(){
+    const apply=()=>{
+      if(!modal.classList.contains("open")||!candles.length)return;
+      resizeChartToContainer(true);
+      fitLatestCandles();
+    };
+    requestAnimationFrame(()=>requestAnimationFrame(apply));
+    for(const delay of [50,140,320])resizeTimers.push(setTimeout(apply,delay));
+  }
+
+  function resetChartForNewSymbol(){
+    if(!chart)return;
+    try{candleSeries?.setData([])}catch(_){}
+    for(const series of Object.values(emaSeries)){try{series.setData([]);series.applyOptions({visible:false})}catch(_){}}
+    removeOscillatorSeries();
+    chartContainer.classList.remove("has-rsi","has-macd");
+    try{chart.timeScale().resetTimeScale()}catch(_){}
+    forceMainPriceAutoscale();
+  }
+
+  function updateOscillatorBackgrounds(){
+    chartContainer.classList.toggle("has-rsi",activeStudies.has("rsi"));
+    chartContainer.classList.toggle("has-macd",activeStudies.has("macd"));
+  }
+
   function scheduleChartResize({fit=false}={}){
     clearResizeTimers();
     const run=()=>{
       const resized=resizeChartToContainer(true);
-      if(resized&&fit&&candles.length){
-        try{chart.timeScale().fitContent()}catch(_){}
-      }
+      if(resized&&fit&&candles.length)fitLatestCandles();
     };
     requestAnimationFrame(()=>requestAnimationFrame(run));
     for(const delay of [60,180,420])resizeTimers.push(setTimeout(run,delay));
@@ -10972,7 +11020,7 @@
       width:Math.max(1,Math.floor(initialRect.width)),
       height:Math.max(1,Math.floor(initialRect.height)),
       layout:{
-        background:{type:LWC.ColorType.Solid,color:"#0B0E11"},textColor:"#848E9C",
+        background:{type:LWC.ColorType.Solid,color:"rgba(0,0,0,0)"},textColor:"#848E9C",
         fontFamily:"Inter,Arial,sans-serif",fontSize:11,
         panes:{separatorColor:"#20262D",separatorHoverColor:"#2B3139",enableResize:true}
       },
@@ -10985,7 +11033,7 @@
         vertLine:{visible:false,labelVisible:false},
         horzLine:{visible:false,labelVisible:false}
       },
-      rightPriceScale:{borderVisible:true,borderColor:"#2B3139",minimumWidth:68,scaleMargins:{top:.08,bottom:.08}},
+      rightPriceScale:{autoScale:true,mode:LWC.PriceScaleMode?.Normal??0,invertScale:false,borderVisible:true,borderColor:"#2B3139",minimumWidth:68,scaleMargins:{top:.08,bottom:.08}},
       leftPriceScale:{visible:false},
       timeScale:{borderVisible:true,borderColor:"#2B3139",timeVisible:true,secondsVisible:false,rightOffset:6,barSpacing:8,minBarSpacing:2,fixLeftEdge:false,fixRightEdge:false},
       handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},
@@ -11056,7 +11104,9 @@
       hist.setData(calculations.histogram);macd.setData(calculations.macd);signal.setData(calculations.signal);
       oscillatorSeries.macd=[hist,macd,signal];
     }
+    updateOscillatorBackgrounds();
     resizePanes();
+    forceMainPriceAutoscale();
     scheduleChartResize({fit:false});
     if(visibleRange)requestAnimationFrame(()=>{try{chart.timeScale().setVisibleLogicalRange(visibleRange)}catch(_){}});
   }
@@ -11072,8 +11122,10 @@
       oscillatorSeries.macd[1].setData(calculations.macd);
       oscillatorSeries.macd[2].setData(calculations.signal);
     }
-    if(fit)scheduleChartResize({fit:true});
-    else resizeChartToContainer(false);
+    if(fit){
+      forceMainPriceAutoscale();
+      scheduleDefaultChartView();
+    }else resizeChartToContainer(false);
   }
 
   function updateControls(){
@@ -11138,6 +11190,7 @@
     if(activeStudies.has(key))activeStudies.delete(key);else activeStudies.add(key);
     if(key.startsWith("ema"))emaSeries[key]?.applyOptions({visible:activeStudies.has(key)});
     else rebuildOscillatorPanes();
+    updateOscillatorBackgrounds();
     updateControls();
   }
 
@@ -11146,10 +11199,8 @@
     activeInterval="15";
     activeStudies.clear();
     currentMarket=null;candles=[];calculations=null;
-    if(chart){
-      for(const series of Object.values(emaSeries))series.applyOptions({visible:false});
-      removeOscillatorSeries();
-    }
+    if(chart)resetChartForNewSymbol();
+    else chartContainer.classList.remove("has-rsi","has-macd");
     modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("tv-chart-open");
     lastChartWidth=0;lastChartHeight=0;
     updateControls();scheduleChartResize({fit:false});loadChartData({fit:true});
@@ -11178,7 +11229,7 @@
   window.addEventListener("resize",()=>{if(modal.classList.contains("open"))scheduleChartResize({fit:false})},{passive:true});
 })();
 </script>
-<!-- ===== END V22 FULL-WIDTH RESPONSIVE LIGHTWEIGHT CHART ===== -->
+<!-- ===== END V23 AUTO-FIT SYMBOL SCALE AND OSCILLATOR PANE BACKGROUNDS ===== -->
 
 </body>
 </html>
