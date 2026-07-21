@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v19-30coin-tradingview-chart",
+  "id": "./millionaire.html?app=Millionaire-v21-lightweight-instant-indicators",
   "name": "Millionaire",
   "short_name": "Millionaire",
-  "description": "Bảng theo dõi danh mục, số lượng, lịch sử giao dịch, coin chuẩn và biểu đồ nến TradingView.",
+  "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=19-30coin-tradingview-chart",
+  "start_url": "./millionaire.html?v=21-lightweight-instant-indicators",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=19-30coin-tradingview-chart",
+      "url": "./millionaire.html?v=21-lightweight-instant-indicators",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",

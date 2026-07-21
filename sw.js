@@ -1,8 +1,8 @@
-const CACHE_NAME="millionaire-v20-tradingview-autofallback-naked";
+const CACHE_NAME="millionaire-v21-lightweight-instant-indicators";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",
-  "./millionaire-apple-touch-icon-v14.png"
+  "./millionaire-apple-touch-icon-v14.png","./lightweight-charts.standalone.production.js"
 ];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));
