@@ -10512,7 +10512,7 @@
 
 
 
-<!-- ===== V21 TRADINGVIEW LIGHTWEIGHT INSTANT INDICATORS ===== -->
+<!-- ===== V22 FULL-WIDTH RESPONSIVE LIGHTWEIGHT CHART ===== -->
 <style id="v21-tradingview-lightweight-styles">
   .coin-symbol-line{
     display:flex!important;align-items:center!important;gap:6px!important;
@@ -10564,7 +10564,10 @@
     display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;
     padding:8px 10px;border-bottom:1px solid #2B3139;background:#0D1520
   }
-  .tv-timeframes,.tv-indicator-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .tv-timeframes,.tv-indicator-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
+  .tv-timeframes{flex:0 0 auto}
+  .tv-indicator-controls{flex:1 1 720px;justify-content:flex-end;max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .tv-indicator-controls::-webkit-scrollbar{display:none}
   .tv-timeframe-btn,.tv-study-btn{
     min-height:32px!important;border:1px solid #304158!important;border-radius:9px!important;
     background:#111C2A!important;color:#AFC3DD!important;font-size:11px!important;font-weight:850!important;
@@ -10597,8 +10600,16 @@
   .tv-study-btn[data-tv-study="rsi"]{--study-color:#F59E0B}
   .tv-study-btn[data-tv-study="macd"]{--study-color:#0ECB81}
 
-  .tv-chart-host{position:relative;flex:1;min-height:0;background:#0B0E11;overflow:hidden}
-  .lwc-chart-container{position:absolute;inset:0;background:#0B0E11}
+  .tv-chart-host{position:relative;flex:1 1 auto;width:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden}
+  .lwc-chart-container{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden}
+  .lwc-chart-container>div{width:100%!important;height:100%!important;max-width:none!important}
+  /* Isolate Lightweight Charts from the dashboard's global portfolio-table rules. */
+  .lwc-chart-container table{width:100%!important;min-width:0!important;max-width:none!important;border-collapse:separate!important;border-spacing:0!important;table-layout:auto!important;background:#0B0E11!important}
+  .lwc-chart-container tbody{display:table-row-group!important;background:transparent!important}
+  .lwc-chart-container tr{display:table-row!important;background:transparent!important}
+  .lwc-chart-container td,.lwc-chart-container th{display:table-cell!important;padding:0!important;border:0!important;min-width:0!important;max-width:none!important;text-align:left!important;white-space:normal!important;background:transparent!important}
+  .lwc-chart-container tr>td:first-child{width:0!important;min-width:0!important;max-width:0!important}
+  .lwc-chart-container tbody tr:nth-child(even),.lwc-chart-container tbody tr:hover,.lwc-chart-container tbody tr:hover td{background:transparent!important}
   .tv-chart-loading{
     position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;
     color:#AEB8C5;font-size:12px;background:rgba(11,14,17,.74);backdrop-filter:blur(2px)
@@ -10616,9 +10627,9 @@
   .tv-chart-footer a:hover{text-decoration:underline}
   .tv-chart-attribution{display:flex;gap:5px;align-items:center;min-width:0;flex-wrap:wrap}
 
-  @media (max-width:900px){
+  @media (max-width:1500px){
     .tv-chart-toolbar{align-items:flex-start}
-    .tv-indicator-controls{width:100%}
+    .tv-indicator-controls{width:100%;flex-basis:100%;justify-content:flex-start}
   }
   @media (max-width:680px){
     .tv-chart-modal{padding:0}
@@ -10751,6 +10762,10 @@
   let calculations=null;
   let loadSerial=0;
   let refreshTimer=null;
+  let chartResizeObserver=null;
+  let lastChartWidth=0;
+  let lastChartHeight=0;
+  let resizeTimers=[];
 
   function normalizePair(pair){return String(pair||"").replace(/[-_/]/g,"").toUpperCase()}
   function assetMarkets(symbol){
@@ -10907,11 +10922,55 @@
   }
   function hideLoading(){loading.classList.add("hidden")}
 
+  function clearResizeTimers(){
+    for(const timer of resizeTimers)clearTimeout(timer);
+    resizeTimers=[];
+  }
+
+  function resizeChartToContainer(force=false){
+    if(!chart||!modal.classList.contains("open"))return false;
+    const rect=chartContainer.getBoundingClientRect();
+    const width=Math.floor(rect.width);
+    const height=Math.floor(rect.height);
+    if(width<120||height<120)return false;
+    if(force||width!==lastChartWidth||height!==lastChartHeight){
+      chart.resize(width,height);
+      lastChartWidth=width;
+      lastChartHeight=height;
+    }
+    return true;
+  }
+
+  function scheduleChartResize({fit=false}={}){
+    clearResizeTimers();
+    const run=()=>{
+      const resized=resizeChartToContainer(true);
+      if(resized&&fit&&candles.length){
+        try{chart.timeScale().fitContent()}catch(_){}
+      }
+    };
+    requestAnimationFrame(()=>requestAnimationFrame(run));
+    for(const delay of [60,180,420])resizeTimers.push(setTimeout(run,delay));
+  }
+
+  function ensureChartResizeObserver(){
+    if(chartResizeObserver||!("ResizeObserver" in window))return;
+    chartResizeObserver=new ResizeObserver(()=>{
+      if(modal.classList.contains("open"))requestAnimationFrame(()=>resizeChartToContainer(false));
+    });
+    chartResizeObserver.observe(chartContainer);
+    const dialog=modal.querySelector(".tv-chart-dialog");
+    if(dialog)chartResizeObserver.observe(dialog);
+  }
+
   function createChartIfNeeded(){
     if(chart)return true;
     if(!LWC){showLoading("Không tải được thư viện biểu đồ TradingView.",true);return false}
+    const initialRect=chartContainer.getBoundingClientRect();
     chart=LWC.createChart(chartContainer,{
-      autoSize:true,
+      autoSize:false,
+      width:Math.max(1,Math.floor(initialRect.width)),
+      height:Math.max(1,Math.floor(initialRect.height)),
       layout:{
         background:{type:LWC.ColorType.Solid,color:"#0B0E11"},textColor:"#848E9C",
         fontFamily:"Inter,Arial,sans-serif",fontSize:11,
@@ -10946,6 +11005,8 @@
         priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,title:""
       });
     }
+    ensureChartResizeObserver();
+    scheduleChartResize({fit:false});
     return true;
   }
 
@@ -10996,6 +11057,7 @@
       oscillatorSeries.macd=[hist,macd,signal];
     }
     resizePanes();
+    scheduleChartResize({fit:false});
     if(visibleRange)requestAnimationFrame(()=>{try{chart.timeScale().setVisibleLogicalRange(visibleRange)}catch(_){}});
   }
 
@@ -11010,7 +11072,8 @@
       oscillatorSeries.macd[1].setData(calculations.macd);
       oscillatorSeries.macd[2].setData(calculations.signal);
     }
-    if(fit)chart.timeScale().fitContent();
+    if(fit)scheduleChartResize({fit:true});
+    else resizeChartToContainer(false);
   }
 
   function updateControls(){
@@ -11088,12 +11151,13 @@
       removeOscillatorSeries();
     }
     modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("tv-chart-open");
-    updateControls();loadChartData({fit:true});
+    lastChartWidth=0;lastChartHeight=0;
+    updateControls();scheduleChartResize({fit:false});loadChartData({fit:true});
     setTimeout(()=>modal.querySelector(".tv-chart-close")?.focus(),0);
   }
 
   function closeChart(){
-    loadSerial+=1;clearInterval(refreshTimer);refreshTimer=null;
+    loadSerial+=1;clearInterval(refreshTimer);refreshTimer=null;clearResizeTimers();
     modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.classList.remove("tv-chart-open");
   }
 
@@ -11111,9 +11175,10 @@
     if(event.target.closest("[data-tv-chart-close]"))closeChart();
   });
   document.addEventListener("keydown",event=>{if(event.key==="Escape"&&modal.classList.contains("open"))closeChart()});
+  window.addEventListener("resize",()=>{if(modal.classList.contains("open"))scheduleChartResize({fit:false})},{passive:true});
 })();
 </script>
-<!-- ===== END V21 TRADINGVIEW LIGHTWEIGHT INSTANT INDICATORS ===== -->
+<!-- ===== END V22 FULL-WIDTH RESPONSIVE LIGHTWEIGHT CHART ===== -->
 
 </body>
 </html>
