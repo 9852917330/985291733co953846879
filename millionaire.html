@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Millionaire"/>
-<link rel="manifest" href="./manifest.webmanifest?v=14-millionaire-new-id">
+<link rel="manifest" href="./manifest.webmanifest?v=19-tradingview-chart">
 <link rel="shortcut icon" href="./millionaire-favicon-v14.ico?v=14" type="image/x-icon"/>
 <link rel="icon" href="./millionaire-favicon-v14.ico" sizes="any" type="image/x-icon"/>
 <link rel="icon" type="image/png" sizes="16x16" href="./millionaire-favicon-16-v14.png"/>
@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v18-30coin-quantity-growth-millionaire-html"/>
+<meta name="app-build" content="v19-30coin-tradingview-chart"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -8310,7 +8310,7 @@
 
       return `<tr class="${rowClasses}">
         <td><span class="rank">${i+1}</span></td>
-        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><strong class="${nameClasses}">${r.symbol}</strong><span class="coin-quantity-growth ${quantityGrowthClass}" title="Số lượng tương đương so với mốc đầu tiên">${quantityGrowthText}</span><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
+        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div><span class="coin-quantity-growth ${quantityGrowthClass}" title="Số lượng tương đương so với mốc đầu tiên">${quantityGrowthText}</span><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
         <td><span class="value-pill ${valueClass} ${hasValue?"":"value-pending"}">${valueText}</span></td>
         <td class="num ${pnlClass}"><strong>${returnText}</strong></td>
         <td class="num ${dailyClass}" title="${escapeHTML(state.daily7am.sources?.[r.symbol]||state.daily7am.errors?.[r.symbol]||'Đang tải đúng nến 07:00')}"><strong>${dailyText}</strong><small class="daily-7am-note">${formatDaily7amLabel()}</small></td>
@@ -10509,6 +10509,330 @@
   }
 </style>
 <!-- ===== END V8 DESKTOP HISTORY LAYOUT FIX ===== -->
+
+
+
+<!-- ===== V19 TRADINGVIEW CANDLE CHART MODAL ===== -->
+<style id="v19-tradingview-chart-styles">
+  .coin-symbol-line{
+    display:flex!important;align-items:center!important;gap:6px!important;
+    min-width:0!important;max-width:100%!important
+  }
+  .coin-symbol-line>strong{min-width:0!important;max-width:100%!important}
+  .tv-candle-btn{
+    width:25px!important;height:25px!important;min-width:25px!important;flex:0 0 25px!important;
+    display:inline-grid!important;place-items:center!important;padding:0!important;margin:0!important;
+    border-radius:7px!important;border:1px solid rgba(67,217,255,.35)!important;
+    color:#6ee7ff!important;background:linear-gradient(145deg,rgba(19,74,104,.82),rgba(10,28,48,.92))!important;
+    box-shadow:0 0 0 1px rgba(67,217,255,.05),0 5px 14px rgba(0,0,0,.18)!important;
+    vertical-align:middle!important
+  }
+  .tv-candle-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .tv-candle-btn:hover,.tv-candle-btn:focus-visible{
+    color:#baf6ff!important;border-color:rgba(67,217,255,.78)!important;
+    background:linear-gradient(145deg,rgba(16,112,153,.94),rgba(10,43,72,.98))!important;
+    box-shadow:0 0 20px rgba(67,217,255,.22)!important;transform:translateY(-1px)!important
+  }
+  .tv-candle-btn:active{transform:translateY(0)!important}
+
+  body.tv-chart-open{overflow:hidden!important}
+  .tv-chart-modal{
+    position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;
+    padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))
+  }
+  .tv-chart-modal.open{display:flex}
+  .tv-chart-backdrop{position:absolute;inset:0;background:rgba(2,6,12,.86);backdrop-filter:blur(8px)}
+  .tv-chart-dialog{
+    position:relative;z-index:1;display:flex;flex-direction:column;width:min(1480px,calc(100vw - 28px));
+    height:min(900px,calc(100vh - 28px));min-height:560px;overflow:hidden;
+    border:1px solid rgba(76,133,190,.52);border-radius:18px;
+    background:#080d15;box-shadow:0 28px 90px rgba(0,0,0,.72),0 0 42px rgba(30,144,255,.10)
+  }
+  .tv-chart-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;
+    border-bottom:1px solid rgba(64,92,130,.48);background:linear-gradient(100deg,rgba(13,46,78,.98),rgba(12,22,38,.98))
+  }
+  .tv-chart-title{display:flex;align-items:center;gap:10px;min-width:0}
+  .tv-chart-title-icon{
+    width:34px;height:34px;display:grid;place-items:center;flex:0 0 auto;border-radius:10px;
+    color:#5ee7ff;background:rgba(17,112,153,.26);border:1px solid rgba(67,217,255,.36)
+  }
+  .tv-chart-title-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tv-chart-title-copy{min-width:0}
+  .tv-chart-title-copy strong{display:block;font-size:16px;color:#f5f8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tv-chart-title-copy small{display:block;margin-top:2px;color:#91a3bc;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tv-chart-close{
+    width:38px;height:38px;padding:0!important;display:grid;place-items:center;flex:0 0 auto;
+    border-radius:10px!important;color:#dce6f5!important;background:rgba(255,255,255,.045)!important;border:1px solid rgba(124,148,181,.28)!important;
+    font-size:23px!important;line-height:1!important
+  }
+  .tv-chart-close:hover{color:#fff!important;background:rgba(255,95,120,.16)!important;border-color:rgba(255,95,120,.5)!important}
+  .tv-chart-toolbar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 12px;
+    border-bottom:1px solid rgba(64,92,130,.36);background:#0c131e
+  }
+  .tv-timeframes{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .tv-timeframe-btn{
+    min-width:46px;padding:7px 10px!important;border-radius:8px!important;
+    color:#9eabc0!important;background:#121b28!important;border:1px solid rgba(87,111,145,.34)!important;
+    font-size:11px!important;font-weight:900!important
+  }
+  .tv-timeframe-btn.active{
+    color:#dffaff!important;background:linear-gradient(135deg,rgba(13,127,173,.92),rgba(31,82,166,.92))!important;
+    border-color:rgba(77,219,255,.82)!important;box-shadow:0 0 17px rgba(67,217,255,.15)!important
+  }
+  .tv-chart-indicators{color:#8494aa;font-size:10px;line-height:1.45;text-align:right}
+  .tv-chart-indicators strong{color:#bcd2ed}
+  .tv-chart-host{position:relative;flex:1;min-height:0;background:#080d15}
+  .tv-chart-loading{
+    position:absolute;inset:0;display:grid;place-items:center;color:#8ca1bb;font-size:12px;
+    background:radial-gradient(circle at 50% 40%,rgba(29,92,139,.18),transparent 42%),#080d15
+  }
+  .tv-chart-loading span{display:inline-flex;align-items:center;gap:9px}
+  .tv-chart-loading span::before{content:"";width:16px;height:16px;border:2px solid rgba(90,213,255,.22);border-top-color:#5edfff;border-radius:50%;animation:tvChartSpin .7s linear infinite}
+  @keyframes tvChartSpin{to{transform:rotate(360deg)}}
+  .tv-chart-widget-shell,.tv-chart-widget-shell>.tradingview-widget-container,.tv-chart-widget-shell .tradingview-widget-container__widget{width:100%!important;height:100%!important}
+  .tv-chart-widget-shell{position:absolute;inset:0}
+  .tv-chart-footer{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 12px;
+    border-top:1px solid rgba(64,92,130,.36);background:#0b121c;color:#71849e;font-size:9px
+  }
+  .tv-chart-external{color:#7edfff;text-decoration:none;font-weight:800;white-space:nowrap}
+  .tv-chart-external:hover{text-decoration:underline}
+  @media(max-width:850px){
+    .tv-chart-modal{padding:0}
+    .tv-chart-dialog{width:100vw;height:100dvh;min-height:0;border-radius:0;border:0}
+    .tv-chart-head{padding:8px 9px}
+    .tv-chart-toolbar{padding:7px 8px;gap:6px}
+    .tv-timeframes{width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+    .tv-timeframe-btn{min-width:0;padding:7px 2px!important;font-size:10px!important}
+    .tv-chart-indicators{width:100%;text-align:left;font-size:9px}
+    .tv-chart-footer{padding:6px 8px;align-items:flex-start}
+    .tv-chart-footer span{max-width:68%;line-height:1.35}
+  }
+  @media(max-width:480px){
+    .tv-candle-btn{width:23px!important;height:23px!important;min-width:23px!important;flex-basis:23px!important}
+    .tv-candle-btn svg{width:14px;height:14px}
+    .tv-chart-title-copy strong{font-size:14px}
+    .tv-chart-title-copy small{font-size:9px}
+  }
+</style>
+
+<div class="tv-chart-modal" id="tvChartModal" aria-hidden="true">
+  <div class="tv-chart-backdrop" data-tv-chart-close></div>
+  <section class="tv-chart-dialog" role="dialog" aria-modal="true" aria-labelledby="tvChartTitle">
+    <header class="tv-chart-head">
+      <div class="tv-chart-title">
+        <span class="tv-chart-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></span>
+        <div class="tv-chart-title-copy"><strong id="tvChartTitle">Biểu đồ nến</strong><small id="tvChartSubtitle">TradingView · 15 phút</small></div>
+      </div>
+      <button class="tv-chart-close" type="button" data-tv-chart-close aria-label="Đóng biểu đồ">×</button>
+    </header>
+    <div class="tv-chart-toolbar">
+      <div class="tv-timeframes" aria-label="Khung thời gian">
+        <button class="tv-timeframe-btn" type="button" data-tv-interval="5">5m</button>
+        <button class="tv-timeframe-btn active" type="button" data-tv-interval="15">15m</button>
+        <button class="tv-timeframe-btn" type="button" data-tv-interval="60">1h</button>
+        <button class="tv-timeframe-btn" type="button" data-tv-interval="240">4h</button>
+        <button class="tv-timeframe-btn" type="button" data-tv-interval="D">1D</button>
+        <button class="tv-timeframe-btn" type="button" data-tv-interval="W">1W</button>
+      </div>
+      <div class="tv-chart-indicators"><strong>EMA 10 · 20 · 50 · 200</strong> · RSI 14 · MACD 12/26/9</div>
+    </div>
+    <div class="tv-chart-host" id="tvChartHost"><div class="tv-chart-loading"><span>Đang tải TradingView…</span></div></div>
+    <footer class="tv-chart-footer"><span>Dữ liệu ưu tiên Binance → OKX → Bybit. Biểu đồ do TradingView cung cấp.</span><a class="tv-chart-external" id="tvChartExternal" href="#" target="_blank" rel="noopener nofollow">Mở toàn màn hình ↗</a></footer>
+  </section>
+</div>
+
+<script id="v19-tradingview-chart-controller">
+(() => {
+  "use strict";
+
+  const modal=document.getElementById("tvChartModal");
+  const host=document.getElementById("tvChartHost");
+  const title=document.getElementById("tvChartTitle");
+  const subtitle=document.getElementById("tvChartSubtitle");
+  const external=document.getElementById("tvChartExternal");
+  if(!modal||!host||!title||!subtitle||!external)return;
+
+  const INTERVAL_LABELS={"5":"5 phút","15":"15 phút","60":"1 giờ","240":"4 giờ","D":"1 ngày","W":"1 tuần"};
+  let activeSymbol="BTC";
+  let activeInterval="15";
+  let renderSerial=0;
+
+  function normalizePair(pair){return String(pair||"").replace(/[-_/]/g,"").toUpperCase()}
+
+  const TV_MARKETS={
+    BTC:{binance:"BTCUSDT",okx:"BTC-USDT",bybit:"BTCUSDT"},
+    ETH:{binance:"ETHUSDT",okx:"ETH-USDT",bybit:"ETHUSDT"},
+    SOL:{binance:"SOLUSDT",okx:"SOL-USDT",bybit:"SOLUSDT"},
+    BNB:{binance:"BNBUSDT",okx:"BNB-USDT",bybit:"BNBUSDT"},
+    HYPE:{binance:"HYPEUSDT",okx:"HYPE-USDT",bybit:"HYPEUSDT"},
+    DOGE:{binance:"DOGEUSDT",okx:"DOGE-USDT",bybit:"DOGEUSDT"},
+    LINK:{binance:"LINKUSDT",okx:"LINK-USDT",bybit:"LINKUSDT"},
+    GRAM:{binance:null,okx:"GRAM-USDT",bybit:null},
+    SUI:{binance:"SUIUSDT",okx:"SUI-USDT",bybit:"SUIUSDT"},
+    AVAX:{binance:"AVAXUSDT",okx:"AVAX-USDT",bybit:"AVAXUSDT"},
+    NEAR:{binance:"NEARUSDT",okx:"NEAR-USDT",bybit:"NEARUSDT"},
+    INJ:{binance:"INJUSDT",okx:"INJ-USDT",bybit:"INJUSDT"},
+    MNT:{binance:"MNTUSDT",okx:"MNT-USDT",bybit:"MNTUSDT"},
+    SEI:{binance:"SEIUSDT",okx:"SEI-USDT",bybit:"SEIUSDT"},
+    TAO:{binance:"TAOUSDT",okx:"TAO-USDT",bybit:"TAOUSDT"},
+    RENDER:{binance:"RENDERUSDT",okx:"RENDER-USDT",bybit:"RENDERUSDT"},
+    VIRTUAL:{binance:"VIRTUALUSDT",okx:"VIRTUAL-USDT",bybit:"VIRTUALUSDT"},
+    ONDO:{binance:"ONDOUSDT",okx:"ONDO-USDT",bybit:"ONDOUSDT"},
+    AAVE:{binance:"AAVEUSDT",okx:"AAVE-USDT",bybit:"AAVEUSDT"},
+    UNI:{binance:"UNIUSDT",okx:"UNI-USDT",bybit:"UNIUSDT"},
+    PENDLE:{binance:"PENDLEUSDT",okx:"PENDLE-USDT",bybit:"PENDLEUSDT"},
+    MORPHO:{binance:"MORPHOUSDT",okx:"MORPHO-USDT",bybit:"MORPHOUSDT"},
+    JUP:{binance:"JUPUSDT",okx:"JUP-USDT",bybit:"JUPUSDT"},
+    AERO:{binance:null,okx:"AERO-USDT",bybit:"AEROUSDT"},
+    ENA:{binance:"ENAUSDT",okx:"ENA-USDT",bybit:"ENAUSDT"},
+    ETHFI:{binance:"ETHFIUSDT",okx:"ETHFI-USDT",bybit:"ETHFIUSDT"},
+    OKB:{binance:null,okx:"OKB-USDT",bybit:"OKBUSDT"},
+    ARB:{binance:"ARBUSDT",okx:"ARB-USDT",bybit:"ARBUSDT"},
+    ZRO:{binance:"ZROUSDT",okx:"ZRO-USDT",bybit:"ZROUSDT"},
+    EIGEN:{binance:"EIGENUSDT",okx:"EIGEN-USDT",bybit:"EIGENUSDT"}
+  };
+
+  function resolveTradingViewSymbol(symbol){
+    const asset=TV_MARKETS[symbol]||{};
+    const candidates=[
+      {exchange:"Binance",prefix:"BINANCE",pair:asset.binance},
+      {exchange:"OKX",prefix:"OKX",pair:asset.okx},
+      {exchange:"Bybit",prefix:"BYBIT",pair:asset.bybit}
+    ];
+    const selected=candidates.find(item=>item.pair)||{exchange:"Binance",prefix:"BINANCE",pair:`${symbol}USDT`};
+    const pair=normalizePair(selected.pair);
+    return {tvSymbol:`${selected.prefix}:${pair}`,exchange:selected.exchange,pair};
+  }
+
+  function chartStudies(){
+    return [
+      {id:"MAExp@tv-basicstudies",inputs:{length:10}},
+      {id:"MAExp@tv-basicstudies",inputs:{length:20}},
+      {id:"MAExp@tv-basicstudies",inputs:{length:50}},
+      {id:"MAExp@tv-basicstudies",inputs:{length:200}},
+      {id:"RSI@tv-basicstudies",inputs:{length:14}},
+      {id:"MACD@tv-basicstudies"}
+    ];
+  }
+
+  function updateIntervalButtons(){
+    modal.querySelectorAll("[data-tv-interval]").forEach(button=>{
+      const selected=button.dataset.tvInterval===activeInterval;
+      button.classList.toggle("active",selected);
+      button.setAttribute("aria-pressed",selected?"true":"false");
+    });
+  }
+
+  function renderWidget(){
+    const serial=++renderSerial;
+    const resolved=resolveTradingViewSymbol(activeSymbol);
+    title.textContent=`${activeSymbol} · Biểu đồ nến`;
+    subtitle.textContent=`${resolved.exchange}:${resolved.pair} · ${INTERVAL_LABELS[activeInterval]||activeInterval}`;
+    external.href=`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(resolved.tvSymbol)}&interval=${encodeURIComponent(activeInterval)}`;
+    updateIntervalButtons();
+
+    host.replaceChildren();
+    const loading=document.createElement("div");
+    loading.className="tv-chart-loading";
+    loading.innerHTML="<span>Đang tải TradingView…</span>";
+    const shell=document.createElement("div");
+    shell.className="tv-chart-widget-shell";
+    const container=document.createElement("div");
+    container.className="tradingview-widget-container";
+    const widget=document.createElement("div");
+    widget.className="tradingview-widget-container__widget";
+    container.appendChild(widget);
+    shell.appendChild(container);
+    host.append(loading,shell);
+
+    const script=document.createElement("script");
+    script.type="text/javascript";
+    script.async=true;
+    script.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.text=JSON.stringify({
+      autosize:true,
+      symbol:resolved.tvSymbol,
+      interval:activeInterval,
+      timezone:"Asia/Ho_Chi_Minh",
+      theme:"dark",
+      backgroundColor:"#080d15",
+      gridColor:"rgba(65,84,112,0.18)",
+      style:"1",
+      locale:"vi",
+      hide_top_toolbar:false,
+      hide_side_toolbar:false,
+      hide_legend:false,
+      hide_volume:false,
+      withdateranges:true,
+      allow_symbol_change:false,
+      save_image:true,
+      calendar:false,
+      details:false,
+      hotlist:false,
+      studies:chartStudies(),
+      show_popup_button:true,
+      popup_width:"1280",
+      popup_height:"760",
+      support_host:"https://www.tradingview.com"
+    });
+    script.addEventListener("load",()=>{
+      if(serial!==renderSerial)return;
+      window.setTimeout(()=>{
+        if(serial===renderSerial&&loading.isConnected)loading.remove();
+      },650);
+    });
+    script.addEventListener("error",()=>{
+      if(serial!==renderSerial)return;
+      loading.innerHTML=`<span>Không tải được TradingView. Dùng nút “Mở toàn màn hình”.</span>`;
+    });
+    container.appendChild(script);
+  }
+
+  function openChart(symbol){
+    activeSymbol=String(symbol||"BTC").toUpperCase();
+    activeInterval="15";
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+    document.body.classList.add("tv-chart-open");
+    renderWidget();
+    window.setTimeout(()=>modal.querySelector(".tv-chart-close")?.focus(),0);
+  }
+
+  function closeChart(){
+    renderSerial+=1;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+    document.body.classList.remove("tv-chart-open");
+    window.setTimeout(()=>{
+      if(!modal.classList.contains("open"))host.innerHTML='<div class="tv-chart-loading"><span>Đang tải TradingView…</span></div>';
+    },180);
+  }
+
+  document.addEventListener("click",event=>{
+    const chartButton=event.target.closest("[data-tv-chart-symbol]");
+    if(chartButton){
+      event.preventDefault();event.stopPropagation();
+      openChart(chartButton.dataset.tvChartSymbol);
+      return;
+    }
+    const intervalButton=event.target.closest("[data-tv-interval]");
+    if(intervalButton&&modal.contains(intervalButton)){
+      const next=intervalButton.dataset.tvInterval;
+      if(next&&next!==activeInterval){activeInterval=next;renderWidget()}
+      return;
+    }
+    if(event.target.closest("[data-tv-chart-close]"))closeChart();
+  });
+
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&modal.classList.contains("open"))closeChart();
+  });
+})();
+</script>
+<!-- ===== END V19 TRADINGVIEW CANDLE CHART MODAL ===== -->
 
 </body>
 </html>
