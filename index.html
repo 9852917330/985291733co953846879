@@ -10512,8 +10512,8 @@
 
 
 
-<!-- ===== V19 TRADINGVIEW CANDLE CHART MODAL ===== -->
-<style id="v19-tradingview-chart-styles">
+<!-- ===== V20 TRADINGVIEW AUTO-FALLBACK NAKED CHART ===== -->
+<style id="v20-tradingview-chart-styles">
   .coin-symbol-line{
     display:flex!important;align-items:center!important;gap:6px!important;
     min-width:0!important;max-width:100%!important
@@ -10541,72 +10541,89 @@
     padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))
   }
   .tv-chart-modal.open{display:flex}
-  .tv-chart-backdrop{position:absolute;inset:0;background:rgba(2,6,12,.86);backdrop-filter:blur(8px)}
+  .tv-chart-backdrop{position:absolute;inset:0;background:rgba(2,6,12,.88);backdrop-filter:blur(8px)}
   .tv-chart-dialog{
     position:relative;z-index:1;display:flex;flex-direction:column;width:min(1480px,calc(100vw - 28px));
     height:min(900px,calc(100vh - 28px));min-height:560px;overflow:hidden;
-    border:1px solid rgba(76,133,190,.52);border-radius:18px;
-    background:#080d15;box-shadow:0 28px 90px rgba(0,0,0,.72),0 0 42px rgba(30,144,255,.10)
+    border:1px solid rgba(71,91,117,.72);border-radius:18px;
+    background:#0B0E11;box-shadow:0 28px 90px rgba(0,0,0,.76),0 0 42px rgba(240,185,11,.06)
   }
   .tv-chart-head{
     display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;
-    border-bottom:1px solid rgba(64,92,130,.48);background:linear-gradient(100deg,rgba(13,46,78,.98),rgba(12,22,38,.98))
+    border-bottom:1px solid #2B3139;background:linear-gradient(100deg,#181A20,#101318)
   }
   .tv-chart-title{display:flex;align-items:center;gap:10px;min-width:0}
   .tv-chart-title-icon{
     width:34px;height:34px;display:grid;place-items:center;flex:0 0 auto;border-radius:10px;
-    color:#5ee7ff;background:rgba(17,112,153,.26);border:1px solid rgba(67,217,255,.36)
+    color:#F0B90B;background:rgba(240,185,11,.10);border:1px solid rgba(240,185,11,.36)
   }
   .tv-chart-title-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .tv-chart-title-copy{min-width:0}
-  .tv-chart-title-copy strong{display:block;font-size:16px;color:#f5f8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tv-chart-title-copy small{display:block;margin-top:2px;color:#91a3bc;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tv-chart-title-copy strong{display:block;font-size:16px;color:#EAECEF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tv-chart-title-copy small{display:block;margin-top:2px;color:#848E9C;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tv-chart-close{
     width:38px;height:38px;padding:0!important;display:grid;place-items:center;flex:0 0 auto;
-    border-radius:10px!important;color:#dce6f5!important;background:rgba(255,255,255,.045)!important;border:1px solid rgba(124,148,181,.28)!important;
+    border-radius:10px!important;color:#EAECEF!important;background:#1E2329!important;border:1px solid #2B3139!important;
     font-size:23px!important;line-height:1!important
   }
-  .tv-chart-close:hover{color:#fff!important;background:rgba(255,95,120,.16)!important;border-color:rgba(255,95,120,.5)!important}
+  .tv-chart-close:hover{color:#fff!important;background:rgba(246,70,93,.16)!important;border-color:rgba(246,70,93,.55)!important}
   .tv-chart-toolbar{
     display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 12px;
-    border-bottom:1px solid rgba(64,92,130,.36);background:#0c131e
+    border-bottom:1px solid #2B3139;background:#0B0E11
   }
-  .tv-timeframes{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-  .tv-timeframe-btn{
+  .tv-timeframes,.tv-indicator-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .tv-timeframe-btn,.tv-study-btn{
     min-width:46px;padding:7px 10px!important;border-radius:8px!important;
-    color:#9eabc0!important;background:#121b28!important;border:1px solid rgba(87,111,145,.34)!important;
+    color:#B7BDC6!important;background:#181A20!important;border:1px solid #2B3139!important;
     font-size:11px!important;font-weight:900!important
   }
   .tv-timeframe-btn.active{
-    color:#dffaff!important;background:linear-gradient(135deg,rgba(13,127,173,.92),rgba(31,82,166,.92))!important;
-    border-color:rgba(77,219,255,.82)!important;box-shadow:0 0 17px rgba(67,217,255,.15)!important
+    color:#181A20!important;background:#F0B90B!important;border-color:#F0B90B!important;
+    box-shadow:0 0 16px rgba(240,185,11,.18)!important
   }
-  .tv-chart-indicators{color:#8494aa;font-size:10px;line-height:1.45;text-align:right}
-  .tv-chart-indicators strong{color:#bcd2ed}
-  .tv-chart-host{position:relative;flex:1;min-height:0;background:#080d15}
+  .tv-study-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-width:auto!important}
+  .tv-study-btn .study-dot{width:8px;height:8px;border-radius:50%;background:var(--study-color,#848E9C);box-shadow:0 0 0 2px rgba(255,255,255,.04)}
+  .tv-study-btn.active{
+    color:#EAECEF!important;border-color:var(--study-color,#F0B90B)!important;
+    background:color-mix(in srgb,var(--study-color,#F0B90B) 16%,#181A20)!important;
+    box-shadow:0 0 14px color-mix(in srgb,var(--study-color,#F0B90B) 20%,transparent)!important
+  }
+  .tv-study-btn[data-tv-study="ema10"]{--study-color:#F0B90B}
+  .tv-study-btn[data-tv-study="ema20"]{--study-color:#00B8D9}
+  .tv-study-btn[data-tv-study="ema50"]{--study-color:#A855F7}
+  .tv-study-btn[data-tv-study="ema200"]{--study-color:#EAECEF}
+  .tv-study-btn[data-tv-study="rsi"]{--study-color:#FF8A00}
+  .tv-study-btn[data-tv-study="macd"]{--study-color:#0ECB81}
+  .tv-chart-host{position:relative;flex:1;min-height:0;background:#0B0E11}
   .tv-chart-loading{
-    position:absolute;inset:0;display:grid;place-items:center;color:#8ca1bb;font-size:12px;
-    background:radial-gradient(circle at 50% 40%,rgba(29,92,139,.18),transparent 42%),#080d15
+    position:absolute;inset:0;display:grid;place-items:center;color:#848E9C;font-size:12px;
+    background:radial-gradient(circle at 50% 40%,rgba(240,185,11,.055),transparent 44%),#0B0E11
   }
-  .tv-chart-loading span{display:inline-flex;align-items:center;gap:9px}
-  .tv-chart-loading span::before{content:"";width:16px;height:16px;border:2px solid rgba(90,213,255,.22);border-top-color:#5edfff;border-radius:50%;animation:tvChartSpin .7s linear infinite}
+  .tv-chart-loading span{display:inline-flex;align-items:center;gap:9px;text-align:center;padding:0 16px}
+  .tv-chart-loading span::before{content:"";width:16px;height:16px;border:2px solid rgba(240,185,11,.20);border-top-color:#F0B90B;border-radius:50%;animation:tvChartSpin .7s linear infinite;flex:0 0 auto}
+  .tv-chart-loading.error span::before{display:none}
   @keyframes tvChartSpin{to{transform:rotate(360deg)}}
   .tv-chart-widget-shell,.tv-chart-widget-shell>.tradingview-widget-container,.tv-chart-widget-shell .tradingview-widget-container__widget{width:100%!important;height:100%!important}
   .tv-chart-widget-shell{position:absolute;inset:0}
   .tv-chart-footer{
     display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 12px;
-    border-top:1px solid rgba(64,92,130,.36);background:#0b121c;color:#71849e;font-size:9px
+    border-top:1px solid #2B3139;background:#0B0E11;color:#848E9C;font-size:9px
   }
-  .tv-chart-external{color:#7edfff;text-decoration:none;font-weight:800;white-space:nowrap}
+  .tv-chart-external{color:#F0B90B;text-decoration:none;font-weight:800;white-space:nowrap}
   .tv-chart-external:hover{text-decoration:underline}
+  @media(max-width:1000px){
+    .tv-chart-toolbar{align-items:flex-start}
+    .tv-indicator-controls{width:100%}
+  }
   @media(max-width:850px){
     .tv-chart-modal{padding:0}
     .tv-chart-dialog{width:100vw;height:100dvh;min-height:0;border-radius:0;border:0}
     .tv-chart-head{padding:8px 9px}
-    .tv-chart-toolbar{padding:7px 8px;gap:6px}
+    .tv-chart-toolbar{padding:7px 8px;gap:7px}
     .tv-timeframes{width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
     .tv-timeframe-btn{min-width:0;padding:7px 2px!important;font-size:10px!important}
-    .tv-chart-indicators{width:100%;text-align:left;font-size:9px}
+    .tv-indicator-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+    .tv-study-btn{padding:7px 4px!important;font-size:9px!important}
     .tv-chart-footer{padding:6px 8px;align-items:flex-start}
     .tv-chart-footer span{max-width:68%;line-height:1.35}
   }
@@ -10624,7 +10641,7 @@
     <header class="tv-chart-head">
       <div class="tv-chart-title">
         <span class="tv-chart-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></span>
-        <div class="tv-chart-title-copy"><strong id="tvChartTitle">Biểu đồ nến</strong><small id="tvChartSubtitle">TradingView · 15 phút</small></div>
+        <div class="tv-chart-title-copy"><strong id="tvChartTitle">Biểu đồ nến</strong><small id="tvChartSubtitle">Đang dò Binance → OKX → Bybit</small></div>
       </div>
       <button class="tv-chart-close" type="button" data-tv-chart-close aria-label="Đóng biểu đồ">×</button>
     </header>
@@ -10637,14 +10654,21 @@
         <button class="tv-timeframe-btn" type="button" data-tv-interval="D">1D</button>
         <button class="tv-timeframe-btn" type="button" data-tv-interval="W">1W</button>
       </div>
-      <div class="tv-chart-indicators"><strong>EMA 10 · 20 · 50 · 200</strong> · RSI 14 · MACD 12/26/9</div>
+      <div class="tv-indicator-controls" aria-label="Bật tắt chỉ báo">
+        <button class="tv-study-btn" type="button" data-tv-study="ema10"><span class="study-dot"></span>EMA 10</button>
+        <button class="tv-study-btn" type="button" data-tv-study="ema20"><span class="study-dot"></span>EMA 20</button>
+        <button class="tv-study-btn" type="button" data-tv-study="ema50"><span class="study-dot"></span>EMA 50</button>
+        <button class="tv-study-btn" type="button" data-tv-study="ema200"><span class="study-dot"></span>EMA 200</button>
+        <button class="tv-study-btn" type="button" data-tv-study="rsi"><span class="study-dot"></span>RSI 14</button>
+        <button class="tv-study-btn" type="button" data-tv-study="macd"><span class="study-dot"></span>MACD</button>
+      </div>
     </div>
-    <div class="tv-chart-host" id="tvChartHost"><div class="tv-chart-loading"><span>Đang tải TradingView…</span></div></div>
-    <footer class="tv-chart-footer"><span>Dữ liệu ưu tiên Binance → OKX → Bybit. Biểu đồ do TradingView cung cấp.</span><a class="tv-chart-external" id="tvChartExternal" href="#" target="_blank" rel="noopener nofollow">Mở toàn màn hình ↗</a></footer>
+    <div class="tv-chart-host" id="tvChartHost"><div class="tv-chart-loading"><span>Đang dò sàn giao dịch…</span></div></div>
+    <footer class="tv-chart-footer"><span>Tự động chọn cặp spot theo thứ tự Binance → OKX → Bybit. Mặc định chỉ hiện nến.</span><a class="tv-chart-external" id="tvChartExternal" href="#" target="_blank" rel="noopener nofollow">Mở toàn màn hình ↗</a></footer>
   </section>
 </div>
 
-<script id="v19-tradingview-chart-controller">
+<script id="v20-tradingview-chart-controller">
 (() => {
   "use strict";
 
@@ -10656,6 +10680,14 @@
   if(!modal||!host||!title||!subtitle||!external)return;
 
   const INTERVAL_LABELS={"5":"5 phút","15":"15 phút","60":"1 giờ","240":"4 giờ","D":"1 ngày","W":"1 tuần"};
+  const EXCHANGE_META={
+    binance:{label:"Binance",prefix:"BINANCE"},
+    okx:{label:"OKX",prefix:"OKX"},
+    bybit:{label:"Bybit",prefix:"BYBIT"}
+  };
+  const EMA_COLORS={ema10:"#F0B90B",ema20:"#00B8D9",ema50:"#A855F7",ema200:"#EAECEF"};
+  const marketProbeCache=new Map();
+  const activeStudies=new Set();
   let activeSymbol="BTC";
   let activeInterval="15";
   let renderSerial=0;
@@ -10695,49 +10727,175 @@
     EIGEN:{binance:"EIGENUSDT",okx:"EIGEN-USDT",bybit:"EIGENUSDT"}
   };
 
-  function resolveTradingViewSymbol(symbol){
-    const asset=TV_MARKETS[symbol]||{};
-    const candidates=[
-      {exchange:"Binance",prefix:"BINANCE",pair:asset.binance},
-      {exchange:"OKX",prefix:"OKX",pair:asset.okx},
-      {exchange:"Bybit",prefix:"BYBIT",pair:asset.bybit}
-    ];
-    const selected=candidates.find(item=>item.pair)||{exchange:"Binance",prefix:"BINANCE",pair:`${symbol}USDT`};
-    const pair=normalizePair(selected.pair);
-    return {tvSymbol:`${selected.prefix}:${pair}`,exchange:selected.exchange,pair};
+  function assetMarkets(symbol){
+    const fallback=TV_MARKETS[symbol]||{};
+    try{
+      if(typeof ASSETS!=="undefined"&&ASSETS?.[symbol]){
+        const a=ASSETS[symbol];
+        return {binance:a.binance??fallback.binance,okx:a.okx??fallback.okx,bybit:a.bybit??fallback.bybit};
+      }
+    }catch(_){/* main dashboard scope unavailable */}
+    return fallback;
+  }
+
+  function candidateList(symbol){
+    const asset=assetMarkets(symbol);
+    return ["binance","okx","bybit"].map(provider=>{
+      const meta=EXCHANGE_META[provider];
+      const rawPair=asset[provider]||null;
+      return rawPair?{provider,exchange:meta.label,prefix:meta.prefix,rawPair,pair:normalizePair(rawPair)}:null;
+    }).filter(Boolean);
+  }
+
+  async function fetchJsonWithTimeout(url,timeoutMs=6500){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    try{
+      const response=await fetch(url,{signal:controller.signal,cache:"no-store",headers:{accept:"application/json"}});
+      if(!response.ok)return {ok:false,status:response.status,json:null};
+      return {ok:true,status:response.status,json:await response.json()};
+    }finally{clearTimeout(timer)}
+  }
+
+  function probeMarket(provider,rawPair){
+    const key=`${provider}:${rawPair}`;
+    if(marketProbeCache.has(key))return marketProbeCache.get(key);
+    const task=(async()=>{
+      try{
+        if(provider==="binance"){
+          const result=await fetchJsonWithTimeout(`https://api.binance.com/api/v3/exchangeInfo?symbol=${encodeURIComponent(rawPair)}`);
+          if(!result.ok)return result.status===400?false:null;
+          const rows=result.json?.symbols||[];
+          return rows.some(row=>row.symbol===rawPair&&row.status==="TRADING");
+        }
+        if(provider==="okx"){
+          const result=await fetchJsonWithTimeout(`https://www.okx.com/api/v5/public/instruments?instType=SPOT&instId=${encodeURIComponent(rawPair)}`);
+          if(!result.ok)return null;
+          if(String(result.json?.code)!=="0")return false;
+          return (result.json?.data||[]).some(row=>row.instId===rawPair&&row.state==="live");
+        }
+        if(provider==="bybit"){
+          const result=await fetchJsonWithTimeout(`https://api.bybit.com/v5/market/instruments-info?category=spot&symbol=${encodeURIComponent(rawPair)}`);
+          if(!result.ok)return null;
+          if(Number(result.json?.retCode)!==0)return false;
+          return (result.json?.result?.list||[]).some(row=>row.symbol===rawPair&&(!row.status||row.status==="Trading"));
+        }
+      }catch(_){return null}
+      return null;
+    })().then(status=>{
+      if(status===null)marketProbeCache.delete(key);
+      return status;
+    });
+    marketProbeCache.set(key,task);
+    return task;
+  }
+
+  function dashboardFallback(candidates,statuses){
+    const notRejected=candidates.filter((_,index)=>statuses[index]!==false);
+    try{
+      const liveProvider=state?.live?.[activeSymbol]?.exchange;
+      const live=notRejected.find(item=>item.provider===liveProvider);
+      if(live)return live;
+      const available=state?.available;
+      const fromSets=notRejected.find(item=>available?.[item.provider] instanceof Set&&available[item.provider].has(item.rawPair));
+      if(fromSets)return fromSets;
+    }catch(_){/* use configured fallback */}
+    return notRejected[0]||null;
+  }
+
+  async function resolveTradingViewSymbol(symbol){
+    const candidates=candidateList(symbol);
+    if(!candidates.length)throw new Error(`Chưa cấu hình cặp spot cho ${symbol}`);
+    const statuses=await Promise.all(candidates.map(item=>probeMarket(item.provider,item.rawPair)));
+    const confirmed=candidates.find((_,index)=>statuses[index]===true);
+    const selected=confirmed||dashboardFallback(candidates,statuses);
+    if(!selected)throw new Error(`${symbol} hiện không có cặp spot hoạt động trên Binance, OKX hoặc Bybit`);
+    return {...selected,tvSymbol:`${selected.prefix}:${selected.pair}`,confirmed:Boolean(confirmed)};
   }
 
   function chartStudies(){
-    return [
-      {id:"MAExp@tv-basicstudies",inputs:{length:10}},
-      {id:"MAExp@tv-basicstudies",inputs:{length:20}},
-      {id:"MAExp@tv-basicstudies",inputs:{length:50}},
-      {id:"MAExp@tv-basicstudies",inputs:{length:200}},
-      {id:"RSI@tv-basicstudies",inputs:{length:14}},
-      {id:"MACD@tv-basicstudies"}
-    ];
+    const studies=[];
+    for(const key of ["ema10","ema20","ema50","ema200"]){
+      if(!activeStudies.has(key))continue;
+      const length=Number(key.replace("ema",""));
+      const color=EMA_COLORS[key];
+      studies.push({
+        id:"MAExp@tv-basicstudies",
+        inputs:{length},
+        overrides:{"plot.color":color,"plot.linewidth":2}
+      });
+    }
+    if(activeStudies.has("rsi"))studies.push({id:"RSI@tv-basicstudies",inputs:{length:14}});
+    if(activeStudies.has("macd"))studies.push({id:"MACD@tv-basicstudies",inputs:{fast_length:12,slow_length:26,signal_length:9}});
+    return studies;
   }
 
-  function updateIntervalButtons(){
+  function chartOverrides(){
+    return {
+      "paneProperties.background":"#0B0E11",
+      "paneProperties.backgroundType":"solid",
+      "paneProperties.vertGridProperties.color":"#1E2329",
+      "paneProperties.horzGridProperties.color":"#1E2329",
+      "paneProperties.crossHairProperties.color":"#848E9C",
+      "scalesProperties.backgroundColor":"#0B0E11",
+      "scalesProperties.textColor":"#848E9C",
+      "mainSeriesProperties.candleStyle.upColor":"#0ECB81",
+      "mainSeriesProperties.candleStyle.downColor":"#F6465D",
+      "mainSeriesProperties.candleStyle.borderUpColor":"#0ECB81",
+      "mainSeriesProperties.candleStyle.borderDownColor":"#F6465D",
+      "mainSeriesProperties.candleStyle.wickUpColor":"#0ECB81",
+      "mainSeriesProperties.candleStyle.wickDownColor":"#F6465D",
+      "mainSeriesProperties.candleStyle.drawBorder":true,
+      "mainSeriesProperties.candleStyle.drawWick":true,
+      "paneProperties.legendProperties.showSeriesOHLC":false,
+      "paneProperties.legendProperties.showBarChange":false,
+      "paneProperties.legendProperties.showLastDayChange":false
+    };
+  }
+
+  function updateControls(){
     modal.querySelectorAll("[data-tv-interval]").forEach(button=>{
       const selected=button.dataset.tvInterval===activeInterval;
       button.classList.toggle("active",selected);
       button.setAttribute("aria-pressed",selected?"true":"false");
     });
+    modal.querySelectorAll("[data-tv-study]").forEach(button=>{
+      const selected=activeStudies.has(button.dataset.tvStudy);
+      button.classList.toggle("active",selected);
+      button.setAttribute("aria-pressed",selected?"true":"false");
+    });
   }
 
-  function renderWidget(){
-    const serial=++renderSerial;
-    const resolved=resolveTradingViewSymbol(activeSymbol);
-    title.textContent=`${activeSymbol} · Biểu đồ nến`;
-    subtitle.textContent=`${resolved.exchange}:${resolved.pair} · ${INTERVAL_LABELS[activeInterval]||activeInterval}`;
-    external.href=`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(resolved.tvSymbol)}&interval=${encodeURIComponent(activeInterval)}`;
-    updateIntervalButtons();
-
+  function mountLoading(message,error=false){
     host.replaceChildren();
     const loading=document.createElement("div");
-    loading.className="tv-chart-loading";
-    loading.innerHTML="<span>Đang tải TradingView…</span>";
+    loading.className=`tv-chart-loading${error?" error":""}`;
+    loading.innerHTML=`<span>${message}</span>`;
+    host.appendChild(loading);
+    return loading;
+  }
+
+  async function renderWidget(){
+    const serial=++renderSerial;
+    title.textContent=`${activeSymbol} · Biểu đồ nến`;
+    subtitle.textContent=`Đang dò Binance → OKX → Bybit · ${INTERVAL_LABELS[activeInterval]||activeInterval}`;
+    external.href="#";
+    updateControls();
+    const loading=mountLoading("Đang dò cặp spot trên Binance → OKX → Bybit…");
+
+    let resolved;
+    try{resolved=await resolveTradingViewSymbol(activeSymbol)}
+    catch(error){
+      if(serial!==renderSerial)return;
+      subtitle.textContent=`Không tìm thấy cặp spot cho ${activeSymbol}`;
+      mountLoading(String(error?.message||error||"Không tìm thấy thị trường phù hợp"),true);
+      return;
+    }
+    if(serial!==renderSerial)return;
+
+    subtitle.textContent=`${resolved.exchange}:${resolved.pair} · ${INTERVAL_LABELS[activeInterval]||activeInterval}`;
+    external.href=`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(resolved.tvSymbol)}&interval=${encodeURIComponent(activeInterval)}`;
+
     const shell=document.createElement("div");
     shell.className="tv-chart-widget-shell";
     const container=document.createElement("div");
@@ -10746,8 +10904,9 @@
     widget.className="tradingview-widget-container__widget";
     container.appendChild(widget);
     shell.appendChild(container);
-    host.append(loading,shell);
+    host.appendChild(shell);
 
+    const overrides=chartOverrides();
     const script=document.createElement("script");
     script.type="text/javascript";
     script.async=true;
@@ -10758,14 +10917,14 @@
       interval:activeInterval,
       timezone:"Asia/Ho_Chi_Minh",
       theme:"dark",
-      backgroundColor:"#080d15",
-      gridColor:"rgba(65,84,112,0.18)",
+      backgroundColor:"#0B0E11",
+      gridColor:"rgba(43,49,57,0.70)",
       style:"1",
       locale:"vi",
       hide_top_toolbar:false,
       hide_side_toolbar:false,
-      hide_legend:false,
-      hide_volume:false,
+      hide_legend:true,
+      hide_volume:true,
       withdateranges:true,
       allow_symbol_change:false,
       save_image:true,
@@ -10773,6 +10932,9 @@
       details:false,
       hotlist:false,
       studies:chartStudies(),
+      overrides,
+      settings_overrides:overrides,
+      disabled_features:["create_volume_indicator_by_default","use_localstorage_for_settings"],
       show_popup_button:true,
       popup_width:"1280",
       popup_height:"760",
@@ -10786,7 +10948,8 @@
     });
     script.addEventListener("error",()=>{
       if(serial!==renderSerial)return;
-      loading.innerHTML=`<span>Không tải được TradingView. Dùng nút “Mở toàn màn hình”.</span>`;
+      loading.classList.add("error");
+      loading.innerHTML='<span>Không tải được TradingView. Dùng nút “Mở toàn màn hình”.</span>';
     });
     container.appendChild(script);
   }
@@ -10794,6 +10957,7 @@
   function openChart(symbol){
     activeSymbol=String(symbol||"BTC").toUpperCase();
     activeInterval="15";
+    activeStudies.clear();
     modal.classList.add("open");
     modal.setAttribute("aria-hidden","false");
     document.body.classList.add("tv-chart-open");
@@ -10807,7 +10971,7 @@
     modal.setAttribute("aria-hidden","true");
     document.body.classList.remove("tv-chart-open");
     window.setTimeout(()=>{
-      if(!modal.classList.contains("open"))host.innerHTML='<div class="tv-chart-loading"><span>Đang tải TradingView…</span></div>';
+      if(!modal.classList.contains("open"))host.innerHTML='<div class="tv-chart-loading"><span>Đang dò sàn giao dịch…</span></div>';
     },180);
   }
 
@@ -10824,6 +10988,13 @@
       if(next&&next!==activeInterval){activeInterval=next;renderWidget()}
       return;
     }
+    const studyButton=event.target.closest("[data-tv-study]");
+    if(studyButton&&modal.contains(studyButton)){
+      const key=studyButton.dataset.tvStudy;
+      if(activeStudies.has(key))activeStudies.delete(key);else activeStudies.add(key);
+      renderWidget();
+      return;
+    }
     if(event.target.closest("[data-tv-chart-close]"))closeChart();
   });
 
@@ -10832,7 +11003,7 @@
   });
 })();
 </script>
-<!-- ===== END V19 TRADINGVIEW CANDLE CHART MODAL ===== -->
+<!-- ===== END V20 TRADINGVIEW AUTO-FALLBACK NAKED CHART ===== -->
 
 </body>
 </html>
