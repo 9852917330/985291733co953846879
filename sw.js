@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v23-autofit-symbol-pane-bg";
+const CACHE_NAME="millionaire-v24-rsi-band-no-grid-large-chart-button";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",

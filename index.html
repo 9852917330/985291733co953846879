@@ -10512,7 +10512,7 @@
 
 
 
-<!-- ===== V23 AUTO-FIT SYMBOL SCALE AND OSCILLATOR PANE BACKGROUNDS ===== -->
+<!-- ===== V24 RSI 30-70 BAND, NO GRIDLINES, LARGER CHART BUTTON ===== -->
 <style id="v21-tradingview-lightweight-styles">
   .coin-symbol-line{
     display:flex!important;align-items:center!important;gap:6px!important;
@@ -10520,14 +10520,14 @@
   }
   .coin-symbol-line>strong{min-width:0!important;max-width:100%!important}
   .tv-candle-btn{
-    width:25px!important;height:25px!important;min-width:25px!important;flex:0 0 25px!important;
+    width:34px!important;height:34px!important;min-width:34px!important;flex:0 0 34px!important;
     display:inline-grid!important;place-items:center!important;padding:0!important;margin:0!important;
-    border-radius:7px!important;border:1px solid rgba(67,217,255,.35)!important;
+    border-radius:9px!important;border:1px solid rgba(67,217,255,.42)!important;
     color:#6ee7ff!important;background:linear-gradient(145deg,rgba(19,74,104,.82),rgba(10,28,48,.92))!important;
     box-shadow:0 0 0 1px rgba(67,217,255,.05),0 5px 14px rgba(0,0,0,.18)!important;
     vertical-align:middle!important
   }
-  .tv-candle-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .tv-candle-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
   .tv-candle-btn:hover,.tv-candle-btn:focus-visible{
     color:#baf6ff!important;border-color:rgba(67,217,255,.78)!important;
     background:linear-gradient(145deg,rgba(16,112,153,.94),rgba(10,43,72,.98))!important;
@@ -10602,10 +10602,9 @@
 
   .tv-chart-host{position:relative;flex:1 1 auto;width:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden}
   .lwc-chart-container{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;background:#0B0E11;overflow:hidden;isolation:isolate}
-  .lwc-chart-container::before,.lwc-chart-container::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:0;display:none;border-top:1px solid rgba(132,142,156,.08)}
-  .lwc-chart-container.has-rsi:not(.has-macd)::before{display:block;bottom:28px;height:calc((100% - 28px)*.25);background:#10161D}
+  .lwc-chart-container::before,.lwc-chart-container::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:0;display:none}
+  /* RSI shading is rendered precisely between 30 and 70 by a BaselineSeries. */
   .lwc-chart-container.has-macd:not(.has-rsi)::after{display:block;bottom:28px;height:calc((100% - 28px)*.25);background:#111922}
-  .lwc-chart-container.has-rsi.has-macd::before{display:block;bottom:calc(28px + (100% - 28px)*.20);height:calc((100% - 28px)*.20);background:#10161D}
   .lwc-chart-container.has-rsi.has-macd::after{display:block;bottom:28px;height:calc((100% - 28px)*.20);background:#111922}
   .lwc-chart-container>div{position:relative!important;z-index:1!important;width:100%!important;height:100%!important;max-width:none!important}
   /* Isolate Lightweight Charts from the dashboard's global portfolio-table rules. */
@@ -11026,7 +11025,7 @@
       },
       grid:{
         vertLines:{visible:false,color:"transparent"},
-        horzLines:{visible:true,color:"rgba(132,142,156,.105)",style:LWC.LineStyle.Solid}
+        horzLines:{visible:false,color:"transparent"}
       },
       crosshair:{
         mode:LWC.CrosshairMode.Normal,
@@ -11076,19 +11075,32 @@
     });
   }
 
+  function rsiBandData(){
+    return candles.map(item=>({time:item.time,value:70}));
+  }
+
   function rebuildOscillatorPanes(){
     if(!chart||!calculations)return;
     const visibleRange=chart.timeScale().getVisibleLogicalRange();
     removeOscillatorSeries();
     let paneIndex=1;
     if(activeStudies.has("rsi")){
+      const rsiPaneIndex=paneIndex++;
+      const band=chart.addSeries(LWC.BaselineSeries,{
+        baseValue:{type:"price",price:30},
+        topFillColor1:"rgba(245,158,11,.16)",topFillColor2:"rgba(245,158,11,.16)",
+        topLineColor:"rgba(0,0,0,0)",
+        bottomFillColor1:"rgba(0,0,0,0)",bottomFillColor2:"rgba(0,0,0,0)",bottomLineColor:"rgba(0,0,0,0)",
+        lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,title:""
+      },rsiPaneIndex);
       const series=chart.addSeries(LWC.LineSeries,{
         color:"#F59E0B",lineWidth:2,priceLineVisible:false,lastValueVisible:false,
         crosshairMarkerVisible:false,title:"",priceFormat:{type:"price",precision:1,minMove:.1},
         autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}})
-      },paneIndex++);
+      },rsiPaneIndex);
+      band.setData(rsiBandData());
       series.setData(calculations.rsi);
-      oscillatorSeries.rsi=[series];
+      oscillatorSeries.rsi=[band,series];
     }
     if(activeStudies.has("macd")){
       const hist=chart.addSeries(LWC.HistogramSeries,{
@@ -11116,7 +11128,10 @@
     candleSeries.applyOptions({priceFormat:priceFormat(candles.at(-1)?.close)});
     candleSeries.setData(candles.map(item=>({time:item.time,open:item.open,high:item.high,low:item.low,close:item.close})));
     for(const key of Object.keys(emaSeries))emaSeries[key].setData(calculations[key]);
-    if(oscillatorSeries.rsi[0])oscillatorSeries.rsi[0].setData(calculations.rsi);
+    if(oscillatorSeries.rsi.length===2){
+      oscillatorSeries.rsi[0].setData(rsiBandData());
+      oscillatorSeries.rsi[1].setData(calculations.rsi);
+    }
     if(oscillatorSeries.macd.length===3){
       oscillatorSeries.macd[0].setData(calculations.histogram);
       oscillatorSeries.macd[1].setData(calculations.macd);
@@ -11229,7 +11244,7 @@
   window.addEventListener("resize",()=>{if(modal.classList.contains("open"))scheduleChartResize({fit:false})},{passive:true});
 })();
 </script>
-<!-- ===== END V23 AUTO-FIT SYMBOL SCALE AND OSCILLATOR PANE BACKGROUNDS ===== -->
+<!-- ===== END V24 RSI 30-70 BAND, NO GRIDLINES, LARGER CHART BUTTON ===== -->
 
 </body>
 </html>
