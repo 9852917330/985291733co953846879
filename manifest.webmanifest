@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v24-rsi-band-no-grid-large-chart-button",
+  "id": "./millionaire.html?app=Millionaire-v25-full-trade-log-safe-date-parse",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=24-rsi-band-no-grid-large-chart-button",
+  "start_url": "./millionaire.html?v=25-full-trade-log-safe-date-parse",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=24-rsi-band-no-grid-large-chart-button",
+      "url": "./millionaire.html?v=25-full-trade-log-safe-date-parse",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",

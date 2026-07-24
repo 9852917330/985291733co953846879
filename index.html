@@ -5468,32 +5468,46 @@
 
   function parseVietnamDateCell(cell){
     if(!cell)return null;
+    const minTs=Date.UTC(2020,0,1);
+    const maxTs=Date.now()+370*24*60*60*1000;
+    const accept=ts=>Number.isFinite(ts)&&ts>=minTs&&ts<=maxTs?ts:null;
+
     if(cell.v instanceof Date){
       const d=cell.v;
-      return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),d.getHours(),d.getMinutes(),d.getSeconds())-VN_OFFSET_MS;
+      return accept(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),d.getHours(),d.getMinutes(),d.getSeconds())-VN_OFFSET_MS);
     }
 
     const formatted=String(cell.f??"").trim();
-    const raw=String(cell.v??"").trim();
+    const raw=typeof cell.v==="string"?String(cell.v).trim():"";
     const text=formatted||raw;
+    if(!text)return null;
 
     let m=text.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})(?:,(\d{1,2}),(\d{1,2})(?:,(\d{1,2}))?)?\)$/);
     if(m){
-      return Date.UTC(Number(m[1]),Number(m[2]),Number(m[3]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))-VN_OFFSET_MS;
+      return accept(Date.UTC(Number(m[1]),Number(m[2]),Number(m[3]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))-VN_OFFSET_MS);
     }
 
     m=text.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
     if(m){
-      return Date.UTC(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))-VN_OFFSET_MS;
+      return accept(Date.UTC(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))-VN_OFFSET_MS);
+    }
+
+    m=text.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s+(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if(m){
+      return accept(Date.UTC(Number(m[6]),Number(m[5])-1,Number(m[4]),Number(m[1]),Number(m[2]),Number(m[3]||0))-VN_OFFSET_MS);
     }
 
     m=text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
     if(m){
-      return Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))-VN_OFFSET_MS;
+      return accept(Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))-VN_OFFSET_MS);
     }
 
-    const parsed=Date.parse(text);
-    return Number.isFinite(parsed)?parsed:null;
+    // Chỉ cho Date.parse xử lý chuỗi có năm 4 chữ số và cấu trúc ngày rõ ràng.
+    // Tuyệt đối không biến số lượng như 46.07 hoặc 46.1 thành năm 2046.
+    if(/\b\d{4}\b/.test(text)&&/[\/\-T]/.test(text)){
+      return accept(Date.parse(text));
+    }
+    return null;
   }
 
   function parseSheetNumber(value){
@@ -5578,8 +5592,6 @@
         sheet:SHEET_NAME,
         range:"A1:F1000",
         headers:"1",
-        // Không lọc theo cột A: các giao dịch cũ có thể để trống ô “Lần” nhưng vẫn có dữ liệu ở B:F.
-        // Lọc ngay trong parseTradeRows để không bỏ mất bất kỳ lần mua bán nào.
         tq:"select A,B,C,D,E,F",
         tqx:`out:json;responseHandler:${callback}`,
         cacheBust:String(Date.now())
@@ -5605,8 +5617,6 @@
     let dataRows=[...table.rows];
     let sourceRowOffset=headers.some(Boolean)?2:1;
 
-    // GViz có thể vừa dùng hàng 1 làm nhãn cột, vừa trả lại hàng 1 trong rows.
-    // Chỉ cần hàng đầu có cấu trúc tiêu đề rõ ràng thì loại bỏ dứt điểm.
     const firstRowHeaders=normalizeCells(dataRows[0]);
     if(isHeaderLike(firstRowHeaders)){
       headers=firstRowHeaders;
@@ -5621,7 +5631,6 @@
       return i>=0?i:fallback;
     };
 
-    // Sheet hiện tại có 6 cột A:F. Không suy luận “có cột giá” chỉ vì GViz trả thêm cột trống.
     const hasExplicitPriceColumns=headers.some(h=>["gia ban","gia mua","sell price","buy price"].some(k=>h===k||h.includes(k)));
     const idx={
       round:findIndex(["lan","lần","stt","so lan"],0),
@@ -5640,58 +5649,69 @@
       if(!symbol||["coin ban","coin mua","ma coin ban","ma coin mua","token ban","token mua"].includes(normalized))return "";
       return /^[A-Z0-9][A-Z0-9._-]{1,14}$/.test(symbol)?symbol:"";
     };
+    const positive=value=>Number.isFinite(Number(value))&&Number(value)>0;
 
     const parsed=[];
     dataRows.forEach((row,rowIndex)=>{
       const cells=row?.c||[];
       if(isHeaderLike(normalizeCells(row)))return;
 
-      let timestamp=parseVietnamDateCell(cells[idx.datetime]);
-      if(!(Number.isFinite(timestamp)&&timestamp>0)){
-        for(const cell of cells){
-          const candidate=parseVietnamDateCell(cell);
-          if(Number.isFinite(candidate)&&candidate>Date.UTC(2020,0,1)&&candidate<Date.UTC(2100,0,1)){
-            timestamp=candidate;
-            break;
-          }
-        }
-      }
-
+      // Ngày giờ chỉ được đọc đúng từ cột thời gian. Không quét các cột số lượng.
+      const timestamp=parseVietnamDateCell(cells[idx.datetime]);
       const roundCell=numberFromSheetCell(cells[idx.round]);
       const sellQty=numberFromSheetCell(cells[idx.sellQty]);
       const buyQty=numberFromSheetCell(cells[idx.buyQty]);
       const sellCoin=cleanCoin(textFromSheetCell(cells[idx.sellCoin]));
       const buyCoin=cleanCoin(textFromSheetCell(cells[idx.buyCoin]));
-      const hasTimestamp=Number.isFinite(timestamp)&&timestamp>0;
-      const hasNumericQty=Number.isFinite(sellQty)||Number.isFinite(buyQty);
-      const hasCoin=sellCoin||buyCoin;
-      if(!hasTimestamp&&!hasNumericQty&&!hasCoin)return;
 
+      // Chỉ nhận đúng một dòng giao dịch có tuyến coin bán → coin mua.
+      // Nhờ vậy các bảng phụ/công thức ở hàng trống cột A không thể lọt vào lịch sử.
+      const hasRoute=Boolean(sellCoin&&buyCoin&&ASSETS[sellCoin]&&ASSETS[buyCoin]);
+      const hasQty=positive(sellQty)||positive(buyQty);
+      if(!hasRoute||!hasQty)return;
+
+      const explicitRound=Number.isFinite(roundCell)&&roundCell>0&&roundCell<10000
+        ?Math.round(roundCell)
+        :null;
       parsed.push({
-        round:Number.isFinite(roundCell)?roundCell:rowIndex+1,
+        round:explicitRound,
+        explicitRound:Boolean(explicitRound),
         timestamp,
         sellCoin,
         sellQty,
-        sellQtyFromSheet:Number.isFinite(sellQty)&&sellQty>0,
         sheetSellPrice:idx.sellPrice>=0?numberFromSheetCell(cells[idx.sellPrice]):null,
         buyCoin,
         buyQty,
-        buyQtyFromSheet:Number.isFinite(buyQty)&&buyQty>0,
         sheetBuyPrice:idx.buyPrice>=0?numberFromSheetCell(cells[idx.buyPrice]):null,
         sourceRow:rowIndex+sourceRowOffset
       });
     });
 
-    return parsed.filter(r=>{
+    // Các giao dịch cũ 1–6 để trống cột “Lần” và “Thời gian”.
+    // Suy ra số lần theo đúng thứ tự hàng, lấy mốc rõ ràng tiếp theo (ví dụ lần 7) làm neo.
+    for(let i=0;i<parsed.length;){
+      if(parsed[i].round){i++;continue;}
+      const start=i;
+      while(i<parsed.length&&!parsed[i].round)i++;
+      const end=i;
+      const count=end-start;
+      const prevRound=start>0?parsed[start-1].round:null;
+      const nextRound=end<parsed.length?parsed[end].round:null;
+      let firstRound;
+      if(Number.isFinite(prevRound))firstRound=prevRound+1;
+      else if(Number.isFinite(nextRound))firstRound=Math.max(1,nextRound-count);
+      else firstRound=1;
+      for(let k=0;k<count;k++)parsed[start+k].round=firstRound+k;
+    }
+
+    const result=parsed.filter(r=>{
       const hasTimestamp=Number.isFinite(r.timestamp)&&r.timestamp>0;
-      const hasContent=Boolean(r.sellCoin||r.buyCoin||Number.isFinite(r.sellQty)||Number.isFinite(r.buyQty));
-      if(includeIncomplete)return hasContent;
-      return hasTimestamp&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0;
-    }).sort((a,b)=>{
-      const at=Number.isFinite(a.timestamp)?a.timestamp:Number.MAX_SAFE_INTEGER;
-      const bt=Number.isFinite(b.timestamp)?b.timestamp:Number.MAX_SAFE_INTEGER;
-      return at-bt||a.round-b.round||a.sourceRow-b.sourceRow;
+      if(includeIncomplete)return Boolean(r.sellCoin&&r.buyCoin&&(positive(r.sellQty)||positive(r.buyQty)));
+      return hasTimestamp&&r.buyCoin&&positive(r.buyQty);
     });
+
+    // Thứ tự giao dịch phải theo “Lần”, không theo ngày giờ thiếu hoặc lỗi.
+    return result.sort((a,b)=>a.round-b.round||a.sourceRow-b.sourceRow);
   }
 
   function reconcileTradeChainRows(rows){
@@ -6029,6 +6049,7 @@
     const snapshots=[];
     for(let i=0;i<rows.length;i++){
       const trade=rows[i];
+      const hasTimestamp=Number.isFinite(trade.timestamp)&&trade.timestamp>0;
       let holdingPrice=trade.sheetBuyPrice>0
         ?{price:trade.sheetBuyPrice,source:"Giá mua trên Google Sheet",exchange:"sheet",ts:trade.timestamp}
         :null;
@@ -6036,114 +6057,29 @@
         ?{price:trade.sheetSellPrice,source:"Giá bán trên Google Sheet",exchange:"sheet",ts:trade.timestamp}
         :null;
       const warnings=[];
-      const isDollarStable=symbol=>["USDT","USDC","FDUSD","DAI","TUSD"].includes(String(symbol||"").toUpperCase());
-      if(!holdingPrice&&isDollarStable(trade.buyCoin)){
-        holdingPrice={price:1,source:"Stablecoin quy đổi 1 USD",exchange:"stable",ts:trade.timestamp};
-      }
-      if(!sellPrice&&isDollarStable(trade.sellCoin)){
-        sellPrice={price:1,source:"Stablecoin quy đổi 1 USD",exchange:"stable",ts:trade.timestamp};
-      }
 
-      if(!holdingPrice&&Number.isFinite(trade.timestamp)&&trade.timestamp>0&&trade.buyCoin&&ASSETS[trade.buyCoin]){
+      // Chỉ gọi API giá lịch sử khi dòng có ngày giờ thật.
+      // Các lần 1–6 vẫn hiện đầy đủ coin và số lượng, còn giá để “—” thay vì báo lỗi đỏ.
+      if(hasTimestamp&&!holdingPrice&&trade.buyCoin&&ASSETS[trade.buyCoin]){
         try{holdingPrice=await getHistoricalPrice(trade.buyCoin,trade.timestamp)}
         catch(e){warnings.push(`Không lấy được giá mua ${trade.buyCoin}: ${e.message}`)}
       }
-      if(!sellPrice&&Number.isFinite(trade.timestamp)&&trade.timestamp>0&&trade.sellCoin&&ASSETS[trade.sellCoin]){
+      if(hasTimestamp&&!sellPrice&&trade.sellCoin&&ASSETS[trade.sellCoin]){
         try{
           sellPrice=trade.sellCoin===trade.buyCoin&&holdingPrice
             ?holdingPrice
             :await getHistoricalPrice(trade.sellCoin,trade.timestamp);
         }catch(e){warnings.push(`Không lấy được giá bán ${trade.sellCoin}: ${e.message}`)}
       }
-      if(!trade.buyCoin){
-        warnings.push(`Không đọc được Coin mua ở dòng ${trade.sourceRow||"—"}`);
-      }else if(!(Number.isFinite(trade.buyQty)&&trade.buyQty>0)){
-        warnings.push(`Không đọc được Số lượng mua ở dòng ${trade.sourceRow||"—"}`);
-      }
+      if(!trade.buyCoin)warnings.push(`Không đọc được Coin mua ở dòng ${trade.sourceRow||"—"}`);
+      if(trade.buyCoin&&!(Number.isFinite(trade.buyQty)&&trade.buyQty>0))warnings.push(`Không đọc được Số lượng mua ở dòng ${trade.sourceRow||"—"}`);
+      if(!trade.sellCoin)warnings.push(`Không đọc được Coin bán ở dòng ${trade.sourceRow||"—"}`);
+      if(trade.sellCoin&&!(Number.isFinite(trade.sellQty)&&trade.sellQty>0))warnings.push(`Không đọc được Số lượng bán ở dòng ${trade.sourceRow||"—"}`);
 
-      snapshots.push({...trade,holdingPrice,sellPrice,warning:warnings.join(" · ")});
+      snapshots.push({...trade,holdingPrice,sellPrice,undated:!hasTimestamp,warning:warnings.join(" · ")});
       if(typeof onProgress==="function")onProgress([...snapshots],state.tradeComparisonBenchmark,true);
     }
     return snapshots;
-  }
-
-  function reconcileTradeSnapshotsWithPrices(snapshots){
-    const fixed=(snapshots||[]).map(row=>({...row}));
-    const positive=value=>Number.isFinite(Number(value))&&Number(value)>0;
-    const qtyEqual=(a,b)=>{
-      if(!positive(a)||!positive(b))return false;
-      return Math.abs(Number(a)-Number(b))<=Math.max(1e-10,Math.max(Math.abs(Number(a)),Math.abs(Number(b)))*1e-9);
-    };
-    const setQty=(trade,key,value,source)=>{
-      const n=Number(value);
-      if(!positive(n)||positive(trade[key]))return false;
-      trade[key]=n;
-      trade[`${key}Recovered`]=true;
-      trade[`${key}RecoverySource`]=source;
-      return true;
-    };
-    const syncChain=(left,right)=>{
-      if(!left||!right||!left.buyCoin||left.buyCoin!==right.sellCoin)return false;
-      let changed=false;
-      if(positive(left.buyQty)&&!positive(right.sellQty)){
-        changed=setQty(right,"sellQty",left.buyQty,`Khớp số lượng mua lần ${left.round}`)||changed;
-      }else if(positive(right.sellQty)&&!positive(left.buyQty)){
-        changed=setQty(left,"buyQty",right.sellQty,`Khớp số lượng bán lần ${right.round}`)||changed;
-      }else if(positive(left.buyQty)&&positive(right.sellQty)&&!qtyEqual(left.buyQty,right.sellQty)){
-        // Nếu một phía là số phục hồi còn phía kia là số gốc trên Sheet, ưu tiên số gốc.
-        if(left.buyQtyRecovered&&!right.sellQtyRecovered){
-          left.buyQty=right.sellQty;
-          left.buyQtyRecoverySource=`Khớp số lượng bán lần ${right.round}`;
-          changed=true;
-        }else if(right.sellQtyRecovered&&!left.buyQtyRecovered){
-          right.sellQty=left.buyQty;
-          right.sellQtyRecoverySource=`Khớp số lượng mua lần ${left.round}`;
-          changed=true;
-        }
-      }
-      return changed;
-    };
-    const deriveWithinTrade=trade=>{
-      const sellPrice=Number(trade.sellPrice?.price);
-      const buyPrice=Number(trade.holdingPrice?.price);
-      if(!positive(sellPrice)||!positive(buyPrice))return false;
-      if(positive(trade.sellQty)&&!positive(trade.buyQty)){
-        return setQty(trade,"buyQty",Number(trade.sellQty)*sellPrice/buyPrice,"Quy đổi theo giá bán và giá mua");
-      }
-      if(positive(trade.buyQty)&&!positive(trade.sellQty)){
-        return setQty(trade,"sellQty",Number(trade.buyQty)*buyPrice/sellPrice,"Quy đổi ngược theo giá mua và giá bán");
-      }
-      return false;
-    };
-
-    // Lặp hai chiều để một số lượng có thật ở bất kỳ lần nào cũng lan được về toàn bộ chuỗi trước/sau.
-    // Ví dụ: lần 7 có Số lượng bán thì phục hồi lần 6 mua, tính lần 6 bán, rồi tiếp tục lần 5…
-    const maxPasses=Math.max(8,fixed.length*3);
-    for(let pass=0;pass<maxPasses;pass++){
-      let changed=false;
-      for(let i=fixed.length-1;i>=0;i--){
-        if(i<fixed.length-1)changed=syncChain(fixed[i],fixed[i+1])||changed;
-        changed=deriveWithinTrade(fixed[i])||changed;
-        if(i>0)changed=syncChain(fixed[i-1],fixed[i])||changed;
-      }
-      for(let i=0;i<fixed.length;i++){
-        if(i>0)changed=syncChain(fixed[i-1],fixed[i])||changed;
-        changed=deriveWithinTrade(fixed[i])||changed;
-        if(i<fixed.length-1)changed=syncChain(fixed[i],fixed[i+1])||changed;
-      }
-      if(!changed)break;
-    }
-
-    fixed.forEach(trade=>{
-      const warnings=[];
-      if(!trade.buyCoin)warnings.push(`Không đọc được Coin mua ở dòng ${trade.sourceRow||"—"}`);
-      if(trade.buyCoin&&!positive(trade.buyQty))warnings.push(`Không thể khôi phục Số lượng mua ở dòng ${trade.sourceRow||"—"}`);
-      if(trade.sellCoin&&!positive(trade.sellQty))warnings.push(`Không thể khôi phục Số lượng bán ở dòng ${trade.sourceRow||"—"}`);
-      if(!trade.holdingPrice&&trade.buyCoin)warnings.push(`Không lấy được giá mua ${trade.buyCoin}`);
-      if(!trade.sellPrice&&trade.sellCoin)warnings.push(`Không lấy được giá bán ${trade.sellCoin}`);
-      trade.warning=warnings.join(" · ");
-    });
-    return fixed;
   }
 
   function tradeKey(trade){
@@ -6775,13 +6711,8 @@
 
     try{
       const response=await loadGoogleSheetJSONP();
-      const parsedTradeRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
-      $("historyBody").innerHTML=`<tr class="loading-row"><td colspan="8">Đang lấy giá và khôi phục số lượng cho toàn bộ lịch sử…</td></tr>`;
-      $("historyMobileList").innerHTML=`<div class="history-mobile-card">Đang lấy giá và khôi phục số lượng cho toàn bộ lịch sử…</div>`;
-      const pricedTradeRows=await buildTradeLogSnapshots(parsedTradeRows);
-      state.tradeComparisonSnapshots=reconcileTradeSnapshotsWithPrices(pricedTradeRows);
-      state.tradeLogRows=state.tradeComparisonSnapshots.map(row=>({...row}));
-      state.tradeRows=state.tradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>0&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
+      state.tradeLogRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
+      state.tradeRows=state.tradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
       state.lastSheetSync=Date.now();
       state.allEquivalentCache={};
 
@@ -6834,6 +6765,7 @@
 
       state.tradeSnapshots=await buildTradeSnapshots(state.tradeRows,state.historyBenchmark,(partial,b,l)=>renderTradeHistory(partial,b,l));
       renderTradeHistory(state.tradeSnapshots,state.historyBenchmark,false);
+      state.tradeComparisonSnapshots=await buildTradeLogSnapshots(state.tradeLogRows,(partial,b,l)=>renderTradeLog(partial,b,l));
       renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false);
       await loadAllEquivalentsForSelectedTrade();
       await loadRotationEngine(false);
