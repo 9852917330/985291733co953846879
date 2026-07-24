@@ -5578,7 +5578,9 @@
         sheet:SHEET_NAME,
         range:"A1:F1000",
         headers:"1",
-        tq:"select A,B,C,D,E,F where A is not null",
+        // Không lọc theo cột A: các giao dịch cũ có thể để trống ô “Lần” nhưng vẫn có dữ liệu ở B:F.
+        // Lọc ngay trong parseTradeRows để không bỏ mất bất kỳ lần mua bán nào.
+        tq:"select A,B,C,D,E,F",
         tqx:`out:json;responseHandler:${callback}`,
         cacheBust:String(Date.now())
       });
@@ -5670,9 +5672,11 @@
         timestamp,
         sellCoin,
         sellQty,
+        sellQtyFromSheet:Number.isFinite(sellQty)&&sellQty>0,
         sheetSellPrice:idx.sellPrice>=0?numberFromSheetCell(cells[idx.sellPrice]):null,
         buyCoin,
         buyQty,
+        buyQtyFromSheet:Number.isFinite(buyQty)&&buyQty>0,
         sheetBuyPrice:idx.buyPrice>=0?numberFromSheetCell(cells[idx.buyPrice]):null,
         sourceRow:rowIndex+sourceRowOffset
       });
@@ -6032,6 +6036,13 @@
         ?{price:trade.sheetSellPrice,source:"Giá bán trên Google Sheet",exchange:"sheet",ts:trade.timestamp}
         :null;
       const warnings=[];
+      const isDollarStable=symbol=>["USDT","USDC","FDUSD","DAI","TUSD"].includes(String(symbol||"").toUpperCase());
+      if(!holdingPrice&&isDollarStable(trade.buyCoin)){
+        holdingPrice={price:1,source:"Stablecoin quy đổi 1 USD",exchange:"stable",ts:trade.timestamp};
+      }
+      if(!sellPrice&&isDollarStable(trade.sellCoin)){
+        sellPrice={price:1,source:"Stablecoin quy đổi 1 USD",exchange:"stable",ts:trade.timestamp};
+      }
 
       if(!holdingPrice&&Number.isFinite(trade.timestamp)&&trade.timestamp>0&&trade.buyCoin&&ASSETS[trade.buyCoin]){
         try{holdingPrice=await getHistoricalPrice(trade.buyCoin,trade.timestamp)}
@@ -6054,6 +6065,85 @@
       if(typeof onProgress==="function")onProgress([...snapshots],state.tradeComparisonBenchmark,true);
     }
     return snapshots;
+  }
+
+  function reconcileTradeSnapshotsWithPrices(snapshots){
+    const fixed=(snapshots||[]).map(row=>({...row}));
+    const positive=value=>Number.isFinite(Number(value))&&Number(value)>0;
+    const qtyEqual=(a,b)=>{
+      if(!positive(a)||!positive(b))return false;
+      return Math.abs(Number(a)-Number(b))<=Math.max(1e-10,Math.max(Math.abs(Number(a)),Math.abs(Number(b)))*1e-9);
+    };
+    const setQty=(trade,key,value,source)=>{
+      const n=Number(value);
+      if(!positive(n)||positive(trade[key]))return false;
+      trade[key]=n;
+      trade[`${key}Recovered`]=true;
+      trade[`${key}RecoverySource`]=source;
+      return true;
+    };
+    const syncChain=(left,right)=>{
+      if(!left||!right||!left.buyCoin||left.buyCoin!==right.sellCoin)return false;
+      let changed=false;
+      if(positive(left.buyQty)&&!positive(right.sellQty)){
+        changed=setQty(right,"sellQty",left.buyQty,`Khớp số lượng mua lần ${left.round}`)||changed;
+      }else if(positive(right.sellQty)&&!positive(left.buyQty)){
+        changed=setQty(left,"buyQty",right.sellQty,`Khớp số lượng bán lần ${right.round}`)||changed;
+      }else if(positive(left.buyQty)&&positive(right.sellQty)&&!qtyEqual(left.buyQty,right.sellQty)){
+        // Nếu một phía là số phục hồi còn phía kia là số gốc trên Sheet, ưu tiên số gốc.
+        if(left.buyQtyRecovered&&!right.sellQtyRecovered){
+          left.buyQty=right.sellQty;
+          left.buyQtyRecoverySource=`Khớp số lượng bán lần ${right.round}`;
+          changed=true;
+        }else if(right.sellQtyRecovered&&!left.buyQtyRecovered){
+          right.sellQty=left.buyQty;
+          right.sellQtyRecoverySource=`Khớp số lượng mua lần ${left.round}`;
+          changed=true;
+        }
+      }
+      return changed;
+    };
+    const deriveWithinTrade=trade=>{
+      const sellPrice=Number(trade.sellPrice?.price);
+      const buyPrice=Number(trade.holdingPrice?.price);
+      if(!positive(sellPrice)||!positive(buyPrice))return false;
+      if(positive(trade.sellQty)&&!positive(trade.buyQty)){
+        return setQty(trade,"buyQty",Number(trade.sellQty)*sellPrice/buyPrice,"Quy đổi theo giá bán và giá mua");
+      }
+      if(positive(trade.buyQty)&&!positive(trade.sellQty)){
+        return setQty(trade,"sellQty",Number(trade.buyQty)*buyPrice/sellPrice,"Quy đổi ngược theo giá mua và giá bán");
+      }
+      return false;
+    };
+
+    // Lặp hai chiều để một số lượng có thật ở bất kỳ lần nào cũng lan được về toàn bộ chuỗi trước/sau.
+    // Ví dụ: lần 7 có Số lượng bán thì phục hồi lần 6 mua, tính lần 6 bán, rồi tiếp tục lần 5…
+    const maxPasses=Math.max(8,fixed.length*3);
+    for(let pass=0;pass<maxPasses;pass++){
+      let changed=false;
+      for(let i=fixed.length-1;i>=0;i--){
+        if(i<fixed.length-1)changed=syncChain(fixed[i],fixed[i+1])||changed;
+        changed=deriveWithinTrade(fixed[i])||changed;
+        if(i>0)changed=syncChain(fixed[i-1],fixed[i])||changed;
+      }
+      for(let i=0;i<fixed.length;i++){
+        if(i>0)changed=syncChain(fixed[i-1],fixed[i])||changed;
+        changed=deriveWithinTrade(fixed[i])||changed;
+        if(i<fixed.length-1)changed=syncChain(fixed[i],fixed[i+1])||changed;
+      }
+      if(!changed)break;
+    }
+
+    fixed.forEach(trade=>{
+      const warnings=[];
+      if(!trade.buyCoin)warnings.push(`Không đọc được Coin mua ở dòng ${trade.sourceRow||"—"}`);
+      if(trade.buyCoin&&!positive(trade.buyQty))warnings.push(`Không thể khôi phục Số lượng mua ở dòng ${trade.sourceRow||"—"}`);
+      if(trade.sellCoin&&!positive(trade.sellQty))warnings.push(`Không thể khôi phục Số lượng bán ở dòng ${trade.sourceRow||"—"}`);
+      if(!trade.holdingPrice&&trade.buyCoin)warnings.push(`Không lấy được giá mua ${trade.buyCoin}`);
+      if(!trade.sellPrice&&trade.sellCoin)warnings.push(`Không lấy được giá bán ${trade.sellCoin}`);
+      trade.warning=warnings.join(" · ");
+    });
+    return fixed;
   }
 
   function tradeKey(trade){
@@ -6685,7 +6775,12 @@
 
     try{
       const response=await loadGoogleSheetJSONP();
-      state.tradeLogRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
+      const parsedTradeRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
+      $("historyBody").innerHTML=`<tr class="loading-row"><td colspan="8">Đang lấy giá và khôi phục số lượng cho toàn bộ lịch sử…</td></tr>`;
+      $("historyMobileList").innerHTML=`<div class="history-mobile-card">Đang lấy giá và khôi phục số lượng cho toàn bộ lịch sử…</div>`;
+      const pricedTradeRows=await buildTradeLogSnapshots(parsedTradeRows);
+      state.tradeComparisonSnapshots=reconcileTradeSnapshotsWithPrices(pricedTradeRows);
+      state.tradeLogRows=state.tradeComparisonSnapshots.map(row=>({...row}));
       state.tradeRows=state.tradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>0&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
       state.lastSheetSync=Date.now();
       state.allEquivalentCache={};
@@ -6739,7 +6834,6 @@
 
       state.tradeSnapshots=await buildTradeSnapshots(state.tradeRows,state.historyBenchmark,(partial,b,l)=>renderTradeHistory(partial,b,l));
       renderTradeHistory(state.tradeSnapshots,state.historyBenchmark,false);
-      state.tradeComparisonSnapshots=await buildTradeLogSnapshots(state.tradeLogRows,(partial,b,l)=>renderTradeLog(partial,b,l));
       renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false);
       await loadAllEquivalentsForSelectedTrade();
       await loadRotationEngine(false);
