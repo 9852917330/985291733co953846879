@@ -3833,10 +3833,15 @@
 </style>
 
 <style id="rebuy-quantity-comparison-v26">
-  #page-growth .rebuy-comparison-section{
+  #page-growth .rebuy-comparison-section,
+  #page-comparison .rebuy-top-signal-section{
     margin:0 0 12px;padding:0;border:1px solid #2B3139;border-radius:14px;
     background:#181A20;overflow:hidden;box-shadow:none
   }
+  #page-comparison .rebuy-top-signal-section{margin-bottom:7px}
+  #page-comparison .rebuy-top-signal-section .rebuy-section-head{padding:11px 14px}
+  #page-comparison .rebuy-top-signal-section .rebuy-section-head h3{font-size:16px}
+  #page-comparison .rebuy-top-signal-section .rebuy-signal-grid{padding:10px 12px}
   .rebuy-section-head,.rebuy-detail-head{
     display:flex;align-items:center;justify-content:space-between;gap:12px;
     padding:14px 16px;background:#1E2329;border-bottom:1px solid #2B3139
@@ -3894,8 +3899,11 @@
   #page-growth .history-chip-label{font-size:10px!important;color:#F0B90B!important;letter-spacing:.1em!important}
   @media(max-width:900px){.rebuy-signal-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media(max-width:620px){
-    #page-growth .rebuy-comparison-section{margin:0 0 9px;border-radius:12px}
+    #page-growth .rebuy-comparison-section,
+    #page-comparison .rebuy-top-signal-section{margin:0 0 9px;border-radius:12px}
     .rebuy-section-head{align-items:flex-start;padding:12px}
+    #page-comparison .rebuy-top-signal-section .rebuy-section-head{padding:10px}
+    #page-comparison .rebuy-top-signal-section .rebuy-signal-grid{padding:9px}
     .rebuy-section-head h3{font-size:16px}
     .rebuy-nav-badge{font-size:9px;padding:6px 8px}
     .rebuy-signal-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px}
@@ -4127,7 +4135,18 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">30 tài sản · một rổ xoay thống nhất</div></div><section class="toolbar">
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">30 tài sản · một rổ xoay thống nhất</div></div><section class="rebuy-comparison-section rebuy-top-signal-section" id="rebuyTopSignalSection">
+  <div class="rebuy-section-head">
+    <div>
+      <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
+      <h3>Tín hiệu tăng số lượng</h3>
+    </div>
+    <div class="rebuy-nav-badge" id="rebuyNavBadgeTop">NAV hiện tại: —</div>
+  </div>
+  <div class="rebuy-signal-grid" id="rebuySignalGridTop">
+    <div class="rebuy-empty">Đang chờ dữ liệu giá live…</div>
+  </div>
+</section><section class="toolbar">
 <div class="toolbar-summary">
 <span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
 <span class="badge badge-count">Danh sách so sánh: <strong>30 tài sản</strong></span>
@@ -4772,10 +4791,10 @@
   }
 
   function renderRebuyQuantityComparison(force=false){
-    const signalHost=$("rebuySignalGrid");
+    const signalHosts=[$("rebuySignalGrid"),$("rebuySignalGridTop")].filter(Boolean);
     const listHost=$("rebuyHistoryList");
-    const navBadge=$("rebuyNavBadge");
-    if(!signalHost||!listHost||!navBadge)return;
+    const navBadges=[$("rebuyNavBadge"),$("rebuyNavBadgeTop")].filter(Boolean);
+    if(!signalHosts.length||!listHost||!navBadges.length)return;
 
     const model=buildRebuyQuantityComparison();
     const signature=JSON.stringify({
@@ -4791,23 +4810,25 @@
     if(!force&&signature===state.rebuyRenderSignature)return;
     state.rebuyRenderSignature=signature;
 
-    navBadge.textContent=Number.isFinite(model.nav)
+    const navText=Number.isFinite(model.nav)
       ?`NAV hiện tại: ${formatUSD(model.nav)}`
       :'NAV hiện tại: đang chờ giá';
+    navBadges.forEach(badge=>{badge.textContent=navText});
 
     if(!model.items.length){
-      signalHost.innerHTML='<div class="rebuy-empty">Chưa có lịch sử mua coin hợp lệ.</div>';
+      signalHosts.forEach(host=>{host.innerHTML='<div class="rebuy-empty">Chưa có lịch sử mua coin hợp lệ.</div>'});
       listHost.innerHTML='<div class="rebuy-empty">Chưa có dữ liệu để so sánh.</div>';
       return;
     }
 
     const positive=model.items.filter(item=>Number.isFinite(item.currentPct)&&item.currentPct>0.005);
-    signalHost.innerHTML=positive.length
+    const signalHtml=positive.length
       ?positive.map(item=>`<button class="rebuy-signal-chip" data-rebuy-signal="${item.symbol}" type="button">
           <div><strong>${item.symbol}</strong><small>${formatQtyExact(item.currentQty)} ${item.symbol}</small></div>
           <span>${formatSignedPct(item.currentPct)}</span>
         </button>`).join('')
       :'<div class="rebuy-empty">Hiện chưa có coin nào mua được nhiều hơn lần mua thực tế gần nhất.</div>';
+    signalHosts.forEach(host=>{host.innerHTML=signalHtml});
 
     listHost.innerHTML=model.items.map(item=>{
       const isOpen=state.rebuyExpandedSymbol===item.symbol;
@@ -4835,15 +4856,19 @@
       </article>`;
     }).join('');
 
-    signalHost.querySelectorAll('[data-rebuy-signal]').forEach(button=>{
+    signalHosts.forEach(host=>host.querySelectorAll('[data-rebuy-signal]').forEach(button=>{
       button.addEventListener('click',()=>{
         state.rebuyExpandedSymbol=button.dataset.rebuySignal||'';
         localStorage.setItem('millionaireRebuyExpandedV1',state.rebuyExpandedSymbol);
         state.rebuyRenderSignature='';
         renderRebuyQuantityComparison(true);
-        requestAnimationFrame(()=>document.querySelector(`[data-rebuy-card="${state.rebuyExpandedSymbol}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest'}));
+        const openDetail=()=>requestAnimationFrame(()=>document.querySelector(`[data-rebuy-card="${state.rebuyExpandedSymbol}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest'}));
+        if(host.id==='rebuySignalGridTop'){
+          showAppPage('growth');
+          setTimeout(openDetail,140);
+        }else openDetail();
       });
-    });
+    }));
     listHost.querySelectorAll('[data-rebuy-toggle]').forEach(button=>{
       button.addEventListener('click',()=>{
         const symbol=button.dataset.rebuyToggle||'';

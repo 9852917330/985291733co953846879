@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v26-rebuy-signal-and-history";
+const CACHE_NAME="millionaire-v27-rebuy-signal-under-btc";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",
