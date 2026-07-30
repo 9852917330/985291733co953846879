@@ -3831,6 +3831,88 @@
     #page-comparison .coin-quantity-growth{font-size:11px!important;margin-top:3px!important}
   }
 </style>
+
+<style id="rebuy-quantity-comparison-v26">
+  #page-growth .rebuy-comparison-section{
+    margin:0 0 12px;padding:0;border:1px solid #2B3139;border-radius:14px;
+    background:#181A20;overflow:hidden;box-shadow:none
+  }
+  .rebuy-section-head,.rebuy-detail-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 16px;background:#1E2329;border-bottom:1px solid #2B3139
+  }
+  .rebuy-section-kicker{margin-bottom:4px;color:#F0B90B;font-size:9px;font-weight:800;letter-spacing:.1em}
+  .rebuy-section-head h3,.rebuy-detail-head h3{margin:0;color:#EAECEF;font-size:18px;font-weight:800}
+  .rebuy-detail-head{padding:12px 16px;border-top:1px solid #2B3139}
+  .rebuy-detail-head h3{font-size:15px}
+  .rebuy-nav-badge{
+    flex:0 0 auto;padding:7px 10px;border:1px solid rgba(240,185,11,.28);border-radius:9px;
+    background:rgba(240,185,11,.08);color:#F0B90B;font-size:11px;font-weight:700;white-space:nowrap
+  }
+  .rebuy-signal-grid{
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:12px 14px;background:#181A20
+  }
+  .rebuy-signal-chip{
+    min-height:58px;padding:9px 10px;border:1px solid rgba(14,203,129,.34);border-radius:10px;
+    background:rgba(14,203,129,.10);color:#EAECEF;display:flex;align-items:center;justify-content:space-between;
+    gap:8px;text-align:left;cursor:pointer
+  }
+  .rebuy-signal-chip:hover{background:rgba(14,203,129,.15)}
+  .rebuy-signal-chip strong{font-size:15px;font-weight:850;line-height:1}
+  .rebuy-signal-chip span{color:#0ECB81;font-size:14px;font-weight:850;white-space:nowrap}
+  .rebuy-signal-chip small{display:block;margin-top:5px;color:#848E9C;font-size:9px;font-weight:600}
+  .rebuy-history-list{display:grid;gap:8px;padding:12px 14px 14px;background:#181A20}
+  .rebuy-coin-card{border:1px solid #2B3139;border-radius:11px;background:#1E2329;overflow:hidden}
+  .rebuy-coin-card.is-open{border-color:rgba(240,185,11,.48)}
+  .rebuy-coin-toggle{
+    width:100%;min-height:58px;padding:10px 12px;border:0;background:transparent;color:#EAECEF;
+    display:grid;grid-template-columns:minmax(72px,.7fr) minmax(150px,1.3fr) 26px;align-items:center;gap:10px;text-align:left;cursor:pointer
+  }
+  .rebuy-coin-toggle:hover{background:#232831}
+  .rebuy-coin-symbol{font-size:16px;font-weight:850}
+  .rebuy-coin-current{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-width:0}
+  .rebuy-current-qty{color:#B7BDC6;font-size:12px;font-weight:650;white-space:nowrap}
+  .rebuy-current-pct{font-size:14px;font-weight:850;white-space:nowrap}
+  .rebuy-current-pct.pos,.rebuy-entry-pct.pos{color:#0ECB81}
+  .rebuy-current-pct.neg,.rebuy-entry-pct.neg{color:#F6465D}
+  .rebuy-current-pct.neu,.rebuy-entry-pct.neu{color:#848E9C}
+  .rebuy-chevron{color:#848E9C;font-size:16px;text-align:center;transition:transform .18s ease}
+  .rebuy-coin-card.is-open .rebuy-chevron{transform:rotate(180deg);color:#F0B90B}
+  .rebuy-coin-detail{display:none;border-top:1px solid #2B3139;background:#181A20}
+  .rebuy-coin-card.is-open .rebuy-coin-detail{display:block}
+  .rebuy-entry{
+    display:grid;grid-template-columns:72px minmax(110px,1fr) 92px;align-items:center;gap:10px;
+    min-height:48px;padding:8px 12px;border-bottom:1px solid rgba(43,49,57,.72)
+  }
+  .rebuy-entry:last-child{border-bottom:0}
+  .rebuy-entry.is-hypothetical{background:rgba(240,185,11,.045)}
+  .rebuy-entry-round{color:#EAECEF;font-size:12px;font-weight:750}
+  .rebuy-entry-round small{display:block;margin-top:3px;color:#848E9C;font-size:8.5px;font-weight:600;line-height:1.25}
+  .rebuy-entry-qty{color:#EAECEF;font-size:13px;font-weight:760;text-align:right;white-space:nowrap}
+  .rebuy-entry-pct{font-size:12px;font-weight:850;text-align:right;white-space:nowrap}
+  .rebuy-empty{grid-column:1/-1;padding:18px 12px;text-align:center;color:#848E9C;font-size:11px}
+  #page-growth .history-chip-label{font-size:10px!important;color:#F0B90B!important;letter-spacing:.1em!important}
+  @media(max-width:900px){.rebuy-signal-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:620px){
+    #page-growth .rebuy-comparison-section{margin:0 0 9px;border-radius:12px}
+    .rebuy-section-head{align-items:flex-start;padding:12px}
+    .rebuy-section-head h3{font-size:16px}
+    .rebuy-nav-badge{font-size:9px;padding:6px 8px}
+    .rebuy-signal-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px}
+    .rebuy-signal-chip{min-height:52px;padding:8px}
+    .rebuy-signal-chip strong{font-size:14px}.rebuy-signal-chip span{font-size:13px}
+    .rebuy-detail-head{padding:10px 12px}.rebuy-history-list{padding:10px;gap:7px}
+    .rebuy-coin-toggle{grid-template-columns:62px minmax(0,1fr) 22px;min-height:54px;padding:9px 10px}
+    .rebuy-coin-symbol{font-size:15px}.rebuy-current-qty{font-size:10px}.rebuy-current-pct{font-size:13px}
+    .rebuy-entry{grid-template-columns:60px minmax(0,1fr) 72px;padding:8px 10px;gap:7px}
+    .rebuy-entry-qty{font-size:12px}.rebuy-entry-pct{font-size:11px}
+  }
+  @media(max-width:380px){
+    .rebuy-current-qty{display:none}
+    .rebuy-signal-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+
 </head>
 <body>
 <main class="wrap">
@@ -4155,7 +4237,24 @@
 </tbody>
 </table>
 </div>
-</div></section><section class="app-page" data-page="growth" id="page-growth"><div class="page-banner" data-theme="growth"><div class="page-banner-copy"><div class="page-kicker">THÀNH TÍCH THỰC</div><h2>Số lượng coin qua từng lần mua</h2><p>Chọn một coin để xem số lượng mua được ở từng vòng và số lượng mua được ngay lúc này.</p></div><div class="page-priority">Số lượng thực · cập nhật live</div></div><div class="card history-section split-history-card"><div class="history-head">
+</div></section><section class="app-page" data-page="growth" id="page-growth"><div class="page-banner" data-theme="growth"><div class="page-banner-copy"><div class="page-kicker">THÀNH TÍCH THỰC</div><h2>Số lượng coin qua từng lần mua</h2><p>Chọn một coin để xem số lượng mua được ở từng vòng và số lượng mua được ngay lúc này.</p></div><div class="page-priority">Số lượng thực · cập nhật live</div></div><section class="rebuy-comparison-section" id="rebuyComparisonSection">
+  <div class="rebuy-section-head">
+    <div>
+      <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
+      <h3>Tín hiệu tăng số lượng</h3>
+    </div>
+    <div class="rebuy-nav-badge" id="rebuyNavBadge">NAV hiện tại: —</div>
+  </div>
+  <div class="rebuy-signal-grid" id="rebuySignalGrid">
+    <div class="rebuy-empty">Đang chờ dữ liệu giá live…</div>
+  </div>
+  <div class="rebuy-detail-head">
+    <h3>Chi tiết qua các lần mua</h3>
+  </div>
+  <div class="rebuy-history-list" id="rebuyHistoryList">
+    <div class="rebuy-empty">Đang đọc lịch sử mua bán…</div>
+  </div>
+</section><div class="card history-section split-history-card"><div class="history-head">
 <div>
 <h2>Biểu đồ số lượng coin</h2>
 <p>Đường biểu đồ thể hiện số lượng coin mua được tại từng lần xoay; điểm “Bây giờ” là sức mua theo NAV và giá live.</p>
@@ -4507,6 +4606,7 @@
     selectedHistoryTradeKey:"",historySelectionExplicit:false,latestTradeKeySeen:"",
     historyLoading:false,historyPriceCache:{},sheetRefreshTimer:null,lastSheetSync:null,
     historyChartData:[],historyButtonBaselines:{},historyButtonLoading:false,allEquivalentCache:{},equivalentLoading:false,
+    rebuyExpandedSymbol:localStorage.getItem('millionaireRebuyExpandedV1')||'',rebuyRenderSignature:'',
     snapshotMode:"now",snapshotTs:Date.now(),equivalentRefreshTimer:null,
     rotation:{
       loading:false,firstKey:"",latestKey:"",firstPrices:{},latestPrices:{},
@@ -4613,11 +4713,148 @@
     if(historyHead&&!$("historyBenchmarkButtons")){
       const chipSection=document.createElement('div');
       chipSection.className='history-chip-section';
-      chipSection.innerHTML='<div class="history-chip-label">Coin trên biểu đồ</div><div id="historyBenchmarkButtons"></div>';
+      chipSection.innerHTML='<div class="history-chip-label">So với mốc 1</div><div id="historyBenchmarkButtons"></div>';
       historyHead.insertAdjacentElement('afterend',chipSection);
     }
   }
 
+
+
+  function buildRebuyQuantityComparison(){
+    const sourceRows=(state.tradeLogRows&&state.tradeLogRows.length?state.tradeLogRows:state.tradeRows||[])
+      .filter(row=>row&&row.buyCoin&&Number.isFinite(Number(row.buyQty))&&Number(row.buyQty)>0)
+      .slice()
+      .sort((a,b)=>{
+        const ar=Number(a.round),br=Number(b.round);
+        if(Number.isFinite(ar)&&Number.isFinite(br)&&ar!==br)return ar-br;
+        return Number(a.sourceRow||0)-Number(b.sourceRow||0);
+      });
+    const grouped=new Map();
+    sourceRows.forEach(row=>{
+      const symbol=String(row.buyCoin||'').toUpperCase();
+      if(!symbol)return;
+      if(!grouped.has(symbol))grouped.set(symbol,[]);
+      grouped.get(symbol).push({
+        qty:Number(row.buyQty),tradeRound:row.round,timestamp:row.timestamp,actual:true
+      });
+    });
+
+    const holding=currentHoldingTrade();
+    const heldPrice=Number(state.live[holding?.buyCoin]?.price);
+    const nav=holding&&Number(holding.buyQty)>0&&heldPrice>0?Number(holding.buyQty)*heldPrice:null;
+    const items=[];
+    grouped.forEach((actuals,symbol)=>{
+      const livePrice=Number(state.live[symbol]?.price);
+      const currentQty=Number.isFinite(nav)&&nav>0&&livePrice>0?nav/livePrice:null;
+      const entries=actuals.map((entry,index)=>{
+        const previous=index>0?actuals[index-1].qty:null;
+        const pct=previous>0?(entry.qty/previous-1)*100:null;
+        return {...entry,sequence:index+1,pct,hypothetical:false};
+      });
+      const lastActual=actuals[actuals.length-1];
+      const currentPct=lastActual?.qty>0&&Number.isFinite(currentQty)?(currentQty/lastActual.qty-1)*100:null;
+      if(Number.isFinite(currentQty)&&currentQty>0){
+        entries.push({qty:currentQty,sequence:entries.length+1,pct:currentPct,hypothetical:true,actual:false});
+      }
+      items.push({symbol,actuals,entries,lastActualQty:lastActual?.qty||null,currentQty,currentPct,livePrice});
+    });
+    items.sort((a,b)=>{
+      const ap=Number.isFinite(a.currentPct)?a.currentPct:-Infinity;
+      const bp=Number.isFinite(b.currentPct)?b.currentPct:-Infinity;
+      if(bp!==ap)return bp-ap;
+      return a.symbol.localeCompare(b.symbol);
+    });
+    return {items,nav,holding};
+  }
+
+  function rebuyPctClass(value){
+    return Number.isFinite(value)?(value>0.005?'pos':value<-0.005?'neg':'neu'):'neu';
+  }
+
+  function renderRebuyQuantityComparison(force=false){
+    const signalHost=$("rebuySignalGrid");
+    const listHost=$("rebuyHistoryList");
+    const navBadge=$("rebuyNavBadge");
+    if(!signalHost||!listHost||!navBadge)return;
+
+    const model=buildRebuyQuantityComparison();
+    const signature=JSON.stringify({
+      nav:Number.isFinite(model.nav)?Number(model.nav.toFixed(2)):null,
+      open:state.rebuyExpandedSymbol||'',
+      rows:model.items.map(item=>[
+        item.symbol,
+        item.actuals.map(x=>Number(x.qty.toFixed(8))),
+        Number.isFinite(item.currentQty)?Number(item.currentQty.toFixed(8)):null,
+        Number.isFinite(item.currentPct)?Number(item.currentPct.toFixed(2)):null
+      ])
+    });
+    if(!force&&signature===state.rebuyRenderSignature)return;
+    state.rebuyRenderSignature=signature;
+
+    navBadge.textContent=Number.isFinite(model.nav)
+      ?`NAV hiện tại: ${formatUSD(model.nav)}`
+      :'NAV hiện tại: đang chờ giá';
+
+    if(!model.items.length){
+      signalHost.innerHTML='<div class="rebuy-empty">Chưa có lịch sử mua coin hợp lệ.</div>';
+      listHost.innerHTML='<div class="rebuy-empty">Chưa có dữ liệu để so sánh.</div>';
+      return;
+    }
+
+    const positive=model.items.filter(item=>Number.isFinite(item.currentPct)&&item.currentPct>0.005);
+    signalHost.innerHTML=positive.length
+      ?positive.map(item=>`<button class="rebuy-signal-chip" data-rebuy-signal="${item.symbol}" type="button">
+          <div><strong>${item.symbol}</strong><small>${formatQtyExact(item.currentQty)} ${item.symbol}</small></div>
+          <span>${formatSignedPct(item.currentPct)}</span>
+        </button>`).join('')
+      :'<div class="rebuy-empty">Hiện chưa có coin nào mua được nhiều hơn lần mua thực tế gần nhất.</div>';
+
+    listHost.innerHTML=model.items.map(item=>{
+      const isOpen=state.rebuyExpandedSymbol===item.symbol;
+      const pctText=Number.isFinite(item.currentPct)?formatSignedPct(item.currentPct):'—';
+      const qtyText=Number.isFinite(item.currentQty)?`${formatQtyExact(item.currentQty)} ${item.symbol}`:'Đang chờ giá live';
+      const entryHtml=item.entries.map(entry=>{
+        const pctClass=rebuyPctClass(entry.pct);
+        const pct=Number.isFinite(entry.pct)?formatSignedPct(entry.pct):'—';
+        const meta=entry.hypothetical
+          ?'Giả định với NAV hiện tại'
+          :`Mua thực tế${Number.isFinite(Number(entry.tradeRound))?` · Giao dịch #${entry.tradeRound}`:''}`;
+        return `<div class="rebuy-entry ${entry.hypothetical?'is-hypothetical':''}">
+          <div class="rebuy-entry-round">Lần ${entry.sequence}<small>${meta}</small></div>
+          <div class="rebuy-entry-qty">${formatQtyExact(entry.qty)} ${item.symbol}</div>
+          <div class="rebuy-entry-pct ${pctClass}">${pct}</div>
+        </div>`;
+      }).join('');
+      return `<article class="rebuy-coin-card ${isOpen?'is-open':''}" data-rebuy-card="${item.symbol}">
+        <button class="rebuy-coin-toggle" data-rebuy-toggle="${item.symbol}" type="button" aria-expanded="${isOpen?'true':'false'}">
+          <span class="rebuy-coin-symbol">${item.symbol}</span>
+          <span class="rebuy-coin-current"><span class="rebuy-current-qty">${qtyText}</span><span class="rebuy-current-pct ${rebuyPctClass(item.currentPct)}">${pctText}</span></span>
+          <span class="rebuy-chevron">⌄</span>
+        </button>
+        <div class="rebuy-coin-detail">${entryHtml}</div>
+      </article>`;
+    }).join('');
+
+    signalHost.querySelectorAll('[data-rebuy-signal]').forEach(button=>{
+      button.addEventListener('click',()=>{
+        state.rebuyExpandedSymbol=button.dataset.rebuySignal||'';
+        localStorage.setItem('millionaireRebuyExpandedV1',state.rebuyExpandedSymbol);
+        state.rebuyRenderSignature='';
+        renderRebuyQuantityComparison(true);
+        requestAnimationFrame(()=>document.querySelector(`[data-rebuy-card="${state.rebuyExpandedSymbol}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest'}));
+      });
+    });
+    listHost.querySelectorAll('[data-rebuy-toggle]').forEach(button=>{
+      button.addEventListener('click',()=>{
+        const symbol=button.dataset.rebuyToggle||'';
+        state.rebuyExpandedSymbol=state.rebuyExpandedSymbol===symbol?'':symbol;
+        if(state.rebuyExpandedSymbol)localStorage.setItem('millionaireRebuyExpandedV1',state.rebuyExpandedSymbol);
+        else localStorage.removeItem('millionaireRebuyExpandedV1');
+        state.rebuyRenderSignature='';
+        renderRebuyQuantityComparison(true);
+      });
+    });
+  }
 
   function quantityGrowthFromFirst(symbol){
     const latest=currentHoldingTrade();
@@ -6760,6 +6997,7 @@
         $("equivalentGrid").innerHTML='<div class="equivalent-card"><div class="equivalent-meta">Chưa có dữ liệu.</div></div>';
         renderGlobalPortfolioSummary();
         renderHistoryBenchmarkButtons();
+        renderRebuyQuantityComparison(true);
         return;
       }
 
@@ -6771,6 +7009,7 @@
       await loadRotationEngine(false);
       renderGlobalPortfolioSummary();
       renderHistoryBenchmarkButtons();
+      renderRebuyQuantityComparison(true);
     }catch(e){
       showHistoryError(e.message);
       $("rotationCurrentHolding").innerHTML=
@@ -6783,6 +7022,7 @@
       $("historyMobileList").innerHTML=`<div class="history-mobile-card">Không đọc được Google Sheet.</div>`;
       renderGlobalPortfolioSummary();
       renderHistoryBenchmarkButtons();
+      renderRebuyQuantityComparison(true);
     }finally{
       state.historyLoading=false;
       $("refreshSheetBtn").disabled=false;
@@ -8396,6 +8636,7 @@
     updateStatus();
     renderGlobalPortfolioSummary();
     renderHistoryBenchmarkButtons();
+    renderRebuyQuantityComparison();
   }
 
   function updateStatus(){
@@ -8697,7 +8938,7 @@
       if(location.hash!==nextHash)history.replaceState(null,"",nextHash);
     }
     window.scrollTo({top:0,behavior:"smooth"});
-    if(page==="growth")setTimeout(()=>{renderHistoryBenchmarkButtons();drawHistoryChart()},100);
+    if(page==="growth")setTimeout(()=>{renderHistoryBenchmarkButtons();renderRebuyQuantityComparison(true);drawHistoryChart()},100);
     if(page==="trades")setTimeout(()=>renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false),40);
     if(page==="benchmark")setTimeout(()=>renderBenchmarkHistory(benchmarkAnalytics()),40);
     if(page==="comparison")setTimeout(render,40);
