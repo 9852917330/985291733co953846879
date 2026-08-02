@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v30-25coin-three-milestones"/>
+<meta name="app-build" content="v31-25coin-active-only-history-full"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -4447,25 +4447,25 @@
   const ANCHOR_SETTINGS_KEY = "crypto100AnchorSettings_v3";
   const REST_INTERVAL = 30_000;
   const PRIMARY_STALE_MS = 10_000;
-  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v42_25coin_three_milestones_";
+  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v43_25coin_active_only_";
   const ICON_KEY = "fullCapitalIcons_v40_cg";
   const SHEET_ID = "1oXTD35cnMZEeiGX9oQ4XepH7jWCNilHIXfNHLnrjXs0";
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v12_25coin_three_milestones";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v13_25coin_active_only";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v9_25coin_three_milestones";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v10_25coin_active_only";
   const ROTATION_REFRESH_MS = 3_000;
   const ROTATION_SYMBOLS = ["BTC","ETH","HYPE","AAVE","SOL","LINK","SKY","BNB","UNI","CAKE","PUMP","JUP","PENDLE","LIT","LDO","ETHFI","MORPHO","RENDER","TAO","AERO","SUI","ONDO","INJ","GRAM","OKB"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Rổ hiển thị và rổ xoay dùng cùng một nguồn dữ liệu gồm đúng 25 coin.
-  // Cấu hình coin cũ vẫn giữ trong ASSETS để đọc được lịch sử Sheet nếu cần.
-  const LEGACY_TRACKED_SYMBOLS = ["MNT","ZK","EIGEN"];
-  const TRACKED_SYMBOLS = [...new Set([...COMPARISON_SYMBOLS,...LEGACY_TRACKED_SYMBOLS])];
+  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 25 coin đang hoạt động.
+  // ASSETS vẫn giữ ánh xạ các mã cũ chỉ để mục Lịch sử đọc và định giá giao dịch quá khứ.
+  const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
+  const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
   const STRATEGY_SYMBOLS = ROTATION_SYMBOLS;
   const DEFAULT_BENCHMARK = "BTC";
   const BENCHMARK_CHAPTERS_KEY = "fullCapitalBenchmarkChapters_v1";
@@ -4474,7 +4474,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v47_25coin_three_milestones";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v48_25coin_active_only";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4714,7 +4714,7 @@
     binanceReconnect:0,okxReconnect:0,bybitReconnect:0,
     restTimer:null,countdownTimer:null,renderTimer:null,
     nextRest:0,anchorLoading:false,
-    tradeRows:[],tradeLogRows:[],tradeSnapshots:[],historyBenchmark:localStorage.getItem(HISTORY_BENCHMARK_KEY)||DEFAULT_BENCHMARK,
+    tradeRows:[],tradeLogRows:[],allValidTradeRows:[],tradeSnapshots:[],historyBenchmark:localStorage.getItem(HISTORY_BENCHMARK_KEY)||DEFAULT_BENCHMARK,
     tradeComparisonBenchmark:localStorage.getItem(TRADE_COMPARISON_BENCHMARK_KEY)||DEFAULT_BENCHMARK,tradeComparisonSnapshots:[],tradeComparisonLoading:false,
     selectedHistoryTradeKey:"",historySelectionExplicit:false,latestTradeKeySeen:"",
     historyLoading:false,historyPriceCache:{},sheetRefreshTimer:null,lastSheetSync:null,
@@ -4736,6 +4736,11 @@
   const symbols=[...COMPARISON_SYMBOLS];
   const benchmarkSymbols=[...BENCHMARK_SYMBOLS];
   const trackedSymbols=[...TRACKED_SYMBOLS];
+  const isActiveSymbol=symbol=>ACTIVE_SYMBOL_SET.has(String(symbol||"").toUpperCase());
+  if(state.rebuyExpandedSymbol&&!isActiveSymbol(state.rebuyExpandedSymbol)){
+    state.rebuyExpandedSymbol="";
+    localStorage.removeItem("millionaireRebuyExpandedV1");
+  }
 
   setupSimplifiedLayout();
 
@@ -4834,8 +4839,8 @@
 
 
   function buildRebuyQuantityComparison(){
-    const sourceRows=(state.tradeLogRows&&state.tradeLogRows.length?state.tradeLogRows:state.tradeRows||[])
-      .filter(row=>row&&row.buyCoin&&Number.isFinite(Number(row.buyQty))&&Number(row.buyQty)>0)
+    const sourceRows=(state.tradeRows||[])
+      .filter(row=>row&&isActiveSymbol(row.buyCoin)&&Number.isFinite(Number(row.buyQty))&&Number(row.buyQty)>0)
       .slice()
       .sort((a,b)=>{
         const ar=Number(a.round),br=Number(b.round);
@@ -5002,8 +5007,8 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị danh mục đang dùng; MNT chỉ còn được giữ ngầm để định giá lịch sử giao dịch.
-    const visibleHistorySymbols=[...new Set([...(latest?.buyCoin&&ASSETS[latest.buyCoin]?[latest.buyCoin]:[]),...benchmarkSymbols])];
+    // Trang Số lượng chỉ hiển thị đúng 25 coin trong rổ hiện tại.
+    const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Tất cả coin, kể cả coin đang nắm giữ, được xếp đúng theo % tăng/giảm so với mốc đầu tiên.
     const rankedSymbols=visibleHistorySymbols.map((symbol,originalIndex)=>{
@@ -6104,7 +6109,7 @@
   }
 
   async function historicalFromBinance(a,ts){
-    if(!a?.binance||!providerIsAvailable(a,"binance"))throw new Error("Không có Binance pair");
+    if(!a?.binance)throw new Error("Không có Binance pair");
     const start=Math.floor(ts/60000)*60000;
     const url=`https://api.binance.com/api/v3/klines?symbol=${a.binance}&interval=1m&startTime=${start}&endTime=${start+60000}&limit=1`;
     const r=await withTimeout(url,{},16000);
@@ -6115,7 +6120,7 @@
   }
 
   async function historicalFromBybit(a,ts){
-    if(!a?.bybit||!providerIsAvailable(a,"bybit"))throw new Error("Không có Bybit pair");
+    if(!a?.bybit)throw new Error("Không có Bybit pair");
     const start=Math.floor(ts/60000)*60000;
     const url=`https://api.bybit.com/v5/market/kline?category=spot&symbol=${a.bybit}&interval=1&start=${start}&end=${start+60000}&limit=5`;
     const r=await withTimeout(url,{},16000);
@@ -6601,12 +6606,14 @@
       return;
     }
 
-    const latest=state.tradeRows[state.tradeRows.length-1];
-    const latestKey=tradeKey(latest);
+    const current=currentHoldingTrade();
+    const fallbackLatest=state.tradeRows[state.tradeRows.length-1];
+    const selectedDefault=current||fallbackLatest;
+    const latestKey=selectedDefault?tradeKey(selectedDefault):"";
     const latestChanged=state.latestTradeKeySeen&&state.latestTradeKeySeen!==latestKey;
     const selectedExists=state.tradeRows.some(t=>tradeKey(t)===state.selectedHistoryTradeKey);
 
-    // Mặc định luôn bám danh mục hiện tại. Chỉ giữ mốc cũ khi người dùng chủ động chọn trong chính phiên đang mở.
+    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 25 coin.
     if(!state.historySelectionExplicit||!selectedExists||latestChanged){
       state.selectedHistoryTradeKey=latestKey;
       state.historySelectionExplicit=false;
@@ -6614,9 +6621,9 @@
     state.latestTradeKeySeen=latestKey;
 
     select.disabled=false;
-    select.innerHTML=state.tradeRows.map((t,i)=>{
-      const current=i===state.tradeRows.length-1;
-      const prefix=current?"HIỆN TẠI":"Lịch sử";
+    select.innerHTML=state.tradeRows.map(t=>{
+      const isCurrent=Boolean(current&&tradeKey(t)===tradeKey(current));
+      const prefix=isCurrent?"HIỆN TẠI":"Lịch sử";
       return `<option value="${tradeKey(t)}">${prefix} · Lần ${t.round} · ${formatTradeDate(t.timestamp)} · ${formatQtyExact(t.buyQty)} ${t.buyCoin}</option>`;
     }).join("");
     select.value=state.selectedHistoryTradeKey;
@@ -6792,7 +6799,7 @@
   }
 
   function renderTradeLog(snapshots,benchmark,loading=false){
-    const current=currentHoldingTrade();
+    const current=currentLogHoldingTrade();
     const totalNode=document.getElementById("tradeTotalCount");
     const latestBtn=document.getElementById("goLatestTradeBtn");
     if(totalNode)totalNode.textContent=`Tổng ${snapshots.length} lần`;
@@ -6838,8 +6845,13 @@
     $("snapshotTime").value=p.time;
   }
 
+  function currentLogHoldingTrade(){
+    return state.allValidTradeRows[state.allValidTradeRows.length-1]||null;
+  }
+
   function currentHoldingTrade(){
-    return state.tradeRows[state.tradeRows.length-1]||null;
+    const latest=currentLogHoldingTrade();
+    return latest&&isActiveSymbol(latest.buyCoin)?latest:null;
   }
 
   function selectedBasisTrade(){
@@ -7116,11 +7128,13 @@
     try{
       const response=await loadGoogleSheetJSONP();
       state.tradeLogRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
-      state.tradeRows=state.tradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
+      state.allValidTradeRows=state.tradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
+      state.tradeRows=state.allValidTradeRows.filter(r=>isActiveSymbol(r.buyCoin));
       state.lastSheetSync=Date.now();
       state.allEquivalentCache={};
 
-      const sheetLatest=state.tradeRows[state.tradeRows.length-1]||null;
+      const rawLatest=currentLogHoldingTrade();
+      const sheetLatest=currentHoldingTrade();
       const holdingChanged=Boolean(sheetLatest&&state.syncedHoldingSymbol!==sheetLatest.buyCoin);
       if(sheetLatest){
         state.syncedHoldingSymbol=sheetLatest.buyCoin;
@@ -7135,12 +7149,16 @@
             historySelect.value=sheetLatest.buyCoin;
           }
         }
+      }else{
+        state.syncedHoldingSymbol="";
       }
 
-      if(state.tradeRows.length){
+      if(sheetLatest){
         $("rotationCurrentHolding").innerHTML=
           `Đã kết nối Sheet · đang giữ: <strong>${formatQtyExact(sheetLatest.buyQty)} ${sheetLatest.buyCoin}</strong><br>`+
           `Đang tải dữ liệu giá lịch sử cho ${symbols.length} coin…`;
+      }else if(rawLatest){
+        $("rotationCurrentHolding").textContent="Giao dịch gần nhất thuộc coin ngoài rổ 25. Chi tiết chỉ hiển thị tại mục Lịch sử.";
       }else{
         $("rotationCurrentHolding").textContent="Đã kết nối Sheet nhưng chưa có giao dịch hợp lệ.";
       }
