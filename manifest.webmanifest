@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v29-34coin",
+  "id": "./millionaire.html?app=Millionaire-v30-25coin",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=29-34coin-cc-pump-sky-cards-wlfi",
+  "start_url": "./millionaire.html?v=30-25coin-three-milestones",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=29-34coin-cc-pump-sky-cards-wlfi",
+      "url": "./millionaire.html?v=30-25coin-three-milestones",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",

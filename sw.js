@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v29-34coin-cc-pump-sky-cards-wlfi";
+const CACHE_NAME="millionaire-v30-25coin-three-milestones";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",
