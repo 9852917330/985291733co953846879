@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v28-31coin-zksync"/>
+<meta name="app-build" content="v29-34coin-cc-pump-sky-cards-wlfi"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -4026,7 +4026,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 31 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 34 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -4100,7 +4100,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 31 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 34 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4203,13 +4203,13 @@
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 31 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 34 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>BTC · ETH · SOL · BNB · HYPE · DOGE · LINK · GRAM · SUI · AVAX · NEAR · INJ · MNT · SEI · TAO · RENDER · VIRTUAL · ONDO · AAVE · UNI · PENDLE · MORPHO · JUP · AERO · ENA · ETHFI · OKB · ARB · ZK · ZRO · EIGEN</span>
+<span>BTC · ETH · SOL · BNB · HYPE · DOGE · LINK · GRAM · SUI · AVAX · NEAR · INJ · MNT · TAO · RENDER · VIRTUAL · ONDO · AAVE · UNI · PENDLE · MORPHO · JUP · AERO · ENA · ETHFI · OKB · ARB · ZRO · EIGEN · CC · PUMP · SKY · CARDS · WLFI</span>
 </div>
 <span>31 tài sản</span>
 </div>
@@ -4393,16 +4393,16 @@
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v10_31coin_zk_exact";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v11_34coin_cc_pump_sky_cards_wlfi_exact";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v7_31coin_zk_standardized";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v8_34coin_cc_pump_sky_cards_wlfi_standardized";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["BTC","ETH","SOL","BNB","HYPE","DOGE","LINK","GRAM","SUI","AVAX","NEAR","INJ","MNT","SEI","TAO","RENDER","VIRTUAL","ONDO","AAVE","UNI","PENDLE","MORPHO","JUP","AERO","ENA","ETHFI","OKB","ARB","ZK","ZRO","EIGEN"];
+  const ROTATION_SYMBOLS = ["BTC","ETH","SOL","BNB","HYPE","DOGE","LINK","GRAM","SUI","AVAX","NEAR","INJ","MNT","TAO","RENDER","VIRTUAL","ONDO","AAVE","UNI","PENDLE","MORPHO","JUP","AERO","ENA","ETHFI","OKB","ARB","ZRO","EIGEN","CC","PUMP","SKY","CARDS","WLFI"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Rổ hiển thị và rổ xoay dùng cùng một nguồn dữ liệu gồm đúng 31 coin.
+  // Rổ hiển thị và rổ xoay dùng cùng một nguồn dữ liệu gồm đúng 34 coin.
   // Cấu hình coin cũ vẫn giữ trong ASSETS để đọc được lịch sử Sheet nếu cần.
   const LEGACY_TRACKED_SYMBOLS = [];
   const TRACKED_SYMBOLS = [...new Set([...COMPARISON_SYMBOLS,...LEGACY_TRACKED_SYMBOLS])];
@@ -4414,7 +4414,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v45_31coin_zk_sr_confirmed_zones";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v46_34coin_cc_pump_sky_cards_wlfi_sr_confirmed_zones";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4428,11 +4428,11 @@
   const ROTATION_GROUPS = {
     BTC:"Core",ETH:"Core",BNB:"Core / Exchange",OKB:"Exchange",CRO:"Exchange",WBT:"Exchange",
     AAVE:"Lending",MORPHO:"Lending",UNI:"DEX",AERO:"DEX",JUP:"Solana DeFi",PENDLE:"Yield DeFi",
-    SOL:"High-performance L1",SUI:"High-performance L1",AVAX:"High-performance L1",SEI:"High-performance L1",MON:"High-performance L1",
-    NEAR:"AI / L1",GRAM:"Consumer L1",MNT:"Ethereum L2",ARB:"Ethereum L2",ZK:"Ethereum L2",OP:"Ethereum L2",IMX:"Gaming L2",
+    SOL:"High-performance L1",SUI:"High-performance L1",AVAX:"High-performance L1",MON:"High-performance L1",CC:"Institutional L1",
+    NEAR:"AI / L1",GRAM:"Consumer L1",MNT:"Ethereum L2",ARB:"Ethereum L2",OP:"Ethereum L2",IMX:"Gaming L2",
     LINK:"Oracle / Infrastructure",ZRO:"Interoperability",TIA:"Modular DA",EIGEN:"Restaking",ETHFI:"Restaking",JTO:"Solana Staking",
     TAO:"Decentralized AI",RENDER:"AI / DePIN",VIRTUAL:"AI Agents",ONDO:"RWA",ENA:"Stablecoin / Yield",RESOLV:"Stablecoin / Yield",
-    HYPE:"Derivatives",INJ:"Trading / DeFi",PUMP:"Meme / Launchpad",DOGE:"Meme"
+    HYPE:"Derivatives",INJ:"Trading / DeFi",PUMP:"Meme / Launchpad",SKY:"Stablecoin / DeFi",CARDS:"RWA / Collectibles",WLFI:"DeFi / Governance",DOGE:"Meme"
   };
 
   // Phân loại chiến lược và lịch phân phối token. Dữ liệu lịch unlock tĩnh cập nhật 27/06/2026.
@@ -4446,7 +4446,8 @@
     ONDO:"RWA", MNT:"L2 · Ethereum", PENDLE:"DeFi · Yield",
     MORPHO:"DeFi · Lending", JUP:"DeFi · Solana", ENA:"Stablecoin · Yield",
     VIRTUAL:"AI · Agent economy", NEAR:"L1 · AI", AVAX:"L1 · Subnet", INJ:"L1 · Trading DeFi", DOGE:"Meme · PoW",
-    SEI:"L1 · Trading", ARB:"L2 · Ethereum", ZK:"L2 · Ethereum · ZK", ZRO:"Hạ tầng · Cross-chain"
+    ARB:"L2 · Ethereum", ZRO:"Hạ tầng · Cross-chain", CC:"L1 · Tài chính tổ chức",
+    PUMP:"Meme · Launchpad Solana", SKY:"DeFi · Stablecoin", CARDS:"RWA · Collectibles", WLFI:"DeFi · Governance"
   };
 
   const TOKEN_UNLOCKS = {
@@ -4478,10 +4479,13 @@
     ENA:{mode:"unknown",label:"Vesting",detail:"Core contributors + investors"},
     VIRTUAL:{mode:"flow",label:"DAO emission",detail:"Ecosystem treasury ≤10%/năm"},
     DOGE:{mode:"flow",label:"Theo block",detail:"PoW mining emission"},
-    SEI:{mode:"unknown",label:"Vesting + staking",detail:"Foundation, ecosystem và validator emission"},
     ARB:{mode:"unknown",label:"Vesting / DAO",detail:"Team, investors và DAO treasury"},
-    ZK:{mode:"unknown",label:"Vesting / Governance",detail:"Team, investors, ecosystem và nguồn cung do governance kiểm soát"},
-    ZRO:{mode:"unknown",label:"Vesting",detail:"Core contributors, investors và ecosystem"}
+    ZRO:{mode:"unknown",label:"Vesting",detail:"Core contributors, investors và ecosystem"},
+    CC:{mode:"flow",label:"Theo hoạt động mạng",detail:"Network rewards và token distribution của Canton"},
+    PUMP:{mode:"unknown",label:"Vesting",detail:"Team, investors, ecosystem và community allocation"},
+    SKY:{mode:"flow",label:"Governance / Buyback",detail:"Emission, staking rewards và cơ chế mua lại của Sky"},
+    CARDS:{mode:"unknown",label:"Vesting / Ecosystem",detail:"Team, investors, treasury và incentive"},
+    WLFI:{mode:"unknown",label:"Vesting / Governance",detail:"Team, investors, treasury và governance allocation"}
   };
 
   function formatUnlockDate(iso){
@@ -4527,8 +4531,7 @@
   const MANUAL_FUNDAMENTAL_FALLBACKS = {
     // Chỉ dùng khi CEX không trả vốn hóa/cung và nguồn market-data bị thiếu hoặc rate-limit.
     // Giá vẫn luôn lấy từ CEX; vốn hóa dự phòng = giá CEX live × cung lưu hành.
-    GRAM:{circulatingSupply:2_710_000_000,totalSupply:5_210_000_000,source:"CMC/CoinGecko · supply dự phòng"},
-    ZK:{circulatingSupply:10_100_039_093,totalSupply:21_000_000_000,source:"ZKsync/OKX/CoinGecko · supply dự phòng"}
+    GRAM:{circulatingSupply:2_710_000_000,totalSupply:5_210_000_000,source:"CMC/CoinGecko · supply dự phòng"}
   };
 
   const ASSETS = {
@@ -4549,18 +4552,20 @@
     CRO:    {name:"Cronos",      primary:"binance", binance:"CROUSDT",    okx:"CRO-USDT",    bybit:"CROUSDT", cg:"crypto-com-chain",           d:6},
     MORPHO: {name:"Morpho",      primary:"binance", binance:"MORPHOUSDT", okx:"MORPHO-USDT", bybit:"MORPHOUSDT", cg:"morpho",                     d:6},
     ARB:    {name:"Arbitrum",     primary:"binance", binance:"ARBUSDT",    okx:"ARB-USDT",    bybit:"ARBUSDT", cg:"arbitrum",                   d:6},
-    ZK:     {name:"ZKsync",       primary:"binance", binance:"ZKUSDT",     okx:"ZK-USDT",     bybit:"ZKUSDT",  cg:"zksync",                     d:8},
     IMX:    {name:"Immutable",    primary:"binance", binance:"IMXUSDT",    okx:"IMX-USDT",    bybit:"IMXUSDT", cg:"immutable-x",                d:6},
     OP:     {name:"Optimism",     primary:"binance", binance:"OPUSDT",     okx:"OP-USDT",     bybit:"OPUSDT", cg:"optimism",                   d:6},
     RESOLV: {name:"Resolv",       primary:"binance", binance:"RESOLVUSDT", okx:"RESOLV-USDT", bybit:"RESOLVUSDT", cg:"resolv",                     d:8},
-    PUMP:   {name:"Pump.fun",     primary:"binance", binance:"PUMPUSDT",   okx:"PUMP-USDT",   bybit:null, cg:"pump-fun",                   d:8},
+    PUMP:   {name:"Pump.fun",     primary:"binance", binance:"PUMPUSDT",   okx:"PUMP-USDT",   bybit:"PUMPUSDT", cg:"pump-fun",                   d:8},
+    CC:     {name:"Canton",       primary:"okx",     binance:null,         okx:"CC-USDT",     bybit:"CCUSDT", cg:"canton",                       d:6},
+    SKY:    {name:"Sky",          primary:"binance", binance:"SKYUSDT",    okx:"SKY-USDT",    bybit:"SKYUSDT", cg:"sky",                         d:6},
+    CARDS:  {name:"Collector Crypt",primary:"okx",   binance:null,         okx:"CARDS-USDT",  bybit:null, cg:"collector-crypt",              d:6},
+    WLFI:   {name:"World Liberty Financial",primary:"binance",binance:"WLFIUSDT",okx:"WLFI-USDT",bybit:"WLFIUSDT",cg:"world-liberty-financial",d:6},
     WBT:    {name:"WhiteBIT Coin",primary:"binance", binance:null,         okx:null,          bybit:null, cg:"whitebit",                   d:4},
     BNB:    {name:"BNB",         primary:"binance", binance:"BNBUSDT",    okx:"BNB-USDT",    bybit:"BNBUSDT", cg:"binancecoin",                d:2},
     PENDLE: {name:"Pendle",      primary:"binance", binance:"PENDLEUSDT", okx:"PENDLE-USDT", bybit:"PENDLEUSDT", cg:"pendle",                     d:5},
     ONDO:   {name:"Ondo",        primary:"binance", binance:"ONDOUSDT",   okx:"ONDO-USDT",   bybit:"ONDOUSDT", cg:"ondo-finance",               d:6},
     ENA:    {name:"Ethena",      primary:"binance", binance:"ENAUSDT",    okx:"ENA-USDT",    bybit:"ENAUSDT", cg:"ethena",                     d:6},
     AVAX:   {name:"Avalanche",   primary:"binance", binance:"AVAXUSDT",   okx:"AVAX-USDT",   bybit:"AVAXUSDT", cg:"avalanche-2",                d:4},
-    SEI:    {name:"Sei",         primary:"binance", binance:"SEIUSDT",    okx:"SEI-USDT",    bybit:"SEIUSDT", cg:"sei-network",                d:7},
     TIA:    {name:"Celestia",    primary:"binance", binance:"TIAUSDT",    okx:"TIA-USDT",    bybit:"TIAUSDT", cg:"celestia",                   d:6},
     ZRO:    {name:"LayerZero",   primary:"binance", binance:"ZROUSDT",    okx:"ZRO-USDT",    bybit:"ZROUSDT", cg:"layerzero",                  d:5},
     MON:    {name:"Monad",       primary:"bybit",   binance:"MONUSDT",    okx:"MON-USDT",    bybit:"MONUSDT", cg:"monad",                      d:7},
@@ -4603,14 +4608,21 @@
   QUALITY_FACTORS.CRO={backing:88,team:84,adoption:86,capital:92,credibility:82,growth:76,narrative:72};
   STANDARD_PROFILES.ETHFI={product:84,moat:78,valueCapture:77,tokenomics:52,decentralization:60,durability:72,execution:84,reason:"Ether.fi thuộc mảng liquid restaking/restaking, có narrative và adoption tốt; rủi ro chính là lịch vesting, cạnh tranh LRT và value capture của token."};
   QUALITY_FACTORS.ETHFI={backing:92,team:84,adoption:82,capital:90,credibility:84,growth:88,narrative:90};
-  STANDARD_PROFILES.SEI={product:86,moat:78,valueCapture:72,tokenomics:60,decentralization:68,durability:75,execution:88,reason:"Sei là L1 tối ưu cho giao dịch với hiệu năng cao và hệ sinh thái DeFi riêng; rủi ro chính là cạnh tranh L1 gay gắt, phân phối token và độ bền nhu cầu ứng dụng."};
-  QUALITY_FACTORS.SEI={backing:93,team:90,adoption:79,capital:94,credibility:86,growth:88,narrative:89};
   STANDARD_PROFILES.ARB={product:94,moat:90,valueCapture:62,tokenomics:58,decentralization:84,durability:91,execution:92,reason:"Arbitrum có hệ sinh thái L2, thanh khoản và hạ tầng Orbit mạnh; điểm trừ là value capture của ARB còn hạn chế và nguồn cung tiếp tục được phân phối."};
   QUALITY_FACTORS.ARB={backing:98,team:95,adoption:92,capital:98,credibility:95,growth:85,narrative:86};
   STANDARD_PROFILES.ZRO={product:91,moat:88,valueCapture:73,tokenomics:60,decentralization:76,durability:85,execution:93,reason:"LayerZero là hạ tầng interoperability được tích hợp rộng; ZRO có utility quản trị và cơ chế kinh tế đang phát triển, nhưng vẫn chịu rủi ro vesting và cạnh tranh cross-chain."};
   QUALITY_FACTORS.ZRO={backing:97,team:94,adoption:87,capital:97,credibility:92,growth:90,narrative:91};
-  STANDARD_PROFILES.ZK={product:89,moat:84,valueCapture:58,tokenomics:46,decentralization:77,durability:84,execution:92,reason:"ZKsync là Ethereum L2 dùng zero-knowledge proofs, có ZK Stack và hệ sinh thái chain riêng. Điểm mạnh là công nghệ, đội ngũ và nguồn lực; điểm trừ là value capture của token còn đang mở rộng và nguồn cung 21 tỷ chịu rủi ro pha loãng/vesting."};
-  QUALITY_FACTORS.ZK={backing:98,team:95,adoption:82,capital:98,credibility:91,growth:84,narrative:90};
+
+  STANDARD_PROFILES.CC={product:91,moat:92,valueCapture:76,tokenomics:72,decentralization:68,durability:91,execution:91,reason:"Canton là mạng blockchain định hướng tài chính tổ chức, có kiến trúc riêng tư và khả năng đồng bộ tài sản; điểm trừ là hệ sinh thái retail nhỏ hơn và phân phối token cần tiếp tục theo dõi."};
+  QUALITY_FACTORS.CC={backing:98,team:94,adoption:84,capital:98,credibility:94,growth:90,narrative:94};
+  STANDARD_PROFILES.PUMP={product:93,moat:89,valueCapture:89,tokenomics:52,decentralization:70,durability:68,execution:95,reason:"Pump.fun có product-market fit và dòng phí mạnh trong mảng phát hành meme coin Solana; PUMP có beta cao nhưng chịu rủi ro vesting, chu kỳ meme và biến động thanh khoản."};
+  QUALITY_FACTORS.PUMP={backing:94,team:91,adoption:95,capital:96,credibility:84,growth:93,narrative:99};
+  STANDARD_PROFILES.SKY={product:96,moat:93,valueCapture:88,tokenomics:84,decentralization:88,durability:96,execution:95,reason:"Sky kế thừa hạ tầng Maker và hệ sinh thái stablecoin USDS, có doanh thu, governance và cơ chế mua lại; đây là một trong các DeFi protocol có độ bền cao."};
+  QUALITY_FACTORS.SKY={backing:98,team:97,adoption:96,capital:99,credibility:97,growth:88,narrative:89};
+  STANDARD_PROFILES.CARDS={product:80,moat:76,valueCapture:73,tokenomics:58,decentralization:64,durability:62,execution:82,reason:"Collector Crypt token hóa thẻ sưu tầm vật lý thành RWA trên Solana, tạo narrative khác biệt; rủi ro chính là quy mô còn nhỏ, thanh khoản tập trung và tính chu kỳ của thị trường collectibles."};
+  QUALITY_FACTORS.CARDS={backing:86,team:83,adoption:70,capital:84,credibility:78,growth:89,narrative:93};
+  STANDARD_PROFILES.WLFI={product:78,moat:74,valueCapture:61,tokenomics:44,decentralization:40,durability:60,execution:80,reason:"World Liberty Financial có vốn, thương hiệu và khả năng thu hút dòng tiền DeFi; rủi ro lớn là mức độ tập trung, governance, vesting và phụ thuộc mạnh vào narrative chính trị."};
+  QUALITY_FACTORS.WLFI={backing:97,team:75,adoption:80,capital:99,credibility:62,growth:86,narrative:99};
 
   const state = {
     live:{},anchor:{prices:{},sources:{},capturedAt:{}},icons:{},marketMeta:{},
@@ -11032,7 +11044,6 @@
     NEAR:{binance:"NEARUSDT",okx:"NEAR-USDT",bybit:"NEARUSDT"},
     INJ:{binance:"INJUSDT",okx:"INJ-USDT",bybit:"INJUSDT"},
     MNT:{binance:"MNTUSDT",okx:"MNT-USDT",bybit:"MNTUSDT"},
-    SEI:{binance:"SEIUSDT",okx:"SEI-USDT",bybit:"SEIUSDT"},
     TAO:{binance:"TAOUSDT",okx:"TAO-USDT",bybit:"TAOUSDT"},
     RENDER:{binance:"RENDERUSDT",okx:"RENDER-USDT",bybit:"RENDERUSDT"},
     VIRTUAL:{binance:"VIRTUALUSDT",okx:"VIRTUAL-USDT",bybit:"VIRTUALUSDT"},
@@ -11047,9 +11058,13 @@
     ETHFI:{binance:"ETHFIUSDT",okx:"ETHFI-USDT",bybit:"ETHFIUSDT"},
     OKB:{binance:null,okx:"OKB-USDT",bybit:"OKBUSDT"},
     ARB:{binance:"ARBUSDT",okx:"ARB-USDT",bybit:"ARBUSDT"},
-    ZK:{binance:"ZKUSDT",okx:"ZK-USDT",bybit:"ZKUSDT"},
     ZRO:{binance:"ZROUSDT",okx:"ZRO-USDT",bybit:"ZROUSDT"},
-    EIGEN:{binance:"EIGENUSDT",okx:"EIGEN-USDT",bybit:"EIGENUSDT"}
+    EIGEN:{binance:"EIGENUSDT",okx:"EIGEN-USDT",bybit:"EIGENUSDT"},
+    CC:{binance:null,okx:"CC-USDT",bybit:"CCUSDT"},
+    PUMP:{binance:"PUMPUSDT",okx:"PUMP-USDT",bybit:"PUMPUSDT"},
+    SKY:{binance:"SKYUSDT",okx:"SKY-USDT",bybit:"SKYUSDT"},
+    CARDS:{binance:null,okx:"CARDS-USDT",bybit:null},
+    WLFI:{binance:"WLFIUSDT",okx:"WLFI-USDT",bybit:"WLFIUSDT"}
   };
 
   const activeStudies=new Set();
