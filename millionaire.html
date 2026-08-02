@@ -3984,6 +3984,78 @@
     .history-milestone-btn{min-height:35px;font-size:9.5px;padding:7px 5px}
   }
 </style>
+
+<style id="overview-milestone-comparison-v33">
+  #page-comparison .overview-history-chip-section{
+    margin:0 0 7px;padding:12px;border:1px solid #2B3139;border-radius:12px;background:#181A20;overflow:hidden
+  }
+  #page-comparison .overview-history-chip-toolbar{margin:0 0 12px}
+  #page-comparison .overview-history-milestone-switch{
+    width:100%;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px
+  }
+  #page-comparison .overview-history-milestone-switch .history-milestone-btn{
+    min-height:56px;border-radius:9px;background:#2B3139;border-color:#343C47;color:#EAECEF;
+    font-size:16px;font-weight:850
+  }
+  #page-comparison .overview-history-milestone-switch .history-milestone-btn:hover{
+    background:#303741;border-color:#657187
+  }
+  #page-comparison .overview-history-milestone-switch .history-milestone-btn.is-active{
+    border-color:#F0B90B;background:linear-gradient(145deg,rgba(92,69,5,.88),rgba(45,36,8,.95));color:#FFD83D;
+    box-shadow:0 0 0 2px rgba(240,185,11,.13)
+  }
+  #overviewHistoryBenchmarkButtons{
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px
+  }
+  #overviewHistoryBenchmarkButtons .history-coin-chip{
+    min-height:76px;padding:10px 5px;border-radius:9px
+  }
+  #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy strong{font-size:18px!important}
+  #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy small{font-size:14px!important}
+  #overviewHistoryBenchmarkButtons .history-coin-chip.up:not(.current-holding):not(.btc-special){
+    background:linear-gradient(145deg,rgba(14,203,129,.22),rgba(6,76,51,.42))!important;
+    border:1px solid #0ECB81!important;box-shadow:0 0 12px rgba(14,203,129,.15)!important
+  }
+  #overviewHistoryBenchmarkButtons .history-coin-chip.up:not(.current-holding):not(.btc-special) .chip-copy strong,
+  #overviewHistoryBenchmarkButtons .history-coin-chip.up:not(.current-holding):not(.btc-special) .chip-copy small{color:#55E7AD!important}
+  #overviewHistoryBenchmarkButtons .history-coin-chip.down:not(.current-holding):not(.btc-special){
+    background:linear-gradient(145deg,rgba(246,70,93,.16),rgba(82,21,34,.34))!important;
+    border-color:rgba(246,70,93,.48)!important
+  }
+  #overviewHistoryBenchmarkButtons .history-coin-chip.current-holding:not(.btc-special){
+    background:linear-gradient(145deg,#0B63F6 0%,#0846B8 55%,#062A70 100%)!important;
+    border:2px solid #20C8FF!important;outline:none!important;
+    box-shadow:inset 5px 0 0 #23E0FF,0 0 16px rgba(32,200,255,.46)!important
+  }
+  #overviewHistoryBenchmarkButtons .history-coin-chip.current-holding:not(.btc-special) .chip-copy strong,
+  #overviewHistoryBenchmarkButtons .history-coin-chip.current-holding:not(.btc-special) .chip-copy small{color:#E9FAFF!important}
+  #overviewHistoryBenchmarkButtons .history-coin-chip.btc-special{
+    background:linear-gradient(145deg,#7B39C6 0%,#54258E 54%,#311650 100%)!important;
+    border:2px solid #B86BFF!important;box-shadow:0 0 16px rgba(184,107,255,.38)!important
+  }
+  #overviewHistoryBenchmarkButtons .history-coin-chip.btc-special .chip-copy strong,
+  #overviewHistoryBenchmarkButtons .history-coin-chip.btc-special .chip-copy small{color:#F3E9FF!important}
+  #overviewHistoryBenchmarkButtons .history-coin-chip.selected{outline:1px solid #F0B90B!important;outline-offset:2px!important}
+  #overviewHistoryBenchmarkButtons .history-chip-placeholder{
+    grid-column:1/-1;padding:18px;color:#848E9C;text-align:center;font-size:12px
+  }
+  @media(max-width:760px){
+    #page-comparison .overview-history-chip-section{padding:10px;margin-bottom:8px;border-radius:11px}
+    #page-comparison .overview-history-chip-toolbar{margin-bottom:10px}
+    #page-comparison .overview-history-milestone-switch{gap:7px}
+    #page-comparison .overview-history-milestone-switch .history-milestone-btn{min-height:48px;font-size:13px;padding:7px 4px}
+    #overviewHistoryBenchmarkButtons{gap:7px}
+    #overviewHistoryBenchmarkButtons .history-coin-chip{min-height:62px;padding:7px 3px}
+    #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy strong{font-size:13px!important}
+    #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy small{font-size:10.5px!important}
+  }
+  @media(max-width:390px){
+    #overviewHistoryBenchmarkButtons{gap:6px}
+    #overviewHistoryBenchmarkButtons .history-coin-chip{min-height:58px}
+    #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy strong{font-size:12px!important}
+    #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy small{font-size:9.5px!important}
+  }
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4198,16 +4270,16 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">25 tài sản · một rổ xoay thống nhất</div></div><section class="rebuy-comparison-section rebuy-top-signal-section" id="rebuyTopSignalSection">
-  <div class="rebuy-section-head">
-    <div>
-      <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
-      <h3>Tín hiệu tăng số lượng</h3>
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">25 tài sản · một rổ xoay thống nhất</div></div><section class="overview-history-chip-section" id="overviewHistoryMilestoneSection">
+  <div class="history-chip-toolbar overview-history-chip-toolbar">
+    <div class="history-milestone-switch overview-history-milestone-switch" id="overviewHistoryMilestoneSwitch" role="group" aria-label="Chọn mốc so sánh số lượng trên trang Tổng quan">
+      <button type="button" class="history-milestone-btn" data-history-milestone="pre">01/08/25</button>
+      <button type="button" class="history-milestone-btn" data-history-milestone="first">Mốc 1</button>
+      <button type="button" class="history-milestone-btn" data-history-milestone="latest">Gần nhất</button>
     </div>
-    <div class="rebuy-nav-badge" id="rebuyNavBadgeTop">NAV hiện tại: —</div>
   </div>
-  <div class="rebuy-signal-grid" id="rebuySignalGridTop">
-    <div class="rebuy-empty">Đang chờ dữ liệu giá live…</div>
+  <div id="overviewHistoryBenchmarkButtons">
+    <div class="history-chip-placeholder">Đang tải dữ liệu so sánh số lượng…</div>
   </div>
 </section><section class="toolbar">
 <div class="toolbar-summary">
@@ -5097,11 +5169,11 @@
   }
 
   function renderHistoryBenchmarkButtons(){
-    const host=$("historyBenchmarkButtons");
-    if(!host)return;
+    const hosts=[$("historyBenchmarkButtons"),$("overviewHistoryBenchmarkButtons")].filter(Boolean);
+    if(!hosts.length)return;
     syncHistoryMilestoneControls();
     if(!state.tradeRows.length){
-      host.innerHTML='<div class="history-chip-placeholder">Chưa có giao dịch để hiển thị biểu đồ.</div>';
+      hosts.forEach(host=>{host.innerHTML='<div class="history-chip-placeholder">Chưa có giao dịch để hiển thị biểu đồ.</div>'});
       return;
     }
 
@@ -5110,7 +5182,7 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Trang Số lượng chỉ hiển thị đúng 25 coin trong rổ hiện tại.
+    // Chỉ hiển thị đúng 25 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -5130,26 +5202,35 @@
     });
 
     const milestoneTitle=historyMilestoneContext().title;
-    host.innerHTML=rankedSymbols.map(({symbol,pct,isCurrentHolding})=>{
+    const chipsHtml=rankedSymbols.map(({symbol,pct,isCurrentHolding})=>{
       const tone=Number.isFinite(pct)?(pct>0?'up':pct<0?'down':'flat'):'neutral';
       const selected=symbol===state.historyBenchmark?'selected':'';
       const btcSpecial=symbol==='BTC'?'btc-special':'';
       const holdingClass=isCurrentHolding?'current-holding':'';
       const pctText=Number.isFinite(pct)?`${pct>0?'+':''}${pct.toFixed(2)}%`:(state.historyButtonLoading?'...':'—');
-      const holdingLabel='';
       return `<button class="history-coin-chip ${tone} ${selected} ${btcSpecial} ${holdingClass}" data-history-chip="${symbol}" type="button" title="${isCurrentHolding?'Coin đang nắm giữ · ':''}${milestoneTitle}" ${state.historyLoading?'disabled':''}>
-        <span class="chip-copy"><strong>${symbol}</strong><small>${pctText}</small>${holdingLabel}</span>
+        <span class="chip-copy"><strong>${symbol}</strong><small>${pctText}</small></span>
       </button>`;
     }).join('');
 
-    host.querySelectorAll('[data-history-chip]').forEach(btn=>{
-      btn.addEventListener('click',()=>setHistoryBenchmark(btn.dataset.historyChip));
+    hosts.forEach(host=>{
+      host.innerHTML=chipsHtml;
+      host.querySelectorAll('[data-history-chip]').forEach(btn=>{
+        btn.addEventListener('click',async()=>{
+          const symbol=btn.dataset.historyChip;
+          if(host.id==='overviewHistoryBenchmarkButtons')showAppPage('growth');
+          await setHistoryBenchmark(symbol);
+          if(host.id==='overviewHistoryBenchmarkButtons'){
+            setTimeout(()=>document.querySelector('#page-growth .history-main-grid')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+          }
+        });
+      });
     });
   }
 
   async function loadHistoryBenchmarkBaselines(force=false){
-    const host=$("historyBenchmarkButtons");
-    if(!host)return;
+    const hosts=[$("historyBenchmarkButtons"),$("overviewHistoryBenchmarkButtons")].filter(Boolean);
+    if(!hosts.length)return;
     if(!state.tradeRows.length){
       state.historyButtonBaselines={};
       syncHistoryMilestoneControls();
