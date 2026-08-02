@@ -3965,6 +3965,25 @@
     .milestone-dock-icon{font-size:17px}.milestone-dock-label{font-size:7.5px}
   }
 </style>
+
+<style id="history-milestone-controls-style">
+  .history-chip-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 9px}
+  .history-chip-toolbar .history-chip-label{margin:0!important;white-space:nowrap}
+  .history-milestone-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-width:250px}
+  .history-milestone-btn{
+    min-height:32px;padding:6px 9px;border:1px solid #394352;border-radius:9px;background:#1E2329;color:#AEB8C7;
+    font:800 9px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.02em;white-space:nowrap;cursor:pointer
+  }
+  .history-milestone-btn:hover{border-color:#657187;color:#EAECEF;background:#252B34}
+  .history-milestone-btn.is-active{border-color:#F0B90B;background:linear-gradient(145deg,rgba(92,69,5,.88),rgba(45,36,8,.95));color:#FFD83D;box-shadow:0 0 0 2px rgba(240,185,11,.13)}
+  .history-milestone-btn:disabled{opacity:.38;cursor:not-allowed}
+  @media(max-width:620px){
+    .history-chip-toolbar{display:block;margin-bottom:9px}
+    .history-chip-toolbar .history-chip-label{margin-bottom:7px!important}
+    .history-milestone-switch{min-width:0;width:100%;gap:6px}
+    .history-milestone-btn{min-height:35px;font-size:9.5px;padding:7px 5px}
+  }
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4455,6 +4474,7 @@
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
   const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v13_25coin_active_only";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
+  const HISTORY_MILESTONE_MODE_KEY = "cryptoQuantityMilestoneMode_v1";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
   const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v10_25coin_active_only";
@@ -4718,7 +4738,9 @@
     tradeComparisonBenchmark:localStorage.getItem(TRADE_COMPARISON_BENCHMARK_KEY)||DEFAULT_BENCHMARK,tradeComparisonSnapshots:[],tradeComparisonLoading:false,
     selectedHistoryTradeKey:"",historySelectionExplicit:false,latestTradeKeySeen:"",
     historyLoading:false,historyPriceCache:{},sheetRefreshTimer:null,lastSheetSync:null,
-    historyChartData:[],historyButtonBaselines:{},historyButtonLoading:false,allEquivalentCache:{},equivalentLoading:false,
+    historyChartData:[],historyButtonBaselines:{},historyButtonLoading:false,
+    historyMilestoneMode:(()=>{const value=localStorage.getItem(HISTORY_MILESTONE_MODE_KEY);return ["pre","first","latest"].includes(value)?value:"first"})(),
+    historyBaselineCache:{},historyMilestoneLoadToken:0,allEquivalentCache:{},equivalentLoading:false,
     rebuyExpandedSymbol:localStorage.getItem('millionaireRebuyExpandedV1')||'',rebuyRenderSignature:'',
     snapshotMode:"now",snapshotTs:Date.now(),equivalentRefreshTimer:null,
     rotation:{
@@ -4831,7 +4853,7 @@
     if(historyHead&&!$("historyBenchmarkButtons")){
       const chipSection=document.createElement('div');
       chipSection.className='history-chip-section';
-      chipSection.innerHTML='<div class="history-chip-label">So với mốc 1</div><div id="historyBenchmarkButtons"></div>';
+      chipSection.innerHTML='<div class="history-chip-toolbar"><div class="history-chip-label" id="historyMilestoneLabel">So với mốc 1</div><div class="history-milestone-switch" id="historyMilestoneSwitch" role="group" aria-label="Chọn mốc so sánh số lượng"><button type="button" class="history-milestone-btn" data-history-milestone="pre">01/08/25</button><button type="button" class="history-milestone-btn" data-history-milestone="first">Mốc 1</button><button type="button" class="history-milestone-btn" data-history-milestone="latest">Gần nhất</button></div></div><div id="historyBenchmarkButtons"></div>';
       historyHead.insertAdjacentElement('afterend',chipSection);
     }
   }
@@ -4980,6 +5002,86 @@
     });
   }
 
+  function historyMilestoneContext(mode=state.historyMilestoneMode){
+    const first=state.tradeRows[0]||null;
+    const latest=currentHoldingTrade()||state.tradeRows[state.tradeRows.length-1]||null;
+    if(mode==="pre"){
+      const ts=vnDateTimeToUtcMs(FIXED_PRE_MILESTONE_DATE,FIXED_PRE_MILESTONE_TIME);
+      return {
+        mode:"pre",ts,capitalTrade:first,
+        cacheKey:`pre_${ts}_${first?tradeKey(first):"none"}`,
+        shortLabel:"01/08/25",title:"So với 01/08/2025"
+      };
+    }
+    if(mode==="latest"){
+      return {
+        mode:"latest",ts:latest?.timestamp||null,capitalTrade:latest,
+        cacheKey:`latest_${latest?tradeKey(latest):"none"}`,
+        shortLabel:"Gần nhất",title:"So với mốc gần nhất"
+      };
+    }
+    return {
+      mode:"first",ts:first?.timestamp||null,capitalTrade:first,
+      cacheKey:`first_${first?tradeKey(first):"none"}`,
+      shortLabel:"Mốc 1",title:"So với mốc 1"
+    };
+  }
+
+  async function historyMilestoneCapital(trade){
+    if(!trade||!(Number(trade.buyQty)>0))return null;
+    let price=Number(trade.sheetBuyPrice);
+    if(!(price>0)&&Number.isFinite(trade.timestamp)){
+      const info=await getHistoricalPrice(trade.buyCoin,trade.timestamp);
+      price=Number(info?.price);
+    }
+    return price>0?Number(trade.buyQty)*price:null;
+  }
+
+  function syncHistoryMilestoneControls(){
+    const context=historyMilestoneContext();
+    const label=$("historyMilestoneLabel");
+    if(label)label.textContent=context.title;
+    document.querySelectorAll('[data-history-milestone]').forEach(button=>{
+      const mode=button.dataset.historyMilestone;
+      const active=mode===state.historyMilestoneMode;
+      button.classList.toggle('is-active',active);
+      button.setAttribute('aria-pressed',String(active));
+      if(mode==='first')button.disabled=!state.tradeRows[0];
+      else if(mode==='latest')button.disabled=!(currentHoldingTrade()||state.tradeRows[state.tradeRows.length-1]);
+      else button.disabled=false;
+      if(!button.dataset.historyMilestoneBound){
+        button.dataset.historyMilestoneBound='1';
+        button.addEventListener('click',()=>setHistoryMilestoneMode(mode,{syncAnchor:true,force:false}));
+      }
+    });
+  }
+
+  async function setHistoryMilestoneMode(mode,{syncAnchor=true,force=false}={}){
+    if(!["pre","first","latest"].includes(mode))return;
+    state.historyMilestoneMode=mode;
+    localStorage.setItem(HISTORY_MILESTONE_MODE_KEY,mode);
+    state.historyButtonBaselines={};
+    syncHistoryMilestoneControls();
+    renderHistoryBenchmarkButtons();
+
+    if(syncAnchor){
+      let changed=false;
+      if(mode==="pre")changed=applyFixedPreMilestone({force:true});
+      else if(mode==="first"){
+        const first=state.tradeRows[0];
+        if(first)changed=applyTradeAsAnchor(first,{autoLatest:false,force:true});
+      }else{
+        changed=applyLatestTradeAsAnchor(true);
+      }
+      showError("");
+      if(changed)fetchAnchorPrices(false);
+      else syncMilestoneDock();
+    }
+
+    await loadHistoryBenchmarkBaselines(force);
+    scheduleRender();
+  }
+
   function quantityGrowthFromFirst(symbol){
     const latest=currentHoldingTrade();
     const latestLive=latest?Number(state.live[latest.buyCoin]?.price):null;
@@ -4997,6 +5099,7 @@
   function renderHistoryBenchmarkButtons(){
     const host=$("historyBenchmarkButtons");
     if(!host)return;
+    syncHistoryMilestoneControls();
     if(!state.tradeRows.length){
       host.innerHTML='<div class="history-chip-placeholder">Chưa có giao dịch để hiển thị biểu đồ.</div>';
       return;
@@ -5010,7 +5113,7 @@
     // Trang Số lượng chỉ hiển thị đúng 25 coin trong rổ hiện tại.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
-    // Tất cả coin, kể cả coin đang nắm giữ, được xếp đúng theo % tăng/giảm so với mốc đầu tiên.
+    // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
     const rankedSymbols=visibleHistorySymbols.map((symbol,originalIndex)=>{
       const {pct}=quantityGrowthFromFirst(symbol);
       return {symbol,pct,originalIndex,isCurrentHolding:symbol===latest?.buyCoin};
@@ -5026,6 +5129,7 @@
       return a.originalIndex-b.originalIndex;
     });
 
+    const milestoneTitle=historyMilestoneContext().title;
     host.innerHTML=rankedSymbols.map(({symbol,pct,isCurrentHolding})=>{
       const tone=Number.isFinite(pct)?(pct>0?'up':pct<0?'down':'flat'):'neutral';
       const selected=symbol===state.historyBenchmark?'selected':'';
@@ -5033,7 +5137,7 @@
       const holdingClass=isCurrentHolding?'current-holding':'';
       const pctText=Number.isFinite(pct)?`${pct>0?'+':''}${pct.toFixed(2)}%`:(state.historyButtonLoading?'...':'—');
       const holdingLabel='';
-      return `<button class="history-coin-chip ${tone} ${selected} ${btcSpecial} ${holdingClass}" data-history-chip="${symbol}" type="button" title="${isCurrentHolding?'Coin đang nắm giữ':'Bấm để xem biểu đồ'}" ${state.historyLoading?'disabled':''}>
+      return `<button class="history-coin-chip ${tone} ${selected} ${btcSpecial} ${holdingClass}" data-history-chip="${symbol}" type="button" title="${isCurrentHolding?'Coin đang nắm giữ · ':''}${milestoneTitle}" ${state.historyLoading?'disabled':''}>
         <span class="chip-copy"><strong>${symbol}</strong><small>${pctText}</small>${holdingLabel}</span>
       </button>`;
     }).join('');
@@ -5048,40 +5152,64 @@
     if(!host)return;
     if(!state.tradeRows.length){
       state.historyButtonBaselines={};
+      syncHistoryMilestoneControls();
       renderHistoryBenchmarkButtons();
       return;
     }
-    const existing=state.historyButtonBaselines||{};
-    if(!force&&Object.keys(existing).length===benchmarkSymbols.length){
-      renderHistoryBenchmarkButtons();
-      return;
-    }
-    if(state.historyButtonLoading)return;
 
+    const context=historyMilestoneContext();
+    if(!(Number.isFinite(context.ts)&&context.capitalTrade)){
+      state.historyButtonBaselines={};
+      renderHistoryBenchmarkButtons();
+      return;
+    }
+
+    const cached=state.historyBaselineCache?.[context.cacheKey];
+    if(!force&&cached&&Object.keys(cached).length===benchmarkSymbols.length){
+      state.historyButtonBaselines=cached;
+      renderHistoryBenchmarkButtons();
+      return;
+    }
+    const token=++state.historyMilestoneLoadToken;
+    const requestedMode=state.historyMilestoneMode;
     state.historyButtonLoading=true;
     renderHistoryBenchmarkButtons();
     try{
-      const firstTrade=state.tradeRows[0];
-      const holdingPrice=await getHistoricalPrice(firstTrade.buyCoin,firstTrade.timestamp);
-      const firstNav=holdingPrice?.price>0?firstTrade.buyQty*holdingPrice.price:null;
+      const baselineCapital=await historyMilestoneCapital(context.capitalTrade);
+      if(!(baselineCapital>0))throw new Error('Không xác định được giá trị vốn tại mốc đã chọn.');
       const baselines={};
       await mapLimit(
         benchmarkSymbols,
         4,
         async symbol=>{
-          const info=await getHistoricalPrice(symbol,firstTrade.timestamp);
-          baselines[symbol]={
-            firstQty:firstNav>0&&info?.price>0?firstNav/info.price:null,
-            firstPrice:info?.price||null
-          };
+          try{
+            const info=await getHistoricalPrice(symbol,context.ts);
+            baselines[symbol]={
+              firstQty:baselineCapital>0&&info?.price>0?baselineCapital/info.price:null,
+              firstPrice:info?.price||null,
+              baselineCapital,
+              timestamp:context.ts,
+              mode:context.mode
+            };
+          }catch(error){
+            baselines[symbol]={firstQty:null,firstPrice:null,baselineCapital,timestamp:context.ts,mode:context.mode,error:error?.message||String(error)};
+          }
         }
       );
-      state.historyButtonBaselines=baselines;
+      if(token===state.historyMilestoneLoadToken&&requestedMode===state.historyMilestoneMode){
+        state.historyBaselineCache[context.cacheKey]=baselines;
+        state.historyButtonBaselines=baselines;
+      }
     }catch(_){
-      // giữ trạng thái cũ nếu một số giá lịch sử chưa tải được
+      if(token===state.historyMilestoneLoadToken&&requestedMode===state.historyMilestoneMode){
+        state.historyButtonBaselines={};
+      }
     }finally{
-      state.historyButtonLoading=false;
-      renderHistoryBenchmarkButtons();
+      if(token===state.historyMilestoneLoadToken){
+        state.historyButtonLoading=false;
+        syncHistoryMilestoneControls();
+        renderHistoryBenchmarkButtons();
+      }
     }
   }
 
@@ -7132,6 +7260,8 @@
       state.tradeRows=state.allValidTradeRows.filter(r=>isActiveSymbol(r.buyCoin));
       state.lastSheetSync=Date.now();
       state.allEquivalentCache={};
+      state.historyBaselineCache={};
+      state.historyButtonBaselines={};
 
       const rawLatest=currentLogHoldingTrade();
       const sheetLatest=currentHoldingTrade();
@@ -7144,6 +7274,7 @@
           state.historyBenchmark=sheetLatest.buyCoin;
           localStorage.setItem(HISTORY_BENCHMARK_KEY,sheetLatest.buyCoin);
           state.historyButtonBaselines={};
+          state.historyBaselineCache={};
           const historySelect=$("historyBenchmark");
           if(historySelect&&Array.from(historySelect.options).some(option=>option.value===sheetLatest.buyCoin)){
             historySelect.value=sheetLatest.buyCoin;
@@ -8761,7 +8892,7 @@
 
       return `<tr class="${rowClasses}">
         <td><span class="rank">${i+1}</span></td>
-        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div><span class="coin-quantity-growth ${quantityGrowthClass}" title="Số lượng tương đương so với mốc đầu tiên">${quantityGrowthText}</span><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
+        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div><span class="coin-quantity-growth ${quantityGrowthClass}" title="${historyMilestoneContext().title}">${quantityGrowthText}</span><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
         <td><span class="value-pill ${valueClass} ${hasValue?"":"value-pending"}">${valueText}</span></td>
         <td class="num ${pnlClass}"><strong>${returnText}</strong></td>
         <td class="num ${dailyClass}" title="${escapeHTML(state.daily7am.sources?.[r.symbol]||state.daily7am.errors?.[r.symbol]||'Đang tải đúng nến 07:00')}"><strong>${dailyText}</strong><small class="daily-7am-note">${formatDaily7amLabel()}</small></td>
@@ -8895,6 +9026,7 @@
       const changed=applyFixedPreMilestone({force:true});
       showError("");
       if(changed)fetchAnchorPrices(false);
+      setHistoryMilestoneMode("pre",{syncAnchor:false,force:false});
       return;
     }
     const trade=state.tradeRows.find(t=>tradeKey(t)===e.target.value);
@@ -8902,6 +9034,9 @@
     const changed=applyTradeAsAnchor(trade,{autoLatest:false,force:true});
     showError("");
     if(changed)fetchAnchorPrices(false);
+    const first=state.tradeRows[0],latest=currentHoldingTrade()||state.tradeRows[state.tradeRows.length-1];
+    if(first&&tradeKey(trade)===tradeKey(first))setHistoryMilestoneMode("first",{syncAnchor:false,force:false});
+    else if(latest&&tradeKey(trade)===tradeKey(latest))setHistoryMilestoneMode("latest",{syncAnchor:false,force:false});
   });
 
   $("firstAnchorBtn").addEventListener("click",()=>{
@@ -8913,12 +9048,14 @@
     const changed=applyTradeAsAnchor(first,{autoLatest:false,force:true});
     showError("");
     if(changed)fetchAnchorPrices(false);
+    setHistoryMilestoneMode("first",{syncAnchor:false,force:false});
   });
 
   $("milestonePreBtn").addEventListener("click",()=>{
     const changed=applyFixedPreMilestone({force:true});
     showError("");
     if(changed)fetchAnchorPrices(false);
+    setHistoryMilestoneMode("pre",{syncAnchor:false,force:false});
   });
 
   $("milestoneFirstBtn").addEventListener("click",()=>{
@@ -8927,6 +9064,7 @@
     const changed=applyTradeAsAnchor(first,{autoLatest:false,force:true});
     showError("");
     if(changed)fetchAnchorPrices(false);
+    setHistoryMilestoneMode("first",{syncAnchor:false,force:false});
   });
 
   $("milestoneLatestBtn").addEventListener("click",()=>{
@@ -8934,6 +9072,7 @@
     showError("");
     if(changed)fetchAnchorPrices(false);
     else syncMilestoneDock();
+    setHistoryMilestoneMode("latest",{syncAnchor:false,force:false});
   });
 
   $("historyTradeSelect").addEventListener("change",async e=>{
