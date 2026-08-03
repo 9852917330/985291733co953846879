@@ -3991,7 +3991,7 @@
   }
   #page-comparison .overview-history-chip-toolbar{margin:0 0 12px}
   #page-comparison .overview-history-milestone-switch{
-    width:100%;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px
+    width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px
   }
   #page-comparison .overview-history-milestone-switch .history-milestone-btn{
     min-height:56px;border-radius:9px;background:#2B3139;border-color:#343C47;color:#EAECEF;
@@ -4065,6 +4065,13 @@
   #firstAnchorBtn,#reloadAnchorBtn{display:none!important}
   #compareQuickBar{grid-template-columns:minmax(0,1fr)!important}
   #compareQuickBar .quick-btn-wrap{display:none!important}
+
+<style id="overview-two-milestones-and-dock-clearance-v35">
+  #page-comparison .overview-history-milestone-switch{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #page-comparison .overview-history-milestone-switch [data-history-milestone="first"]{display:none!important}
+  @media(max-width:680px){
+    #comparisonHorizontalDockV6{bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important}
+  }
 </style>
 </head>
 <body>
@@ -4284,7 +4291,6 @@
   <div class="history-chip-toolbar overview-history-chip-toolbar">
     <div class="history-milestone-switch overview-history-milestone-switch" id="overviewHistoryMilestoneSwitch" role="group" aria-label="Chọn mốc so sánh số lượng trên trang Tổng quan">
       <button type="button" class="history-milestone-btn" data-history-milestone="pre">01/08/25</button>
-      <button type="button" class="history-milestone-btn" data-history-milestone="first">Mốc 1</button>
       <button type="button" class="history-milestone-btn" data-history-milestone="latest">Gần nhất</button>
     </div>
   </div>
@@ -10492,7 +10498,9 @@
       dock.style.display="block";
       dock.style.left=`${Math.max(6,Math.round(rect.left))}px`;
       dock.style.width=`${Math.max(140,Math.round(Math.min(rect.width,window.innerWidth-Math.max(6,rect.left)-72)))}px`;
-      dock.style.bottom="6px";
+      dock.style.bottom=window.matchMedia("(max-width:680px)").matches
+        ? `max(82px, calc(env(safe-area-inset-bottom) + 82px))`
+        : "6px";
       dockInner.style.width=`${Math.max(sourceTable.scrollWidth,sourceWrap.clientWidth)}px`;
       syncHorizontal();
     }else dock.style.display="none";
