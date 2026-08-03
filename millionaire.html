@@ -4065,12 +4065,34 @@
   #firstAnchorBtn,#reloadAnchorBtn{display:none!important}
   #compareQuickBar{grid-template-columns:minmax(0,1fr)!important}
   #compareQuickBar .quick-btn-wrap{display:none!important}
+</style>
 
 <style id="overview-two-milestones-and-dock-clearance-v35">
   #page-comparison .overview-history-milestone-switch{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   #page-comparison .overview-history-milestone-switch [data-history-milestone="first"]{display:none!important}
   @media(max-width:680px){
-    #comparisonHorizontalDockV6{bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important}
+    #comparisonHorizontalDockV6{bottom:max(4px,calc(env(safe-area-inset-bottom) + 4px))!important}
+  }
+</style>
+
+<style id="mobile-floating-controls-layout-v36">
+  /* Mobile: scrollbar stays on the bottom edge; controls sit clearly above it. */
+  @media(max-width:680px){
+    #comparisonHorizontalDockV6{
+      bottom:max(4px,calc(env(safe-area-inset-bottom) + 4px))!important;
+      height:12px!important;
+      z-index:3470!important;
+    }
+    #comparisonHorizontalDockV6::-webkit-scrollbar{height:10px!important}
+    .milestone-dock{
+      bottom:max(31px,calc(env(safe-area-inset-bottom) + 31px))!important;
+      z-index:3490!important;
+    }
+    .global-refresh-fab{
+      bottom:max(35px,calc(env(safe-area-inset-bottom) + 35px))!important;
+      z-index:3500!important;
+    }
+    #page-comparison{padding-bottom:112px!important}
   }
 </style>
 </head>
@@ -10499,7 +10521,7 @@
       dock.style.left=`${Math.max(6,Math.round(rect.left))}px`;
       dock.style.width=`${Math.max(140,Math.round(Math.min(rect.width,window.innerWidth-Math.max(6,rect.left)-72)))}px`;
       dock.style.bottom=window.matchMedia("(max-width:680px)").matches
-        ? `max(82px, calc(env(safe-area-inset-bottom) + 82px))`
+        ? `max(4px, calc(env(safe-area-inset-bottom) + 4px))`
         : "6px";
       dockInner.style.width=`${Math.max(sourceTable.scrollWidth,sourceWrap.clientWidth)}px`;
       syncHorizontal();
