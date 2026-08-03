@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v33-overview-three-milestone-grid";
+const CACHE_NAME="millionaire-v34-two-corner-milestones-no-anchor-actions";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",
