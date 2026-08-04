@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v36-mobile-scrollbar-bottom-controls-clear";
+const CACHE_NAME="millionaire-v38-revenue-ton-history-cake-fix";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",

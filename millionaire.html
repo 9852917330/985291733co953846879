@@ -4393,6 +4393,7 @@
 <span class="quality-badge quality-normal">Bình thường</span>
 <span class="quality-badge quality-bad">Không ngon</span>
 <span class="quality-legend-label">Chạm vào nhãn để xem toàn bộ tiêu chí chấm điểm.</span>
+<span class="quality-legend-label" title="Doanh thu là phần protocol revenue, không phải tổng phí người dùng trả">Doanh thu: DefiLlama · Volume 24h: CoinGecko tổng hợp toàn thị trường.</span>
 </div>
 <div class="quality-detail" id="qualityDetail"></div>
 <div class="table-wrap">
@@ -4408,7 +4409,10 @@
 <th>Giá mua</th>
 <th>Vốn hóa</th>
 <th>Tỷ lệ lưu hành</th>
-<th>Volume 24h</th>
+<th title="Doanh thu giao thức 24 giờ gần nhất theo DefiLlama dailyRevenue">Doanh thu 1D</th>
+<th title="Tổng doanh thu giao thức 30 ngày gần nhất theo DefiLlama dailyRevenue">Doanh thu 1 tháng</th>
+<th title="Tổng doanh thu giao thức 1 năm gần nhất theo DefiLlama dailyRevenue">Doanh thu 1 năm</th>
+<th title="Volume giao dịch 24 giờ tổng hợp toàn thị trường từ CoinGecko">Volume 24h</th>
 <th class="unlock-head" title="Sự kiện phân phối token gần nhất được công bố; % tính trên tổng cung nếu có dữ liệu">Lịch unlock</th>
 <th class="sector-head">Mảng</th>
 <th class="sr-head" title="Chỉ báo các khung mà giá live đang thực sự nằm trong vùng Hỗ trợ hoặc Kháng cự đã xác nhận">Vùng HT / KC</th>
@@ -4425,7 +4429,7 @@
 </tr>
 </thead>
 <tbody id="tableBody">
-<tr class="loading-row"><td colspan="23">Đang tải nến đã đóng, dựng vùng giá xác nhận và ma trận phân kỳ đa khung…</td></tr>
+<tr class="loading-row"><td colspan="26">Đang tải nến đã đóng, dựng vùng giá xác nhận và ma trận phân kỳ đa khung…</td></tr>
 </tbody>
 </table>
 </div>
@@ -4723,8 +4727,8 @@
 
 
   const MANUAL_FUNDAMENTAL_FALLBACKS = {
-    // Chỉ dùng khi CEX không trả vốn hóa/cung và nguồn market-data bị thiếu hoặc rate-limit.
-    // Giá vẫn luôn lấy từ CEX; vốn hóa dự phòng = giá CEX live × cung lưu hành.
+    // Giá luôn lấy từ CEX. CAKE dùng số cung do Binance công bố; vốn hóa được cập nhật bằng giá live CEX × cung lưu hành.
+    CAKE:{circulatingSupply:322_020_000,totalSupply:400_000_000,maxSupply:400_000_000,source:"Bybit 322,02M · đối chiếu Binance ~322,4M · cung tối đa 400M",force:true},
     GRAM:{circulatingSupply:2_710_000_000,totalSupply:5_210_000_000,source:"CMC/CoinGecko · supply dự phòng"}
   };
 
@@ -4833,6 +4837,7 @@
 
   const state = {
     live:{},anchor:{prices:{},sources:{},capturedAt:{}},icons:{},marketMeta:{},
+    revenue:{bySymbol:{},loading:false,lastFetch:0,error:"",source:"DefiLlama · dailyRevenue"},
     daily7am:{ts:null,prices:{},sources:{},exchanges:{},capturedAt:{},errors:{},loading:false,retryTimer:null},
     divergence:{signals:{},loading:false,loaded:0,total:0,errors:[],lastRun:0},
     qualitySelected:null,
@@ -5507,32 +5512,33 @@
     if(!fallback)return false;
     const current=state.marketMeta[symbol]||{};
     const next={...current};
+    const force=Boolean(fallback.force);
     let changed=false;
 
-    if(!(Number(next.circulatingSupply)>0)&&Number(fallback.circulatingSupply)>0){
+    if((force||!(Number(next.circulatingSupply)>0))&&Number(fallback.circulatingSupply)>0){
       next.circulatingSupply=Number(fallback.circulatingSupply);
       changed=true;
     }
-    if(!(Number(next.totalSupply)>0)&&Number(fallback.totalSupply)>0){
+    if((force||!(Number(next.totalSupply)>0))&&Number(fallback.totalSupply)>0){
       next.totalSupply=Number(fallback.totalSupply);
       changed=true;
     }
-    if(!(Number(next.maxSupply)>0)&&Number(fallback.maxSupply)>0){
+    if((force||!(Number(next.maxSupply)>0))&&Number(fallback.maxSupply)>0){
       next.maxSupply=Number(fallback.maxSupply);
       changed=true;
     }
 
     const price=Number(state.live[symbol]?.price);
-    const derivedMarketCapSource=`${fallback.source} · vốn hóa = giá CEX × cung lưu hành`;
-    const marketCapIsDerived=String(next.marketCapSource||"").includes("giá CEX × cung lưu hành");
-    if(Number.isFinite(price)&&price>0&&Number(next.circulatingSupply)>0&&(!(Number(next.marketCap)>0)||marketCapIsDerived)){
+    const derivedMarketCapSource=`${fallback.source} · vốn hóa = giá live Binance/OKX/Bybit × cung lưu hành`;
+    const marketCapIsDerived=String(next.marketCapSource||"").includes("cung lưu hành");
+    if(Number.isFinite(price)&&price>0&&Number(next.circulatingSupply)>0&&(force||!(Number(next.marketCap)>0)||marketCapIsDerived)){
       next.marketCap=price*Number(next.circulatingSupply);
       next.marketCapSource=derivedMarketCapSource;
       changed=true;
     }
 
-    if(Number.isFinite(circulationRatio(next))&&!isExchangeFundamentalSource(next.circulationSource||next.fundamentalsSource)){
-      next.circulationSource=`${fallback.source} · lưu hành dự phòng`;
+    if(Number.isFinite(circulationRatio(next))&&(force||!isExchangeFundamentalSource(next.circulationSource||next.fundamentalsSource))){
+      next.circulationSource=force?`${fallback.source}`:`${fallback.source} · lưu hành dự phòng`;
       changed=true;
     }
 
@@ -5898,7 +5904,14 @@
         state.icons[symbol]=row.image;
       }
 
-      // Ưu tiên dữ liệu từ Binance / OKX / Bybit. CoinGecko chỉ lấp trường còn thiếu.
+      // Volume 24h luôn dùng CoinGecko để tổng hợp thanh khoản từ toàn bộ sàn.
+      const cgVolume24h=Number(row.total_volume);
+      if(Number.isFinite(cgVolume24h)&&cgVolume24h>0){
+        next.cgVolume24h=cgVolume24h;
+        next.volume24hSource="CoinGecko · tổng hợp toàn thị trường";
+      }
+
+      // Vốn hóa/cung ưu tiên Binance / OKX / Bybit; CoinGecko chỉ lấp trường còn thiếu.
       const exchangeHasMarketCap=Number(current.marketCap)>0&&isExchangeFundamentalSource(current.marketCapSource||current.fundamentalsSource);
       const exchangeHasCirculation=hasExchangeCirculation(current);
 
@@ -5929,12 +5942,101 @@
       next.fundamentalsUpdatedAt=row.last_updated?Date.parse(row.last_updated):now;
       state.marketMeta[symbol]=next;
       applyManualFundamentalFallback(symbol);
-      // Tuyệt đối không đọc current_price, total_volume hoặc trường biến động giá từ CoinGecko.
+      // Tuyệt đối không đọc current_price hoặc trường biến động giá từ CoinGecko; chỉ dùng total_volume tổng hợp.
     }
     try{localStorage.setItem(ICON_KEY,JSON.stringify(state.icons))}catch(_){}
     coinGeckoFundamentalsLastFetch=now;
     scheduleRender();
     scheduleRotationRender();
+  }
+
+  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV1";
+  const REVENUE_FETCH_INTERVAL=15*60*1000;
+  const REVENUE_ALIASES={
+    BTC:["bitcoin"],ETH:["ethereum"],HYPE:["hyperliquid"],AAVE:["aave"],SOL:["solana"],
+    LINK:["chainlink"],SKY:["sky","makerdao","maker"],BNB:["bsc","bnb chain"],UNI:["uniswap"],
+    CAKE:["pancakeswap"],PUMP:["pump","pump.fun"],JUP:["jupiter"],PENDLE:["pendle"],LIT:["lighter"],
+    LDO:["lido"],ETHFI:["ether.fi","etherfi"],MORPHO:["morpho"],RENDER:["render network","render"],
+    TAO:["bittensor"],AERO:["aerodrome"],SUI:["sui"],ONDO:["ondo finance","ondo"],INJ:["injective"],
+    GRAM:["ton","the open network"],OKB:["x layer","okx"]
+  };
+
+  function normalizedRevenueName(value){
+    return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+  }
+
+  function revenueProtocolFor(protocols,symbol){
+    const aliases=(REVENUE_ALIASES[symbol]||[symbol]).map(normalizedRevenueName).filter(Boolean);
+    const rows=(protocols||[]).map(protocol=>({
+      protocol,
+      keys:[protocol?.slug,protocol?.name,protocol?.displayName].map(normalizedRevenueName).filter(Boolean)
+    }));
+    for(const alias of aliases){
+      const exact=rows.find(row=>row.keys.includes(alias));
+      if(exact)return exact.protocol;
+    }
+    for(const alias of aliases){
+      if(alias.length<4)continue;
+      const partial=rows.find(row=>row.keys.some(key=>key===alias||key.startsWith(alias+" ")||key.endsWith(" "+alias)));
+      if(partial)return partial.protocol;
+    }
+    return null;
+  }
+
+  function normalizeRevenueValue(value){
+    const number=Number(value);
+    return Number.isFinite(number)&&number>=0?number:null;
+  }
+
+  async function fetchProtocolRevenue(force=false){
+    const now=Date.now();
+    if(state.revenue.loading)return;
+    if(!force&&now-state.revenue.lastFetch<REVENUE_FETCH_INTERVAL)return;
+    state.revenue.loading=true;state.revenue.error="";
+    try{
+      const url="https://api.llama.fi/overview/fees?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true&dataType=dailyRevenue";
+      const response=await withTimeout(url,{cache:"no-store",headers:{accept:"application/json"}},22000);
+      if(!response.ok)throw new Error(`DefiLlama revenue ${response.status}`);
+      const payload=await response.json();
+      const protocols=Array.isArray(payload?.protocols)?payload.protocols:[];
+      if(!protocols.length)throw new Error("DefiLlama không trả danh sách doanh thu");
+      const bySymbol={};
+      for(const symbol of trackedSymbols){
+        const protocol=revenueProtocolFor(protocols,symbol);
+        bySymbol[symbol]=protocol?{
+          day:normalizeRevenueValue(protocol.total24h),
+          month:normalizeRevenueValue(protocol.total30d),
+          year:normalizeRevenueValue(protocol.total1y),
+          source:`DefiLlama · ${protocol.displayName||protocol.name||protocol.slug||symbol}`,
+          slug:protocol.slug||"",
+          methodology:protocol.methodologyURL||protocol.methodology?.Revenue||"",
+          updatedAt:now
+        }:{day:null,month:null,year:null,source:"DefiLlama · chưa có dữ liệu doanh thu chuẩn hóa",slug:"",methodology:"",updatedAt:now};
+      }
+      state.revenue.bySymbol=bySymbol;
+      state.revenue.lastFetch=now;
+      try{localStorage.setItem(REVENUE_CACHE_KEY,JSON.stringify({bySymbol,lastFetch:now}))}catch(_){}
+    }catch(error){
+      state.revenue.error=error?.message||String(error);
+      if(!Object.keys(state.revenue.bySymbol||{}).length){
+        try{
+          const cached=JSON.parse(localStorage.getItem(REVENUE_CACHE_KEY)||"null");
+          if(cached?.bySymbol){state.revenue.bySymbol=cached.bySymbol;state.revenue.lastFetch=Number(cached.lastFetch)||0;}
+        }catch(_){}
+      }
+      console.warn(state.revenue.error);
+    }finally{
+      state.revenue.loading=false;
+      scheduleRender();
+    }
+  }
+
+  function revenueCellHTML(row,key){
+    const revenue=row?.revenue||{};
+    const value=normalizeRevenueValue(revenue[key]);
+    const label=Number.isFinite(value)?formatCompactUSD(value):"—";
+    const detail=Number.isFinite(value)?`${revenue.source||"DefiLlama"} · doanh thu ${key==="day"?"24 giờ":key==="month"?"30 ngày":"1 năm"} gần nhất`:`${revenue.source||"DefiLlama · chưa có dữ liệu chuẩn hóa"}`;
+    return `<td class="num revenue-cell" title="${escapeHTML(detail)}"><strong>${label}</strong></td>`;
   }
 
   async function restWatchdog(){
@@ -5944,8 +6046,10 @@
       fetchBinanceREST().catch(e=>errors.push(e.message)),
       fetchOKXREST().catch(e=>errors.push(e.message)),
       fetchBybitREST().catch(e=>errors.push(e.message)),
-      fetchCoinGeckoFundamentals(false).catch(e=>console.warn(e.message||e))
+      fetchCoinGeckoFundamentals(false).catch(e=>console.warn(e.message||e)),
+      fetchProtocolRevenue(false).catch(e=>console.warn(e.message||e))
     ]);
+    Object.keys(MANUAL_FUNDAMENTAL_FALLBACKS).forEach(applyManualFundamentalFallback);
     if(errors.length===3)showError("Không lấy được giá từ Binance, OKX và Bybit: "+errors.join(" · "));
     else if(!state.anchorLoading)showError("");
     $("refreshBtn").disabled=false;
@@ -8941,9 +9045,11 @@
     const meta=state.marketMeta[symbol]||{};
     const row={
       symbol,a,live,buyPrice:hasBuy?buyPrice:null,daily7amPrice:hasDaily7am?daily7amPrice:null,quantity,currentValue,pnlUsd,returnPct,daily7amPct,
-      marketCap:Number(meta.marketCap)||null,
+      marketCap:symbol==="CAKE"&&hasLive?Number(live.price)*322_020_000:(Number(meta.marketCap)||null),
       circulationPct:circulationRatio(meta),
-      volume24h:Number(meta.volume)||null,
+      revenue:state.revenue.bySymbol?.[symbol]||null,
+      volume24h:Number(meta.cgVolume24h)||Number(meta.volume)||null,
+      volume24hSource:meta.volume24hSource||meta.tickerSource||"",
       age:hasLive?Date.now()-live.receivedAt:null,
       complete:hasLive&&hasBuy
     };
@@ -9017,9 +9123,12 @@
         <td class="num ${dailyClass}" title="${escapeHTML(state.daily7am.sources?.[r.symbol]||state.daily7am.errors?.[r.symbol]||'Đang tải đúng nến 07:00')}"><strong>${dailyText}</strong><small class="daily-7am-note">${formatDaily7amLabel()}</small></td>
         <td class="num"><strong>${hasLive?formatPrice(r.live.price,r.a.d):"—"}</strong></td>
         <td class="num">${Number.isFinite(r.buyPrice)?formatPrice(r.buyPrice,r.a.d):"—"}</td>
-        <td class="num"><strong>${formatCompactUSD(r.marketCap)}</strong></td>
-        <td class="num"><strong>${formatCirculationPct(r.circulationPct)}</strong></td>
-        <td class="num">${formatCompactUSD(r.volume24h)}</td>
+        <td class="num" title="${escapeHTML(state.marketMeta[r.symbol]?.marketCapSource||'')}"><strong>${formatCompactUSD(r.marketCap)}</strong></td>
+        <td class="num" title="${escapeHTML(state.marketMeta[r.symbol]?.circulationSource||'')}"><strong>${formatCirculationPct(r.circulationPct)}</strong></td>
+        ${revenueCellHTML(r,"day")}
+        ${revenueCellHTML(r,"month")}
+        ${revenueCellHTML(r,"year")}
+        <td class="num" title="${escapeHTML(r.volume24hSource||'CoinGecko · tổng hợp toàn thị trường')}">${formatCompactUSD(r.volume24h)}</td>
         ${unlockCellHTML(r.symbol)}
         ${sectorCellHTML(r.symbol)}
         ${supportResistanceCellHTML(r.divergence,r.live?.price,r.a.d)}
@@ -9090,10 +9199,10 @@
 
   function exportCSV(){
     const rows=rowsSorted();
-    const header=["Hạng","Coin","Nhãn chất lượng","Điểm tổng","Nền tảng 14 tiêu chí","Quỹ lớn hậu thuẫn","Đội ngũ","Adoption","Vốn rót","Độ uy tín","Tăng trưởng dài hạn","Narrative","Sản phẩm/sử dụng thật","Moat","Token value capture","Tokenomics/pha loãng","Mức độ phi tập trung","Độ bền thesis","Năng lực thực thi","Volume & vị thế","Sức mạnh thị trường","Giá trị hiện tại","Lãi/lỗ %","Tăng/giảm từ 07:00 VN","Giá live","Giá mua","Giá 07:00 VN","Vốn hóa","Tỷ lệ lưu hành %","Volume 24h","Vùng Hỗ trợ/Kháng cự","RSI 14 15m","Phân kỳ 15m","RSI 14 1h","Phân kỳ 1h","RSI 14 4h","Phân kỳ 4h","RSI 14 1D","Phân kỳ 1D","RSI 14 1W","Phân kỳ 1W","Dự đoán giá 1 ngày","Dự đoán % 1 ngày","Dự đoán giá 1 tuần","Dự đoán % 1 tuần","Dự đoán giá 1 tháng","Dự đoán % 1 tháng","Dự đoán giá 1 năm","Dự đoán % 1 năm","Độ trễ giây","Mốc mua Việt Nam","Mốc 07:00 Việt Nam"];
+    const header=["Hạng","Coin","Nhãn chất lượng","Điểm tổng","Nền tảng 14 tiêu chí","Quỹ lớn hậu thuẫn","Đội ngũ","Adoption","Vốn rót","Độ uy tín","Tăng trưởng dài hạn","Narrative","Sản phẩm/sử dụng thật","Moat","Token value capture","Tokenomics/pha loãng","Mức độ phi tập trung","Độ bền thesis","Năng lực thực thi","Volume & vị thế","Sức mạnh thị trường","Giá trị hiện tại","Lãi/lỗ %","Tăng/giảm từ 07:00 VN","Giá live","Giá mua","Giá 07:00 VN","Vốn hóa","Tỷ lệ lưu hành %","Doanh thu 1D","Doanh thu 1 tháng","Doanh thu 1 năm","Volume 24h","Vùng Hỗ trợ/Kháng cự","RSI 14 15m","Phân kỳ 15m","RSI 14 1h","Phân kỳ 1h","RSI 14 4h","Phân kỳ 4h","RSI 14 1D","Phân kỳ 1D","RSI 14 1W","Phân kỳ 1W","Dự đoán giá 1 ngày","Dự đoán % 1 ngày","Dự đoán giá 1 tuần","Dự đoán % 1 tuần","Dự đoán giá 1 tháng","Dự đoán % 1 tháng","Dự đoán giá 1 năm","Dự đoán % 1 năm","Độ trễ giây","Mốc mua Việt Nam","Mốc 07:00 Việt Nam"];
     const body=rows.map((r,i)=>{
       const p=r.quality.profile||{},x=r.quality.factors||{};
-      return [i+1,r.symbol,r.quality.label,r.quality.total,r.quality.structural,x.backing,x.team,x.adoption,x.capital,x.credibility,x.growth,x.narrative,p.product,p.moat,p.valueCapture,p.tokenomics,p.decentralization,p.durability,p.execution,r.quality.market,r.quality.momentum,r.currentValue,r.returnPct,r.daily7amPct,r.live?.price,r.buyPrice,r.daily7amPrice,r.marketCap,r.circulationPct,r.volume24h,supportResistanceCSV(r.divergence,r.live?.price),
+      return [i+1,r.symbol,r.quality.label,r.quality.total,r.quality.structural,x.backing,x.team,x.adoption,x.capital,x.credibility,x.growth,x.narrative,p.product,p.moat,p.valueCapture,p.tokenomics,p.decentralization,p.durability,p.execution,r.quality.market,r.quality.momentum,r.currentValue,r.returnPct,r.daily7amPct,r.live?.price,r.buyPrice,r.daily7amPrice,r.marketCap,r.circulationPct,r.revenue?.day,r.revenue?.month,r.revenue?.year,r.volume24h,supportResistanceCSV(r.divergence,r.live?.price),
         ...DIVERGENCE_TIMEFRAMES.flatMap(tf=>{
           const signal=r.divergence?.[tf.key];
           const status=signal?.status==="ready"?(signal.direction==="none"?"Không có":`${signal.direction==="bullish"?"Tăng":"Giảm"}${signal.macdConfirmed?" · RSI+MACD":" · RSI"}`):(signal?.status==="error"?"Lỗi dữ liệu":"Chưa tải");
@@ -11501,6 +11610,13 @@
     WLFI:{binance:"WLFIUSDT",okx:"WLFI-USDT",bybit:"WLFIUSDT"}
   };
 
+  const GRAM_REBRAND_TS=Date.UTC(2026,5,17,10,0,0);
+  const TON_LEGACY_MARKETS=[
+    {provider:"binance",exchange:"Binance",prefix:"BINANCE",rawPair:"TONUSDT",pair:"TONUSDT",tvSymbol:"BINANCE:TONUSDT"},
+    {provider:"okx",exchange:"OKX",prefix:"OKX",rawPair:"TON-USDT",pair:"TONUSDT",tvSymbol:"OKX:TONUSDT"},
+    {provider:"bybit",exchange:"Bybit",prefix:"BYBIT",rawPair:"TONUSDT",pair:"TONUSDT",tvSymbol:"BYBIT:TONUSDT"}
+  ];
+
   const activeStudies=new Set();
   let activeSymbol="BTC";
   let activeInterval="15";
@@ -11578,16 +11694,37 @@
     throw new Error("Sàn chưa được hỗ trợ");
   }
 
-  async function resolveAndFetch(symbol,interval,limit=500){
+  async function fetchFirstAvailable(candidates,interval,limit,minimum=20){
     const errors=[];
-    for(const candidate of candidatesFor(symbol)){
+    for(const candidate of candidates){
       try{
         const data=await fetchCandles(candidate,interval,limit);
-        if(data.length>=20)return {market:candidate,candles:data};
+        if(data.length>=minimum)return {market:candidate,candles:data};
         errors.push(`${candidate.exchange}: chỉ có ${data.length} nến`);
       }catch(error){errors.push(`${candidate.exchange}: ${error?.message||error}`)}
     }
-    throw new Error(errors.join(" · ")||`Không có cặp spot cho ${symbol}`);
+    return {market:null,candles:[],errors};
+  }
+
+  async function resolveGramAndTon(interval,limit=500){
+    const [current,legacy]=await Promise.all([
+      fetchFirstAvailable(candidatesFor("GRAM"),interval,limit,10),
+      fetchFirstAvailable(TON_LEGACY_MARKETS,interval,1000,10)
+    ]);
+    if(!current.market&&!legacy.market)throw new Error([...(current.errors||[]),...(legacy.errors||[])].join(" · ")||"Không có dữ liệu GRAM/TON");
+    const oldRows=(legacy.candles||[]).filter(row=>row.ts<GRAM_REBRAND_TS);
+    const newRows=(current.candles||[]).filter(row=>row.ts>=GRAM_REBRAND_TS);
+    const merged=cleanCandles([...oldRows,...newRows]);
+    if(merged.length<20)throw new Error(`GRAM + TON chỉ có ${merged.length} nến hợp lệ`);
+    const market=current.market||legacy.market;
+    return {market,candles:merged,subtitle:`${current.market?`${current.market.exchange}:GRAM`:"GRAM"} + lịch sử ${legacy.market?`${legacy.market.exchange}:TON`:"TON"}`};
+  }
+
+  async function resolveAndFetch(symbol,interval,limit=500){
+    if(symbol==="GRAM")return resolveGramAndTon(interval,limit);
+    const result=await fetchFirstAvailable(candidatesFor(symbol),interval,limit,20);
+    if(result.market)return {market:result.market,candles:result.candles};
+    throw new Error((result.errors||[]).join(" · ")||`Không có cặp spot cho ${symbol}`);
   }
 
   function emaArray(values,period){
@@ -11913,7 +12050,7 @@
       const payload=await resolveAndFetch(activeSymbol,activeInterval,500);
       if(serial!==loadSerial)return;
       currentMarket=payload.market;candles=payload.candles;calculations=calculateIndicators(candles);
-      subtitle.textContent=`${currentMarket.exchange}:${currentMarket.pair} · ${INTERVALS[activeInterval]?.label||activeInterval}`;
+      subtitle.textContent=`${payload.subtitle||`${currentMarket.exchange}:${currentMarket.pair}`} · ${INTERVALS[activeInterval]?.label||activeInterval}`;
       external.href=`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(currentMarket.tvSymbol)}&interval=${encodeURIComponent(activeInterval)}`;
       setSeriesData(fit);
       hideLoading();
@@ -11929,15 +12066,20 @@
   async function refreshCurrentData(){
     if(!modal.classList.contains("open")||!currentMarket)return;
     try{
-      let next;
-      try{next=await fetchCandles(currentMarket,activeInterval,500)}
-      catch(_){
-        const fallback=await resolveAndFetch(activeSymbol,activeInterval,500);
-        currentMarket=fallback.market;next=fallback.candles;
+      let next,payload=null;
+      if(activeSymbol==="GRAM"){
+        payload=await resolveAndFetch(activeSymbol,activeInterval,500);
+        currentMarket=payload.market;next=payload.candles;
+      }else{
+        try{next=await fetchCandles(currentMarket,activeInterval,500)}
+        catch(_){
+          payload=await resolveAndFetch(activeSymbol,activeInterval,500);
+          currentMarket=payload.market;next=payload.candles;
+        }
       }
       if(!modal.classList.contains("open")||!next?.length)return;
       candles=next;calculations=calculateIndicators(candles);
-      subtitle.textContent=`${currentMarket.exchange}:${currentMarket.pair} · ${INTERVALS[activeInterval]?.label||activeInterval}`;
+      subtitle.textContent=`${payload?.subtitle||`${currentMarket.exchange}:${currentMarket.pair}`} · ${INTERVALS[activeInterval]?.label||activeInterval}`;
       external.href=`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(currentMarket.tvSymbol)}&interval=${encodeURIComponent(activeInterval)}`;
       setSeriesData(false);
     }catch(_){/* keep the last valid candles */}
