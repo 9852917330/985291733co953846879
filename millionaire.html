@@ -170,7 +170,7 @@
     .quality-detail.show{display:block}
     .quality-detail-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
     .quality-detail-title{font-size:14px;font-weight:900}
-    .quality-score-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}
+    .quality-score-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:8px}
     .quality-score-item{border:1px solid rgba(39,50,68,.8);border-radius:9px;padding:7px;background:#0f151f}
     .quality-score-item .k{font-size:9px;color:var(--muted);margin-bottom:3px}
     .quality-score-item .v{font-size:12px;font-weight:900}
@@ -5950,7 +5950,7 @@
     scheduleRotationRender();
   }
 
-  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV1";
+  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV2_18criteria";
   const REVENUE_FETCH_INTERVAL=15*60*1000;
   const REVENUE_ALIASES={
     BTC:["bitcoin"],ETH:["ethereum"],HYPE:["hyperliquid"],AAVE:["aave"],SOL:["solana"],
@@ -8324,6 +8324,69 @@
     return clamp(score,20,92);
   }
 
+  function interpolatedLogScore(value,anchors){
+    const v=Number(value);
+    if(!Number.isFinite(v)||v<0)return null;
+    if(v<=anchors[0][0])return anchors[0][1];
+    const firstPositive=anchors.find(([x])=>x>0)?.[0]||1;
+    const epsilon=firstPositive/10;
+    for(let i=1;i<anchors.length;i++){
+      const [x1,y1]=anchors[i-1],[x2,y2]=anchors[i];
+      if(v<=x2){
+        const lx1=Math.log10(Math.max(x1,epsilon)),lx2=Math.log10(Math.max(x2,epsilon)),lv=Math.log10(Math.max(v,epsilon));
+        const t=lx2===lx1?0:(lv-lx1)/(lx2-lx1);
+        return y1+(y2-y1)*clamp(t,0,1);
+      }
+    }
+    return anchors[anchors.length-1][1];
+  }
+
+  function revenueTrendRatioScore(ratio){
+    const r=Number(ratio);
+    if(!Number.isFinite(r)||r<=0)return 45;
+    if(r<.25)return 22;
+    if(r<.5)return 35+(r-.25)/.25*17;
+    if(r<.8)return 52+(r-.5)/.3*18;
+    if(r<=1.25)return 70+(r-.8)/.45*18;
+    if(r<=2.5)return 88-(r-1.25)/1.25*10;
+    if(r<=5)return 78-(r-2.5)/2.5*18;
+    return clamp(60-Math.log2(r/5)*12,28,60);
+  }
+
+  function revenueQualityMetrics(row){
+    const revenue=row?.revenue||{};
+    const day=normalizeRevenueValue(revenue.day);
+    const month=normalizeRevenueValue(revenue.month);
+    const year=normalizeRevenueValue(revenue.year);
+    const coverage=[day,month,year].filter(Number.isFinite).length;
+    if(!coverage){
+      return {strength:35,valuation:35,annualized:null,revenueYield:null,trend:35,coverage:0};
+    }
+
+    const annualized=Number.isFinite(year)?year:Number.isFinite(month)?month*12:day*365;
+    const absolute=interpolatedLogScore(annualized,[
+      [0,10],[1e4,22],[1e5,34],[1e6,50],[1e7,68],[1e8,86],[1e9,98],[1e10,100]
+    ])??35;
+
+    const trendParts=[];
+    if(Number.isFinite(month)&&Number.isFinite(year)&&year>0)trendParts.push(revenueTrendRatioScore((month/30)/(year/365)));
+    if(Number.isFinite(day)&&Number.isFinite(month)&&month>0)trendParts.push(revenueTrendRatioScore(day/(month/30)));
+    const trend=trendParts.length?trendParts.reduce((sum,x)=>sum+x,0)/trendParts.length:50;
+    const coveragePenalty=coverage===1?12:coverage===2?5:0;
+    const strength=clamp(absolute*.74+trend*.26-coveragePenalty,0,100);
+
+    const marketCap=Number(row?.marketCap);
+    const revenueYield=marketCap>0&&annualized>=0?annualized/marketCap:null;
+    let valuation=35;
+    if(Number.isFinite(revenueYield)){
+      valuation=interpolatedLogScore(revenueYield,[
+        [0,10],[.0001,20],[.0005,32],[.001,42],[.005,62],[.01,72],[.02,82],[.05,92],[.10,98],[.20,100]
+      ])??35;
+      valuation=clamp(valuation-(coverage===1?10:coverage===2?4:0),0,100);
+    }
+    return {strength,valuation,annualized,revenueYield,trend,coverage};
+  }
+
   function qualityFor(row){
     const meta=state.marketMeta[row.symbol];
     const profile=STANDARD_PROFILES[row.symbol];
@@ -8331,7 +8394,10 @@
     const structural=structuralQualityScore(row.symbol);
     const market=marketQualityScore(meta);
     const momentum=momentumScore(row,meta);
-    const total=clamp(structural*.85+market*.09+momentum*.06,0,100);
+    const revenueMetrics=revenueQualityMetrics(row);
+    const revenueStrength=revenueMetrics.strength;
+    const revenueValuation=revenueMetrics.valuation;
+    const total=clamp(structural*.70+revenueStrength*.12+revenueValuation*.08+market*.06+momentum*.04,0,100);
 
     let label,css,tier;
     if(total>=88){label="Rất ngon";css="quality-very";tier="very"}
@@ -8339,12 +8405,12 @@
     else if(total>=68){label="Bình thường";css="quality-normal";tier="normal"}
     else{label="Không ngon";css="quality-bad";tier="bad"}
 
-    return {total,structural,market,momentum,label,css,tier,meta,profile,factors};
+    return {total,structural,revenueStrength,revenueValuation,revenueMetrics,market,momentum,label,css,tier,meta,profile,factors};
   }
 
   function qualityBadgeHTML(row){
     const q=row.quality;
-    const title=`${row.symbol}: ${q.label} ${q.total.toFixed(1)}/100 · Nền tảng ${q.structural.toFixed(1)} · Volume & vị thế ${q.market.toFixed(1)} · Sức mạnh ${q.momentum.toFixed(1)}`;
+    const title=`${row.symbol}: ${q.label} ${q.total.toFixed(1)}/100 · Nền tảng ${q.structural.toFixed(1)} · Doanh thu ${q.revenueStrength.toFixed(1)} · Định giá/DT ${q.revenueValuation.toFixed(1)} · Volume & vị thế ${q.market.toFixed(1)} · Sức mạnh ${q.momentum.toFixed(1)}`;
     return `<button type="button" class="quality-badge ${q.css}" data-quality-symbol="${row.symbol}" title="${title}">${q.label}</button>`;
   }
 
@@ -8376,7 +8442,8 @@
       ["Quỹ lớn hậu thuẫn",x.backing],["Đội ngũ",x.team],["Adoption",x.adoption],["Vốn rót",x.capital],
       ["Độ uy tín",x.credibility],["Tăng trưởng dài hạn",x.growth],["Narrative",x.narrative],["Sản phẩm / sử dụng thật",p.product],
       ["Moat",p.moat],["Token value capture",p.valueCapture],["Tokenomics / pha loãng",p.tokenomics],["Mức độ phi tập trung",p.decentralization],
-      ["Độ bền thesis",p.durability],["Năng lực thực thi",p.execution],["Volume & vị thế",q.market],["Sức mạnh thị trường",q.momentum]
+      ["Độ bền thesis",p.durability],["Năng lực thực thi",p.execution],["Doanh thu & tăng trưởng",q.revenueStrength],["Định giá theo doanh thu",q.revenueValuation],
+      ["Volume & vị thế",q.market],["Sức mạnh thị trường",q.momentum]
     ];
 
     const modal=$("qualityDetail");
@@ -8391,13 +8458,16 @@
         </div>
         <div class="quality-score-grid">
           <div class="quality-score-item"><div class="k">Nền tảng 14 tiêu chí</div><div class="v">${q.structural.toFixed(1)}</div></div>
+          <div class="quality-score-item"><div class="k">Doanh thu & tăng trưởng</div><div class="v">${q.revenueStrength.toFixed(1)}</div></div>
+          <div class="quality-score-item"><div class="k">Định giá theo doanh thu</div><div class="v">${q.revenueValuation.toFixed(1)}</div></div>
           <div class="quality-score-item"><div class="k">Volume & vị thế</div><div class="v">${q.market.toFixed(1)}</div></div>
           <div class="quality-score-item"><div class="k">Sức mạnh thị trường</div><div class="v">${q.momentum.toFixed(1)}</div></div>
           <div class="quality-score-item"><div class="k">Điểm tổng hợp</div><div class="v">${q.total.toFixed(1)}</div></div>
         </div>
-        <div class="quality-standard-title">16 tiêu chí được áp dụng giống nhau cho toàn bộ danh sách</div>
+        <div class="quality-standard-title">18 tiêu chí được áp dụng giống nhau cho toàn bộ danh sách</div>
         <div class="quality-standard-grid">${criteria.map(([name,value])=>`<div><span>${name}</span><strong>${Number(value).toFixed(1)}</strong></div>`).join("")}</div>
-        <div class="quality-reason"><strong>Trọng số:</strong> nền tảng 85% · volume và vị thế 9% · sức mạnh thị trường 6%.</div>
+        <div class="quality-reason"><strong>Trọng số:</strong> nền tảng 14 tiêu chí 70% · doanh thu & tăng trưởng 12% · định giá theo doanh thu 8% · volume và vị thế 6% · sức mạnh thị trường 4%.</div>
+        <div class="quality-reason"><strong>Dữ liệu doanh thu:</strong> 1D ${Number.isFinite(normalizeRevenueValue(row.revenue?.day))?formatCompactUSD(row.revenue.day):"—"} · 30D ${Number.isFinite(normalizeRevenueValue(row.revenue?.month))?formatCompactUSD(row.revenue.month):"—"} · 1Y ${Number.isFinite(normalizeRevenueValue(row.revenue?.year))?formatCompactUSD(row.revenue.year):"—"} · doanh thu năm dùng để định giá ${Number.isFinite(q.revenueMetrics.annualized)?formatCompactUSD(q.revenueMetrics.annualized):"—"} · Revenue/Market Cap ${Number.isFinite(q.revenueMetrics.revenueYield)?(q.revenueMetrics.revenueYield*100).toFixed(2)+"%":"—"}.</div>
         <div class="quality-reason"><strong>Dữ liệu thị trường:</strong> ${ath} · ${c30} · ${dilution} · ${volRatio}.</div>
         <div class="quality-reason"><strong>Đánh giá:</strong> ${p.reason||"Chưa có ghi chú."}</div>
       </section>
@@ -9199,10 +9269,10 @@
 
   function exportCSV(){
     const rows=rowsSorted();
-    const header=["Hạng","Coin","Nhãn chất lượng","Điểm tổng","Nền tảng 14 tiêu chí","Quỹ lớn hậu thuẫn","Đội ngũ","Adoption","Vốn rót","Độ uy tín","Tăng trưởng dài hạn","Narrative","Sản phẩm/sử dụng thật","Moat","Token value capture","Tokenomics/pha loãng","Mức độ phi tập trung","Độ bền thesis","Năng lực thực thi","Volume & vị thế","Sức mạnh thị trường","Giá trị hiện tại","Lãi/lỗ %","Tăng/giảm từ 07:00 VN","Giá live","Giá mua","Giá 07:00 VN","Vốn hóa","Tỷ lệ lưu hành %","Doanh thu 1D","Doanh thu 1 tháng","Doanh thu 1 năm","Volume 24h","Vùng Hỗ trợ/Kháng cự","RSI 14 15m","Phân kỳ 15m","RSI 14 1h","Phân kỳ 1h","RSI 14 4h","Phân kỳ 4h","RSI 14 1D","Phân kỳ 1D","RSI 14 1W","Phân kỳ 1W","Dự đoán giá 1 ngày","Dự đoán % 1 ngày","Dự đoán giá 1 tuần","Dự đoán % 1 tuần","Dự đoán giá 1 tháng","Dự đoán % 1 tháng","Dự đoán giá 1 năm","Dự đoán % 1 năm","Độ trễ giây","Mốc mua Việt Nam","Mốc 07:00 Việt Nam"];
+    const header=["Hạng","Coin","Nhãn chất lượng","Điểm tổng","Nền tảng 14 tiêu chí","Doanh thu & tăng trưởng (điểm)","Định giá theo doanh thu (điểm)","Quỹ lớn hậu thuẫn","Đội ngũ","Adoption","Vốn rót","Độ uy tín","Tăng trưởng dài hạn","Narrative","Sản phẩm/sử dụng thật","Moat","Token value capture","Tokenomics/pha loãng","Mức độ phi tập trung","Độ bền thesis","Năng lực thực thi","Volume & vị thế","Sức mạnh thị trường","Giá trị hiện tại","Lãi/lỗ %","Tăng/giảm từ 07:00 VN","Giá live","Giá mua","Giá 07:00 VN","Vốn hóa","Tỷ lệ lưu hành %","Doanh thu 1D","Doanh thu 1 tháng","Doanh thu 1 năm","Volume 24h","Vùng Hỗ trợ/Kháng cự","RSI 14 15m","Phân kỳ 15m","RSI 14 1h","Phân kỳ 1h","RSI 14 4h","Phân kỳ 4h","RSI 14 1D","Phân kỳ 1D","RSI 14 1W","Phân kỳ 1W","Dự đoán giá 1 ngày","Dự đoán % 1 ngày","Dự đoán giá 1 tuần","Dự đoán % 1 tuần","Dự đoán giá 1 tháng","Dự đoán % 1 tháng","Dự đoán giá 1 năm","Dự đoán % 1 năm","Độ trễ giây","Mốc mua Việt Nam","Mốc 07:00 Việt Nam"];
     const body=rows.map((r,i)=>{
       const p=r.quality.profile||{},x=r.quality.factors||{};
-      return [i+1,r.symbol,r.quality.label,r.quality.total,r.quality.structural,x.backing,x.team,x.adoption,x.capital,x.credibility,x.growth,x.narrative,p.product,p.moat,p.valueCapture,p.tokenomics,p.decentralization,p.durability,p.execution,r.quality.market,r.quality.momentum,r.currentValue,r.returnPct,r.daily7amPct,r.live?.price,r.buyPrice,r.daily7amPrice,r.marketCap,r.circulationPct,r.revenue?.day,r.revenue?.month,r.revenue?.year,r.volume24h,supportResistanceCSV(r.divergence,r.live?.price),
+      return [i+1,r.symbol,r.quality.label,r.quality.total,r.quality.structural,r.quality.revenueStrength,r.quality.revenueValuation,x.backing,x.team,x.adoption,x.capital,x.credibility,x.growth,x.narrative,p.product,p.moat,p.valueCapture,p.tokenomics,p.decentralization,p.durability,p.execution,r.quality.market,r.quality.momentum,r.currentValue,r.returnPct,r.daily7amPct,r.live?.price,r.buyPrice,r.daily7amPrice,r.marketCap,r.circulationPct,r.revenue?.day,r.revenue?.month,r.revenue?.year,r.volume24h,supportResistanceCSV(r.divergence,r.live?.price),
         ...DIVERGENCE_TIMEFRAMES.flatMap(tf=>{
           const signal=r.divergence?.[tf.key];
           const status=signal?.status==="ready"?(signal.direction==="none"?"Không có":`${signal.direction==="bullish"?"Tăng":"Giảm"}${signal.macdConfirmed?" · RSI+MACD":" · RSI"}`):(signal?.status==="error"?"Lỗi dữ liệu":"Chưa tải");
