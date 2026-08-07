@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v31-25coin-active-only-history-full"/>
+<meta name="app-build" content="v41-26coin-add-cc-live-data"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -4200,7 +4200,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 25 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 26 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -4274,7 +4274,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 25 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 26 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4309,7 +4309,7 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">25 tài sản · một rổ xoay thống nhất</div></div><section class="overview-history-chip-section" id="overviewHistoryMilestoneSection">
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">26 tài sản · một rổ xoay thống nhất</div></div><section class="overview-history-chip-section" id="overviewHistoryMilestoneSection">
   <div class="history-chip-toolbar overview-history-chip-toolbar">
     <div class="history-milestone-switch overview-history-milestone-switch" id="overviewHistoryMilestoneSwitch" role="group" aria-label="Chọn mốc so sánh số lượng trên trang Tổng quan">
       <button type="button" class="history-milestone-btn" data-history-milestone="pre">01/08/25</button>
@@ -4322,7 +4322,7 @@
 </section><section class="toolbar">
 <div class="toolbar-summary">
 <span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
-<span class="badge badge-count">Danh sách so sánh: <strong>25 tài sản</strong></span>
+<span class="badge badge-count">Danh sách so sánh: <strong>26 tài sản</strong></span>
 <span class="badge badge-total">Mô hình vốn: <strong>100% một coin</strong></span>
 <span class="badge badge-anchor">Mốc mặc định: <strong id="latestTradeAnchorInfo">Đang đọc lần xoay gần nhất…</strong></span>
 </div>
@@ -4368,23 +4368,23 @@
 </div>
 </div>
 </section><section class="stats">
-<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">25 tài sản</div><div class="s">Một rổ duy nhất · BTC, ETH và OKB cũng là ứng viên xoay</div></div>
+<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">26 tài sản</div><div class="s">Một rổ duy nhất · BTC, ETH và OKB cũng là ứng viên xoay</div></div>
 <div class="stat"><div class="k">Tổng giá trị hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
 <div class="stat"><div class="k">Coin mạnh nhất</div><div class="v" id="bestCoin">—</div><div class="s" id="bestCoinInfo">—</div></div>
 <div class="stat"><div class="k">Khoảng cách mạnh/yếu</div><div class="v" id="spreadValue">—</div><div class="s" id="spreadInfo">—</div></div>
-<div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/25</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
+<div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/26</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 25 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 26 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>BTC · ETH · HYPE · AAVE · SOL · LINK · SKY · BNB · UNI · CAKE · PUMP · JUP · PENDLE · LIT · LDO · ETHFI · MORPHO · RENDER · TAO · AERO · SUI · ONDO · INJ · GRAM · OKB</span>
+<span>BTC · ETH · HYPE · AAVE · SOL · LINK · SKY · BNB · UNI · CAKE · PUMP · JUP · PENDLE · LIT · LDO · ETHFI · MORPHO · RENDER · TAO · AERO · SUI · ONDO · INJ · GRAM · OKB · CC</span>
 </div>
-<span>25 tài sản</span>
+<span>26 tài sản</span>
 </div>
 <div class="quality-legend">
 <span class="quality-legend-label">Nhãn chất lượng tổng hợp:</span>
@@ -4393,7 +4393,7 @@
 <span class="quality-badge quality-normal">Bình thường</span>
 <span class="quality-badge quality-bad">Không ngon</span>
 <span class="quality-legend-label">Chạm vào nhãn để xem toàn bộ tiêu chí chấm điểm.</span>
-<span class="quality-legend-label" title="Doanh thu là phần protocol revenue, không phải tổng phí người dùng trả">Doanh thu: DefiLlama · Volume 24h: CoinGecko tổng hợp toàn thị trường.</span>
+<span class="quality-legend-label" title="Doanh thu là phần protocol revenue, không phải tổng phí người dùng trả">Doanh thu: DefiLlama protocol revenue lăn 1/30/365 ngày · Vốn hóa, cung, FDV và Volume 24h: CoinGecko; giá live: Binance/OKX/Bybit. Dấu “—” nghĩa là nguồn chưa công bố dữ liệu chuẩn hóa, không phải bằng 0.</span>
 </div>
 <div class="quality-detail" id="qualityDetail"></div>
 <div class="table-wrap">
@@ -4580,23 +4580,23 @@
   const ANCHOR_SETTINGS_KEY = "crypto100AnchorSettings_v3";
   const REST_INTERVAL = 30_000;
   const PRIMARY_STALE_MS = 10_000;
-  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v43_25coin_active_only_";
+  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v44_26coin_add_cc_";
   const ICON_KEY = "fullCapitalIcons_v40_cg";
   const SHEET_ID = "1oXTD35cnMZEeiGX9oQ4XepH7jWCNilHIXfNHLnrjXs0";
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v13_25coin_active_only";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v14_26coin_add_cc";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_MILESTONE_MODE_KEY = "cryptoQuantityMilestoneMode_v1";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v10_25coin_active_only";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v11_26coin_add_cc";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["BTC","ETH","HYPE","AAVE","SOL","LINK","SKY","BNB","UNI","CAKE","PUMP","JUP","PENDLE","LIT","LDO","ETHFI","MORPHO","RENDER","TAO","AERO","SUI","ONDO","INJ","GRAM","OKB"];
+  const ROTATION_SYMBOLS = ["BTC","ETH","HYPE","AAVE","SOL","LINK","SKY","BNB","UNI","CAKE","PUMP","JUP","PENDLE","LIT","LDO","ETHFI","MORPHO","RENDER","TAO","AERO","SUI","ONDO","INJ","GRAM","OKB","CC"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 25 coin đang hoạt động.
+  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 26 coin đang hoạt động.
   // ASSETS vẫn giữ ánh xạ các mã cũ chỉ để mục Lịch sử đọc và định giá giao dịch quá khứ.
   const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
   const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
@@ -4608,7 +4608,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v48_25coin_active_only";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v49_26coin_add_cc";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4726,11 +4726,8 @@
   }
 
 
-  const MANUAL_FUNDAMENTAL_FALLBACKS = {
-    // Giá luôn lấy từ CEX. CAKE dùng số cung do Binance công bố; vốn hóa được cập nhật bằng giá live CEX × cung lưu hành.
-    CAKE:{circulatingSupply:322_020_000,totalSupply:400_000_000,maxSupply:400_000_000,source:"Bybit 322,02M · đối chiếu Binance ~322,4M · cung tối đa 400M",force:true},
-    GRAM:{circulatingSupply:2_710_000_000,totalSupply:5_210_000_000,source:"CMC/CoinGecko · supply dự phòng"}
-  };
+  // Không dùng số cung/vốn hóa hard-code. Khi nguồn live tạm lỗi, giữ bản cache gần nhất; nếu chưa từng có dữ liệu thì hiển thị “—”.
+  const MANUAL_FUNDAMENTAL_FALLBACKS = {};
 
   const ASSETS = {
     BTC:    {name:"Bitcoin",     primary:"binance", binance:"BTCUSDT",    okx:"BTC-USDT",    bybit:"BTCUSDT", cg:"bitcoin",                    d:2},
@@ -4759,7 +4756,7 @@
     CARDS:  {name:"Collector Crypt",primary:"okx",   binance:null,         okx:"CARDS-USDT",  bybit:null, cg:"collector-crypt",              d:6},
     WLFI:   {name:"World Liberty Financial",primary:"binance",binance:"WLFIUSDT",okx:"WLFI-USDT",bybit:"WLFIUSDT",cg:"world-liberty-financial",d:6},
     WBT:    {name:"WhiteBIT Coin",primary:"binance", binance:null,         okx:null,          bybit:null, cg:"whitebit",                   d:4},
-    CAKE:   {name:"PancakeSwap", primary:"binance", binance:"CAKEUSDT", okx:"CAKE-USDT", bybit:"CAKEUSDT", cg:"pancakeswap", d:5},
+    CAKE:   {name:"PancakeSwap", primary:"binance", binance:"CAKEUSDT", okx:"CAKE-USDT", bybit:"CAKEUSDT", cg:"pancakeswap-token", d:5},
     LIT:    {name:"Lighter",     primary:"okx",     binance:null,       okx:"LIT-USDT",  bybit:"LITUSDT",  cg:"lighter", d:6},
     LDO:    {name:"Lido DAO",    primary:"binance", binance:"LDOUSDT",  okx:"LDO-USDT",  bybit:"LDOUSDT",  cg:"lido-dao", d:6},
     ZK:     {name:"ZKsync",      primary:"binance", binance:"ZKUSDT",   okx:"ZK-USDT",   bybit:"ZKUSDT",   cg:"zksync", d:8},
@@ -4836,7 +4833,7 @@
   QUALITY_FACTORS.ZK={backing:98,team:95,adoption:82,capital:98,credibility:91,growth:84,narrative:90};
 
   const state = {
-    live:{},anchor:{prices:{},sources:{},capturedAt:{}},icons:{},marketMeta:{},
+    live:{},anchor:{prices:{},sources:{},capturedAt:{}},icons:{},marketMeta:{},coingeckoResolvedIds:{},
     revenue:{bySymbol:{},loading:false,lastFetch:0,error:"",source:"DefiLlama · dailyRevenue"},
     daily7am:{ts:null,prices:{},sources:{},exchanges:{},capturedAt:{},errors:{},loading:false,retryTimer:null},
     divergence:{signals:{},loading:false,loaded:0,total:0,errors:[],lastRun:0},
@@ -5225,7 +5222,7 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị đúng 25 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
+    // Chỉ hiển thị đúng 26 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -5878,109 +5875,238 @@
   }
 
   let coinGeckoFundamentalsLastFetch=0;
-  const COINGECKO_FUNDAMENTALS_INTERVAL=10*60*1000;
+  const COINGECKO_FUNDAMENTALS_INTERVAL=5*60*1000;
+  const COINGECKO_MARKET_CACHE_KEY="millionaireCoinGeckoMarketV6_26coin_cc";
+  const COINGECKO_ID_CACHE_KEY="millionaireCoinGeckoResolvedIdsV4_26coin_cc";
+  const COINGECKO_ID_CANDIDATES={
+    BTC:["bitcoin"],ETH:["ethereum"],HYPE:["hyperliquid"],AAVE:["aave"],SOL:["solana"],
+    LINK:["chainlink"],SKY:["sky"],BNB:["binancecoin"],UNI:["uniswap"],
+    CAKE:["pancakeswap-token","pancakeswap"],PUMP:["pump-fun"],JUP:["jupiter-exchange-solana"],
+    PENDLE:["pendle"],LIT:["lighter"],LDO:["lido-dao"],ETHFI:["ether-fi"],MORPHO:["morpho"],
+    RENDER:["render-token"],TAO:["bittensor"],AERO:["aerodrome-finance"],SUI:["sui"],
+    ONDO:["ondo-finance"],INJ:["injective-protocol"],GRAM:["gram","the-open-network"],OKB:["okb"],CC:["canton"]
+  };
+
+  function chunkArray(values,size){
+    const out=[];
+    for(let i=0;i<values.length;i+=size)out.push(values.slice(i,i+size));
+    return out;
+  }
+
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  async function fetchReliable(url,options={},timeout=22000,attempts=3){
+    let lastError=null;
+    for(let attempt=0;attempt<attempts;attempt++){
+      try{
+        const response=await withTimeout(url,options,timeout);
+        if(response.ok)return response;
+        const retryable=response.status===429||response.status===408||response.status>=500;
+        const retryAfter=Number(response.headers?.get?.("retry-after"));
+        if(!retryable)throw new Error(`${new URL(url).hostname} ${response.status}`);
+        lastError=new Error(`${new URL(url).hostname} ${response.status}`);
+        if(attempt<attempts-1)await wait(Number.isFinite(retryAfter)&&retryAfter>0?Math.min(retryAfter*1000,12000):700*(2**attempt));
+      }catch(error){
+        lastError=error;
+        if(attempt<attempts-1)await wait(700*(2**attempt));
+      }
+    }
+    throw lastError||new Error("Không tải được dữ liệu");
+  }
+
+  function coingeckoCandidatesFor(symbol){
+    const asset=ASSETS[symbol]||{};
+    const saved=state.coingeckoResolvedIds?.[symbol];
+    return [...new Set([saved,asset.cg,...(COINGECKO_ID_CANDIDATES[symbol]||[])].filter(Boolean))];
+  }
+
+  function coinGeckoRowMatchesSymbol(row,symbol){
+    if(!row)return false;
+    const expected=String(symbol||"").toLowerCase();
+    const actual=String(row.symbol||"").toLowerCase();
+    if(symbol==="GRAM")return actual==="gram"||actual==="ton";
+    if(symbol==="LIT")return actual==="lit"&&/lighter/i.test(String(row.name||"Lighter"));
+    return actual===expected;
+  }
+
+  function applyCoinGeckoMarketRow(symbol,row,now=Date.now()){
+    if(!row||!symbol)return false;
+    const current=state.marketMeta[symbol]||{};
+    const next={...current};
+    let changed=false;
+
+    if(typeof row.image==="string"&&/^https:\/\//i.test(row.image)){
+      state.icons[symbol]=row.image;
+      changed=true;
+    }
+
+    const marketCap=Number(row.market_cap ?? row.market_data?.market_cap?.usd);
+    const circulatingSupply=Number(row.circulating_supply ?? row.market_data?.circulating_supply);
+    const totalSupply=Number(row.total_supply ?? row.market_data?.total_supply);
+    const maxSupply=Number(row.max_supply ?? row.market_data?.max_supply);
+    const fdv=Number(row.fully_diluted_valuation ?? row.market_data?.fully_diluted_valuation?.usd);
+    const totalVolume=Number(row.total_volume ?? row.market_data?.total_volume?.usd);
+
+    if(Number.isFinite(marketCap)&&marketCap>0){
+      next.marketCap=marketCap;
+      next.marketCapSource="CoinGecko · vốn hóa tổng hợp thị trường";
+      changed=true;
+    }
+    if(Number.isFinite(circulatingSupply)&&circulatingSupply>0){next.circulatingSupply=circulatingSupply;changed=true}
+    if(Number.isFinite(totalSupply)&&totalSupply>0){next.totalSupply=totalSupply;changed=true}
+    if(Number.isFinite(maxSupply)&&maxSupply>0){next.maxSupply=maxSupply;changed=true}
+    if(Number.isFinite(fdv)&&fdv>0){next.fdv=fdv;changed=true}
+    if(Number.isFinite(circulationRatio(next))){
+      next.circulationSource="CoinGecko · circulating/total hoặc max supply";
+      changed=true;
+    }
+    if(Number.isFinite(totalVolume)&&totalVolume>0){
+      next.cgVolume24h=totalVolume;
+      next.volume24hSource="CoinGecko · tổng hợp toàn bộ sàn được theo dõi";
+      changed=true;
+    }
+
+    const change24h=Number(row.price_change_percentage_24h);
+    const change7d=Number(row.price_change_percentage_7d_in_currency);
+    const change30d=Number(row.price_change_percentage_30d_in_currency);
+    const change1y=Number(row.price_change_percentage_1y_in_currency);
+    if(Number.isFinite(change24h))next.change24h=change24h;
+    if(Number.isFinite(change7d))next.change7d=change7d;
+    if(Number.isFinite(change30d))next.change30d=change30d;
+    if(Number.isFinite(change1y))next.change1y=change1y;
+
+    // Chỉ suy ra vốn hóa khi CoinGecko chưa công bố market_cap nhưng có circulating supply đáng tin cậy.
+    const livePrice=Number(state.live[symbol]?.price);
+    if(!(Number(next.marketCap)>0)&&Number(next.circulatingSupply)>0&&livePrice>0){
+      next.marketCap=livePrice*Number(next.circulatingSupply);
+      next.marketCapSource="Giá live Binance/OKX/Bybit × circulating supply CoinGecko";
+      changed=true;
+    }
+
+    next.fundamentalsSource=[next.marketCapSource||"Vốn hóa: chưa có",next.circulationSource||"Lưu hành: chưa có"].join(" · ");
+    next.fundamentalsUpdatedAt=row.last_updated?Date.parse(row.last_updated):now;
+    next.coingeckoId=row.id||next.coingeckoId||ASSETS[symbol]?.cg||"";
+    next.coingeckoSource="CoinGecko /coins/markets";
+    if(changed)state.marketMeta[symbol]=next;
+    return changed;
+  }
+
+  async function fetchCoinGeckoMarketChunk(ids){
+    const url=`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(ids.join(","))}&per_page=250&page=1&sparkline=false&price_change_percentage=24h,7d,30d,1y&precision=full`;
+    const response=await fetchReliable(url,{cache:"no-store",headers:{accept:"application/json"}},24000,3);
+    const payload=await response.json();
+    if(!Array.isArray(payload))throw new Error("CoinGecko markets trả dữ liệu không hợp lệ");
+    return payload;
+  }
+
+  async function fetchCoinGeckoCoinById(id){
+    const url=`https://api.coingecko.com/api/v3/coins/${encodeURIComponent(id)}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
+    const response=await fetchReliable(url,{cache:"no-store",headers:{accept:"application/json"}},24000,2);
+    return response.json();
+  }
+
+  function persistCoinGeckoMarketCache(now=Date.now()){
+    const bySymbol={};
+    for(const symbol of trackedSymbols){
+      const meta=state.marketMeta[symbol];
+      if(!meta)continue;
+      bySymbol[symbol]={
+        marketCap:meta.marketCap,circulatingSupply:meta.circulatingSupply,totalSupply:meta.totalSupply,
+        maxSupply:meta.maxSupply,fdv:meta.fdv,cgVolume24h:meta.cgVolume24h,
+        marketCapSource:meta.marketCapSource,circulationSource:meta.circulationSource,
+        volume24hSource:meta.volume24hSource,fundamentalsSource:meta.fundamentalsSource,
+        fundamentalsUpdatedAt:meta.fundamentalsUpdatedAt,coingeckoId:meta.coingeckoId,
+        change24h:meta.change24h,change7d:meta.change7d,change30d:meta.change30d,change1y:meta.change1y
+      };
+    }
+    try{
+      localStorage.setItem(COINGECKO_MARKET_CACHE_KEY,JSON.stringify({bySymbol,lastFetch:now}));
+      localStorage.setItem(COINGECKO_ID_CACHE_KEY,JSON.stringify(state.coingeckoResolvedIds||{}));
+      localStorage.setItem(ICON_KEY,JSON.stringify(state.icons));
+    }catch(_){}
+  }
 
   async function fetchCoinGeckoFundamentals(force=false){
     const now=Date.now();
     if(!force&&now-coinGeckoFundamentalsLastFetch<COINGECKO_FUNDAMENTALS_INTERVAL)return;
-    const ids=[...new Set(trackedSymbols.map(symbol=>ASSETS[symbol]?.cg).filter(Boolean))];
-    if(!ids.length)return;
-    const url=`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(ids.join(","))}&per_page=100&page=1&sparkline=false`;
-    const response=await withTimeout(url,{},20000);
-    if(!response.ok)throw new Error(`CoinGecko fundamentals ${response.status}`);
-    const rows=await response.json();
-    const byId=Object.fromEntries((rows||[]).map(row=>[row.id,row]));
+    const primaryBySymbol={};
+    for(const symbol of trackedSymbols)primaryBySymbol[symbol]=coingeckoCandidatesFor(symbol)[0];
+    const primaryIds=[...new Set(Object.values(primaryBySymbol).filter(Boolean))];
+    let rows=[];
+    let bulkError=null;
+
+    // Một request cho toàn bộ rổ giảm đáng kể nguy cơ chạm rate limit. CoinGecko bỏ qua ID không tồn tại, không làm hỏng cả request.
+    try{rows=await fetchCoinGeckoMarketChunk(primaryIds)}catch(error){bulkError=error}
+    const byId=Object.fromEntries(rows.map(row=>[row.id,row]));
+    const missing=[];
     for(const symbol of trackedSymbols){
-      const asset=ASSETS[symbol],row=byId[asset?.cg];
-      if(!row){
-        applyManualFundamentalFallback(symbol);
-        continue;
-      }
-      const current=state.marketMeta[symbol]||{};
-      const next={...current};
-
-      // Logo bảng danh mục luôn lấy từ CoinGecko; tuyệt đối không dùng các trường giá của CoinGecko.
-      if(typeof row.image==="string"&&/^https:\/\//i.test(row.image)){
-        state.icons[symbol]=row.image;
-      }
-
-      // Volume 24h luôn dùng CoinGecko để tổng hợp thanh khoản từ toàn bộ sàn.
-      const cgVolume24h=Number(row.total_volume);
-      if(Number.isFinite(cgVolume24h)&&cgVolume24h>0){
-        next.cgVolume24h=cgVolume24h;
-        next.volume24hSource="CoinGecko · tổng hợp toàn thị trường";
-      }
-
-      // Vốn hóa/cung ưu tiên Binance / OKX / Bybit; CoinGecko chỉ lấp trường còn thiếu.
-      const exchangeHasMarketCap=Number(current.marketCap)>0&&isExchangeFundamentalSource(current.marketCapSource||current.fundamentalsSource);
-      const exchangeHasCirculation=hasExchangeCirculation(current);
-
-      if(!exchangeHasMarketCap){
-        const cgMarketCap=Number(row.market_cap);
-        if(Number.isFinite(cgMarketCap)&&cgMarketCap>0){
-          next.marketCap=cgMarketCap;
-          next.marketCapSource="CoinGecko · dự phòng";
-        }
-      }
-
-      if(!exchangeHasCirculation){
-        const cgCirculating=Number(row.circulating_supply);
-        const cgTotal=Number(row.total_supply);
-        const cgMax=Number(row.max_supply);
-        const cgFdv=Number(row.fully_diluted_valuation);
-        if(Number.isFinite(cgCirculating)&&cgCirculating>0)next.circulatingSupply=cgCirculating;
-        if(Number.isFinite(cgTotal)&&cgTotal>0)next.totalSupply=cgTotal;
-        if(Number.isFinite(cgMax)&&cgMax>0)next.maxSupply=cgMax;
-        if(Number.isFinite(cgFdv)&&cgFdv>0)next.fdv=cgFdv;
-        if(Number.isFinite(circulationRatio(next)))next.circulationSource="CoinGecko · dự phòng";
-      }
-
-      next.fundamentalsSource=[
-        next.marketCapSource||"Vốn hóa: chưa có",
-        next.circulationSource||"Lưu hành: chưa có"
-      ].join(" · ");
-      next.fundamentalsUpdatedAt=row.last_updated?Date.parse(row.last_updated):now;
-      state.marketMeta[symbol]=next;
-      applyManualFundamentalFallback(symbol);
-      // Tuyệt đối không đọc current_price hoặc trường biến động giá từ CoinGecko; chỉ dùng total_volume tổng hợp.
+      const id=primaryBySymbol[symbol],row=byId[id];
+      if(row&&coinGeckoRowMatchesSymbol(row,symbol)){
+        state.coingeckoResolvedIds[symbol]=row.id;
+        applyCoinGeckoMarketRow(symbol,row,now);
+      }else missing.push(symbol);
     }
-    try{localStorage.setItem(ICON_KEY,JSON.stringify(state.icons))}catch(_){}
+
+    // Chỉ thử endpoint từng coin nếu request bulk đã thành công nhưng một ID cụ thể không trả về.
+    if(rows.length&&missing.length){
+      const results=await mapWithConcurrency(missing,2,async symbol=>{
+        for(const id of coingeckoCandidatesFor(symbol)){
+          try{
+            const row=await fetchCoinGeckoCoinById(id);
+            if(coinGeckoRowMatchesSymbol(row,symbol))return [symbol,row];
+          }catch(_){}
+          await wait(350);
+        }
+        return [symbol,null];
+      });
+      for(const result of results){
+        if(!Array.isArray(result)||!result[1])continue;
+        const [symbol,row]=result;
+        state.coingeckoResolvedIds[symbol]=row.id;
+        applyCoinGeckoMarketRow(symbol,row,now);
+      }
+    }
+
+    const successful=trackedSymbols.filter(symbol=>Number(state.marketMeta[symbol]?.marketCap)>0).length;
     coinGeckoFundamentalsLastFetch=now;
+    persistCoinGeckoMarketCache(now);
     scheduleRender();
     scheduleRotationRender();
+    if(!successful&&bulkError)throw bulkError;
   }
 
-  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV2_18criteria";
-  const REVENUE_FETCH_INTERVAL=15*60*1000;
-  const REVENUE_ALIASES={
-    BTC:["bitcoin"],ETH:["ethereum"],HYPE:["hyperliquid"],AAVE:["aave"],SOL:["solana"],
-    LINK:["chainlink"],SKY:["sky","makerdao","maker"],BNB:["bsc","bnb chain"],UNI:["uniswap"],
-    CAKE:["pancakeswap"],PUMP:["pump","pump.fun"],JUP:["jupiter"],PENDLE:["pendle"],LIT:["lighter"],
-    LDO:["lido"],ETHFI:["ether.fi","etherfi"],MORPHO:["morpho"],RENDER:["render network","render"],
-    TAO:["bittensor"],AERO:["aerodrome"],SUI:["sui"],ONDO:["ondo finance","ondo"],INJ:["injective"],
-    GRAM:["ton","the open network"],OKB:["x layer","okx"]
+  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV6_26coin_cc";
+  const REVENUE_FETCH_INTERVAL=30*60*1000;
+  const REVENUE_CONFIG={
+    BTC:{slugs:["bitcoin"],aliases:["bitcoin"],label:"Bitcoin network"},
+    ETH:{slugs:["ethereum"],aliases:["ethereum"],label:"Ethereum network"},
+    HYPE:{slugs:["hyperliquid"],aliases:["hyperliquid","hyperliquid perps"],label:"Hyperliquid"},
+    AAVE:{slugs:["aave"],aliases:["aave"],label:"Aave"},
+    SOL:{slugs:["solana"],aliases:["solana"],label:"Solana network"},
+    LINK:{slugs:["chainlink"],aliases:["chainlink"],label:"Chainlink"},
+    SKY:{slugs:["sky","makerdao"],aliases:["sky","makerdao","maker"],label:"Sky"},
+    BNB:{slugs:["bsc","bnb-chain"],aliases:["bsc","bnb chain","binance smart chain"],label:"BNB Chain"},
+    UNI:{slugs:["uniswap"],aliases:["uniswap"],label:"Uniswap"},
+    CAKE:{slugs:["pancakeswap"],aliases:["pancakeswap"],label:"PancakeSwap"},
+    PUMP:{slugs:["pump.fun"],aliases:["pump fun","pump.fun"],label:"pump.fun"},
+    JUP:{slugs:["jupiter"],aliases:["jupiter","jupiter exchange"],label:"Jupiter"},
+    PENDLE:{slugs:["pendle"],aliases:["pendle"],label:"Pendle"},
+    LIT:{slugs:["lighter"],aliases:["lighter"],label:"Lighter"},
+    LDO:{slugs:["lido"],aliases:["lido"],label:"Lido"},
+    ETHFI:{slugs:["ether.fi","etherfi"],aliases:["ether fi","ether.fi","etherfi"],label:"ether.fi"},
+    MORPHO:{slugs:["morpho","morpho-blue"],aliases:["morpho","morpho blue"],label:"Morpho"},
+    RENDER:{slugs:["render-network","render"],aliases:["render network","render"],label:"Render Network"},
+    TAO:{slugs:["bittensor"],aliases:["bittensor"],label:"Bittensor"},
+    AERO:{slugs:["aerodrome"],aliases:["aerodrome"],label:"Aerodrome"},
+    SUI:{slugs:["sui"],aliases:["sui"],label:"Sui network"},
+    ONDO:{slugs:["ondo-finance","ondo"],aliases:["ondo finance","ondo"],label:"Ondo"},
+    INJ:{slugs:["injective"],aliases:["injective"],label:"Injective network"},
+    GRAM:{slugs:["ton","the-open-network"],aliases:["ton","the open network","gram"],label:"TON / Gram network"},
+    OKB:{slugs:["x-layer"],aliases:["x layer"],label:"X Layer"},
+    CC:{slugs:["canton"],aliases:["canton","canton network"],label:"Canton network"}
   };
 
   function normalizedRevenueName(value){
     return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
-  }
-
-  function revenueProtocolFor(protocols,symbol){
-    const aliases=(REVENUE_ALIASES[symbol]||[symbol]).map(normalizedRevenueName).filter(Boolean);
-    const rows=(protocols||[]).map(protocol=>({
-      protocol,
-      keys:[protocol?.slug,protocol?.name,protocol?.displayName].map(normalizedRevenueName).filter(Boolean)
-    }));
-    for(const alias of aliases){
-      const exact=rows.find(row=>row.keys.includes(alias));
-      if(exact)return exact.protocol;
-    }
-    for(const alias of aliases){
-      if(alias.length<4)continue;
-      const partial=rows.find(row=>row.keys.some(key=>key===alias||key.startsWith(alias+" ")||key.endsWith(" "+alias)));
-      if(partial)return partial.protocol;
-    }
-    return null;
   }
 
   function normalizeRevenueValue(value){
@@ -5988,42 +6114,240 @@
     return Number.isFinite(number)&&number>=0?number:null;
   }
 
+  function deepRevenueNumber(value){
+    if(value===null||value===undefined||value===""||typeof value==="boolean")return null;
+    if(typeof value==="number")return Number.isFinite(value)?value:null;
+    if(typeof value==="string"){
+      const parsed=Number(value);
+      return Number.isFinite(parsed)?parsed:null;
+    }
+    if(Array.isArray(value)){
+      const values=value.map(deepRevenueNumber).filter(Number.isFinite);
+      return values.length?values.reduce((sum,item)=>sum+item,0):null;
+    }
+    if(value&&typeof value==="object"){
+      const values=Object.entries(value)
+        .filter(([key])=>!/^(date|day|time|timestamp|ts)$/i.test(key))
+        .map(([,item])=>deepRevenueNumber(item)).filter(Number.isFinite);
+      return values.length?values.reduce((sum,item)=>sum+item,0):null;
+    }
+    return null;
+  }
+
+  function protocolKeys(protocol){
+    // parentProtocol được xử lý riêng để có thể cộng toàn bộ sản phẩm con mà không lấy nhầm chỉ một child.
+    return [protocol?.slug,protocol?.name,protocol?.displayName]
+      .map(normalizedRevenueName).filter(Boolean);
+  }
+
+  function safeOverviewRevenue(protocol){
+    if(!protocol)return null;
+    const day=normalizeRevenueValue(protocol.total24h);
+    const month=normalizeRevenueValue(protocol.total30d);
+    const year=normalizeRevenueValue(protocol.total1y);
+    const validMonth=Number.isFinite(month)&&(!Number.isFinite(day)||month+1>=day)?month:null;
+    const validYear=Number.isFinite(year)&&(!Number.isFinite(validMonth)||year+1>=validMonth)?year:null;
+    if(!Number.isFinite(day)&&!Number.isFinite(validMonth)&&!Number.isFinite(validYear))return null;
+    return {day,month:validMonth,year:validYear,coverage30:null,coverage365:null,lastDataTs:Date.now(),method:"DefiLlama overview totals"};
+  }
+
+  function metricsCompleteness(metrics){
+    return [metrics?.day,metrics?.month,metrics?.year].filter(Number.isFinite).length;
+  }
+
+  function aggregateOverviewMetrics(rows){
+    if(!Array.isArray(rows)||!rows.length)return null;
+    const values=rows.map(safeOverviewRevenue).filter(Boolean);
+    if(!values.length)return null;
+    const sumKey=key=>{
+      const nums=values.map(item=>item[key]).filter(Number.isFinite);
+      return nums.length?nums.reduce((sum,value)=>sum+value,0):null;
+    };
+    return {day:sumKey("day"),month:sumKey("month"),year:sumKey("year"),coverage30:null,coverage365:null,lastDataTs:Date.now(),method:"DefiLlama overview · cộng các sản phẩm con"};
+  }
+
+  function revenueOverviewFor(protocols,symbol){
+    const config=REVENUE_CONFIG[symbol]||{};
+    const targets=[...(config.slugs||[]),...(config.aliases||[])].map(normalizedRevenueName).filter(Boolean);
+    const rows=(protocols||[]).map(protocol=>({protocol,keys:protocolKeys(protocol),parent:normalizedRevenueName(protocol?.parentProtocol)}));
+    const direct=rows.filter(row=>targets.some(target=>row.keys.includes(target)));
+    const children=rows.filter(row=>row.parent&&targets.includes(row.parent));
+    const bestDirect=direct
+      .map(row=>({protocol:row.protocol,metrics:safeOverviewRevenue(row.protocol)}))
+      .filter(row=>row.metrics)
+      .sort((a,b)=>metricsCompleteness(b.metrics)-metricsCompleteness(a.metrics)||(Number(b.metrics.year)||0)-(Number(a.metrics.year)||0))[0]||null;
+    const childMetrics=aggregateOverviewMetrics(children.map(row=>row.protocol));
+    if(childMetrics&&(!bestDirect||metricsCompleteness(childMetrics)>metricsCompleteness(bestDirect.metrics))){
+      return {protocol:children[0]?.protocol||null,metrics:childMetrics,children:children.map(row=>row.protocol)};
+    }
+    return bestDirect?{protocol:bestDirect.protocol,metrics:bestDirect.metrics,children:[]}:null;
+  }
+
+  function normalizeRevenueSeries(payload){
+    const candidates=[payload?.totalDataChart,payload?.totalDataChartBreakdown];
+    for(const raw of candidates){
+      if(!Array.isArray(raw)||!raw.length)continue;
+      const dayMap=new Map();
+      for(const item of raw){
+        let ts,value;
+        if(Array.isArray(item)){ts=Number(item[0]);value=deepRevenueNumber(item[1])}
+        else if(item&&typeof item==="object"){
+          ts=Number(item.date??item.timestamp??item.time??item[0]);
+          value=deepRevenueNumber(item.value??item.total??item.revenue??item[1]??item);
+        }
+        if(ts>1e12)ts=Math.floor(ts/1000);
+        if(!(ts>0)||!Number.isFinite(value)||value<0)continue;
+        const day=Math.floor(ts/86400)*86400;
+        dayMap.set(day,(dayMap.get(day)||0)+value);
+      }
+      const series=[...dayMap.entries()].map(([ts,value])=>({ts,value})).sort((a,b)=>a.ts-b.ts);
+      if(series.length)return series;
+    }
+    return [];
+  }
+
+  function rollingRevenueFromSeries(series){
+    if(!Array.isArray(series)||!series.length)return null;
+    const lastTs=series[series.length-1].ts;
+    const inWindow=days=>series.filter(point=>point.ts>lastTs-days*86400);
+    const sum=points=>points.reduce((total,point)=>total+point.value,0);
+    const last30=inWindow(30),last365=inWindow(365);
+    return {
+      day:series[series.length-1].value,month:sum(last30),year:sum(last365),
+      coverage30:last30.length,coverage365:last365.length,lastDataTs:lastTs*1000,
+      method:"Cộng dữ liệu dailyRevenue theo cửa sổ lăn 1/30/365 ngày"
+    };
+  }
+
+  async function fetchDefiLlamaRevenueSummary(slug){
+    const url=`https://api.llama.fi/summary/fees/${encodeURIComponent(slug)}?dataType=dailyRevenue`;
+    const response=await fetchReliable(url,{cache:"no-store",headers:{accept:"application/json"}},26000,3);
+    const payload=await response.json();
+    const series=normalizeRevenueSeries(payload);
+    const rolling=rollingRevenueFromSeries(series);
+    const overview=safeOverviewRevenue(payload);
+    let metrics=null;
+    if(rolling||overview){
+      metrics={
+        day:Number.isFinite(overview?.day)?overview.day:rolling?.day??null,
+        month:Number.isFinite(rolling?.month)?rolling.month:overview?.month??null,
+        year:Number.isFinite(rolling?.year)?rolling.year:overview?.year??null,
+        coverage30:rolling?.coverage30??null,coverage365:rolling?.coverage365??null,
+        lastDataTs:rolling?.lastDataTs||overview?.lastDataTs||Date.now(),
+        method:rolling?.method||overview?.method||"dailyRevenue"
+      };
+    }
+    if(!metrics||metricsCompleteness(metrics)===0)throw new Error(`DefiLlama ${slug} chưa công bố dailyRevenue chuẩn hóa`);
+    return {payload,metrics,slug};
+  }
+
+  async function mapWithConcurrency(items,limit,worker){
+    const results=new Array(items.length);
+    let cursor=0;
+    async function runner(){
+      while(true){
+        const index=cursor++;
+        if(index>=items.length)return;
+        try{results[index]=await worker(items[index],index)}catch(error){results[index]={error}}
+      }
+    }
+    await Promise.all(Array.from({length:Math.min(limit,items.length)},runner));
+    return results;
+  }
+
+  function mergeRevenueMetrics(primary,fallback){
+    const choose=key=>Number.isFinite(primary?.[key])?primary[key]:Number.isFinite(fallback?.[key])?fallback[key]:null;
+    return {
+      day:choose("day"),month:choose("month"),year:choose("year"),
+      coverage30:Number.isFinite(primary?.coverage30)?primary.coverage30:fallback?.coverage30??null,
+      coverage365:Number.isFinite(primary?.coverage365)?primary.coverage365:fallback?.coverage365??null,
+      lastDataTs:primary?.lastDataTs||fallback?.lastDataTs||Date.now(),
+      method:primary?.method||fallback?.method||"dailyRevenue"
+    };
+  }
+
+  function revenueRecord(symbol,metrics,meta={},now=Date.now()){
+    const config=REVENUE_CONFIG[symbol]||{};
+    return {
+      day:normalizeRevenueValue(metrics?.day),month:normalizeRevenueValue(metrics?.month),year:normalizeRevenueValue(metrics?.year),
+      source:`DefiLlama · ${meta.sourceName||config.label||symbol}`,slug:meta.slug||"",
+      methodology:meta.methodology||"",updatedAt:metrics?.lastDataTs||now,checkedAt:now,
+      coverage30:metrics?.coverage30??null,coverage365:metrics?.coverage365??null,
+      method:metrics?.method||"dailyRevenue",cached:false,error:""
+    };
+  }
+
   async function fetchProtocolRevenue(force=false){
     const now=Date.now();
     if(state.revenue.loading)return;
     if(!force&&now-state.revenue.lastFetch<REVENUE_FETCH_INTERVAL)return;
     state.revenue.loading=true;state.revenue.error="";
+    const previous=state.revenue.bySymbol||{};
+    let protocols=[];
+    let overviewError=null;
     try{
-      const url="https://api.llama.fi/overview/fees?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true&dataType=dailyRevenue";
-      const response=await withTimeout(url,{cache:"no-store",headers:{accept:"application/json"}},22000);
-      if(!response.ok)throw new Error(`DefiLlama revenue ${response.status}`);
+      const overviewUrl="https://api.llama.fi/overview/fees?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true&dataType=dailyRevenue";
+      const response=await fetchReliable(overviewUrl,{cache:"no-store",headers:{accept:"application/json"}},26000,3);
       const payload=await response.json();
-      const protocols=Array.isArray(payload?.protocols)?payload.protocols:[];
-      if(!protocols.length)throw new Error("DefiLlama không trả danh sách doanh thu");
-      const bySymbol={};
+      protocols=Array.isArray(payload?.protocols)?payload.protocols:[];
+    }catch(error){overviewError=error}
+
+    try{
+      // Hiển thị ngay dữ liệu overview nếu có; sau đó mới làm giàu bằng chuỗi dailyRevenue của từng dự án.
+      const bySymbol={...previous};
+      const overviewBySymbol={};
       for(const symbol of trackedSymbols){
-        const protocol=revenueProtocolFor(protocols,symbol);
-        bySymbol[symbol]=protocol?{
-          day:normalizeRevenueValue(protocol.total24h),
-          month:normalizeRevenueValue(protocol.total30d),
-          year:normalizeRevenueValue(protocol.total1y),
-          source:`DefiLlama · ${protocol.displayName||protocol.name||protocol.slug||symbol}`,
-          slug:protocol.slug||"",
-          methodology:protocol.methodologyURL||protocol.methodology?.Revenue||"",
-          updatedAt:now
-        }:{day:null,month:null,year:null,source:"DefiLlama · chưa có dữ liệu doanh thu chuẩn hóa",slug:"",methodology:"",updatedAt:now};
+        const match=revenueOverviewFor(protocols,symbol);
+        overviewBySymbol[symbol]=match;
+        if(match?.metrics){
+          const protocol=match.protocol||{};
+          bySymbol[symbol]=revenueRecord(symbol,match.metrics,{
+            sourceName:protocol.displayName||protocol.name||REVENUE_CONFIG[symbol]?.label,
+            slug:protocol.slug||"",
+            methodology:protocol.methodologyURL||protocol.methodology?.Revenue||""
+          },now);
+        }else if(!bySymbol[symbol]){
+          bySymbol[symbol]={day:null,month:null,year:null,source:"DefiLlama · chưa công bố dailyRevenue chuẩn hóa",slug:"",methodology:"",updatedAt:now,checkedAt:now,error:""};
+        }
       }
+      state.revenue.bySymbol=bySymbol;
+      scheduleRender();
+
+      const results=await mapWithConcurrency(trackedSymbols,2,async(symbol,index)=>{
+        if(index)await wait(180);
+        const config=REVENUE_CONFIG[symbol]||{slugs:[],label:symbol};
+        const overview=overviewBySymbol[symbol];
+        const candidateSlugs=[...new Set([overview?.protocol?.slug,...(config.slugs||[])].filter(Boolean))];
+        let best=null,lastError=null;
+        for(const slug of candidateSlugs){
+          try{
+            const result=await fetchDefiLlamaRevenueSummary(slug);
+            if(!best||metricsCompleteness(result.metrics)>metricsCompleteness(best.metrics)||(metricsCompleteness(result.metrics)===metricsCompleteness(best.metrics)&&(Number(result.metrics.year)||0)>(Number(best.metrics.year)||0)))best=result;
+            if(metricsCompleteness(result.metrics)===3)break;
+          }catch(error){lastError=error}
+          await wait(250);
+        }
+        const merged=mergeRevenueMetrics(best?.metrics,overview?.metrics);
+        if(metricsCompleteness(merged)>0){
+          const payload=best?.payload||overview?.protocol||{};
+          return [symbol,revenueRecord(symbol,merged,{
+            sourceName:payload.displayName||payload.name||config.label,slug:best?.slug||overview?.protocol?.slug||"",
+            methodology:payload.methodologyURL||payload.methodology?.Revenue||overview?.protocol?.methodologyURL||overview?.protocol?.methodology?.Revenue||""
+          },now)];
+        }
+        const old=previous[symbol];
+        if(old&&[old.day,old.month,old.year].some(value=>Number.isFinite(normalizeRevenueValue(value)))){
+          return [symbol,{...old,cached:true,error:lastError?.message||overviewError?.message||"Không làm mới được",checkedAt:now}];
+        }
+        return [symbol,{day:null,month:null,year:null,source:"DefiLlama · chưa công bố dailyRevenue chuẩn hóa",slug:"",methodology:"",updatedAt:now,checkedAt:now,error:lastError?.message||overviewError?.message||""}];
+      });
+
+      for(const result of results)if(Array.isArray(result))bySymbol[result[0]]=result[1];
       state.revenue.bySymbol=bySymbol;
       state.revenue.lastFetch=now;
       try{localStorage.setItem(REVENUE_CACHE_KEY,JSON.stringify({bySymbol,lastFetch:now}))}catch(_){}
     }catch(error){
       state.revenue.error=error?.message||String(error);
-      if(!Object.keys(state.revenue.bySymbol||{}).length){
-        try{
-          const cached=JSON.parse(localStorage.getItem(REVENUE_CACHE_KEY)||"null");
-          if(cached?.bySymbol){state.revenue.bySymbol=cached.bySymbol;state.revenue.lastFetch=Number(cached.lastFetch)||0;}
-        }catch(_){}
-      }
       console.warn(state.revenue.error);
     }finally{
       state.revenue.loading=false;
@@ -6035,19 +6359,25 @@
     const revenue=row?.revenue||{};
     const value=normalizeRevenueValue(revenue[key]);
     const label=Number.isFinite(value)?formatCompactUSD(value):"—";
-    const detail=Number.isFinite(value)?`${revenue.source||"DefiLlama"} · doanh thu ${key==="day"?"24 giờ":key==="month"?"30 ngày":"1 năm"} gần nhất`:`${revenue.source||"DefiLlama · chưa có dữ liệu chuẩn hóa"}`;
+    const period=key==="day"?"ngày dữ liệu gần nhất":key==="month"?"30 ngày lăn gần nhất":"365 ngày lăn gần nhất";
+    const updated=Number(revenue.updatedAt)>0?new Date(Number(revenue.updatedAt)).toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh"}):"chưa rõ";
+    const coverage=key==="month"&&Number.isFinite(revenue.coverage30)?` · ${revenue.coverage30}/30 ngày có dữ liệu`:key==="year"&&Number.isFinite(revenue.coverage365)?` · ${revenue.coverage365}/365 ngày có dữ liệu`:"";
+    const cached=revenue.cached?" · đang dùng bản lưu gần nhất":"";
+    const detail=Number.isFinite(value)
+      ?`${revenue.source||"DefiLlama"} · protocol revenue ${period}${coverage} · cập nhật ${updated}${cached}`
+      :`${revenue.source||"DefiLlama · chưa có dailyRevenue chuẩn hóa"}${revenue.error?" · "+revenue.error:""}`;
     return `<td class="num revenue-cell" title="${escapeHTML(detail)}"><strong>${label}</strong></td>`;
   }
 
-  async function restWatchdog(){
+  async function restWatchdog(force=false){
     $("refreshBtn").disabled=true;
     const errors=[];
     await Promise.allSettled([
       fetchBinanceREST().catch(e=>errors.push(e.message)),
       fetchOKXREST().catch(e=>errors.push(e.message)),
       fetchBybitREST().catch(e=>errors.push(e.message)),
-      fetchCoinGeckoFundamentals(false).catch(e=>console.warn(e.message||e)),
-      fetchProtocolRevenue(false).catch(e=>console.warn(e.message||e))
+      fetchCoinGeckoFundamentals(force).catch(e=>console.warn(e.message||e)),
+      fetchProtocolRevenue(force).catch(e=>console.warn(e.message||e))
     ]);
     Object.keys(MANUAL_FUNDAMENTAL_FALLBACKS).forEach(applyManualFundamentalFallback);
     if(errors.length===3)showError("Không lấy được giá từ Binance, OKX và Bybit: "+errors.join(" · "));
@@ -6964,7 +7294,7 @@
     const latestChanged=state.latestTradeKeySeen&&state.latestTradeKeySeen!==latestKey;
     const selectedExists=state.tradeRows.some(t=>tradeKey(t)===state.selectedHistoryTradeKey);
 
-    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 25 coin.
+    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 26 coin.
     if(!state.historySelectionExplicit||!selectedExists||latestChanged){
       state.selectedHistoryTradeKey=latestKey;
       state.historySelectionExplicit=false;
@@ -9115,7 +9445,7 @@
     const meta=state.marketMeta[symbol]||{};
     const row={
       symbol,a,live,buyPrice:hasBuy?buyPrice:null,daily7amPrice:hasDaily7am?daily7amPrice:null,quantity,currentValue,pnlUsd,returnPct,daily7amPct,
-      marketCap:symbol==="CAKE"&&hasLive?Number(live.price)*322_020_000:(Number(meta.marketCap)||null),
+      marketCap:Number(meta.marketCap)||null,
       circulationPct:circulationRatio(meta),
       revenue:state.revenue.bySymbol?.[symbol]||null,
       volume24h:Number(meta.cgVolume24h)||Number(meta.volume)||null,
@@ -9245,7 +9575,7 @@
       $("bestCoin").textContent=best?.symbol||"—";
       $("bestCoinInfo").textContent=best?`${formatUSD(best.currentValue)} · ${best.returnPct>=0?"+":""}${best.returnPct.toFixed(2)}%`:"Đang chờ đủ dữ liệu";
       $("spreadValue").textContent="—";
-      $("spreadInfo").textContent="Mọi coin vẫn được giữ nguyên · giá chỉ từ sàn · vốn hóa/lưu hành ưu tiên sàn, CoinGecko chỉ dự phòng";
+      $("spreadInfo").textContent="Giá live: Binance → OKX → Bybit · vốn hóa/lưu hành/volume: CoinGecko · doanh thu: DefiLlama";
     }
     updateStatus();
     renderGlobalPortfolioSummary();
@@ -9287,6 +9617,20 @@
   }
 
   try{state.icons=JSON.parse(localStorage.getItem(ICON_KEY)||"{}")}catch(_){}
+  try{state.coingeckoResolvedIds=JSON.parse(localStorage.getItem(COINGECKO_ID_CACHE_KEY)||"{}")}catch(_){}
+  try{
+    const cachedMarket=JSON.parse(localStorage.getItem(COINGECKO_MARKET_CACHE_KEY)||"null");
+    if(cachedMarket?.bySymbol){
+      for(const [symbol,meta] of Object.entries(cachedMarket.bySymbol)){
+        if(isActiveSymbol(symbol)&&meta)state.marketMeta[symbol]={...(state.marketMeta[symbol]||{}),...meta};
+      }
+      coinGeckoFundamentalsLastFetch=Number(cachedMarket.lastFetch)||0;
+    }
+  }catch(_){}
+  try{
+    const cachedRevenue=JSON.parse(localStorage.getItem(REVENUE_CACHE_KEY)||"null");
+    if(cachedRevenue?.bySymbol){state.revenue.bySymbol=cachedRevenue.bySymbol;state.revenue.lastFetch=Number(cachedRevenue.lastFetch)||0;}
+  }catch(_){}
   try{state.historyPriceCache=JSON.parse(localStorage.getItem(HISTORY_PRICE_CACHE_KEY)||"{}")}catch(_){}
   try{
     const cachedDivergence=JSON.parse(localStorage.getItem(DIVERGENCE_CACHE_KEY)||"null");
@@ -9559,7 +9903,7 @@
   });
   $("refreshBtn").addEventListener("click",async()=>{
     showError("");
-    await restWatchdog();
+    await restWatchdog(true);
     refreshDivergenceSignals(true);
     if(state.wsState.binance!=="live")connectBinanceWS();
     if(state.wsState.okx!=="live")connectOKXWS();
