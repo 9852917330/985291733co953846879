@@ -1,31 +1,50 @@
 {
-  "id": "./",
-  "name": "In and Out — Energy Dashboard V6",
-  "short_name": "In and Out",
-  "description": "Theo dõi calories và macro với CSDL ưu tiên song ngữ, nhận diện cách chế biến và kiểm tra chéo năng lượng.",
+  "id": "./millionaire.html?app=Millionaire-v41-26coin-add-cc",
+  "name": "Millionaire",
+  "short_name": "Millionaire",
+  "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./",
+  "start_url": "./millionaire.html?v=41-26coin-add-cc",
   "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
   "orientation": "any",
-  "background_color": "#ffffff",
-  "theme_color": "#e3262e",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "./millionaire-icon-192-v14.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./icon-512.png",
+      "src": "./millionaire-icon-512-v14.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./millionaire-thumbnail-v14.png",
+      "sizes": "1200x675",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Millionaire"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Millionaire",
+      "short_name": "Millionaire",
+      "url": "./millionaire.html?v=41-26coin-add-cc",
+      "icons": [
+        {
+          "src": "./millionaire-icon-192-v14.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
