@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v41-26coin-add-cc-live-data"/>
+<meta name="app-build" content="v42-28coin-add-mnt-eigen-live-data"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -4200,7 +4200,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 26 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 28 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -4274,7 +4274,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 26 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 28 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4376,7 +4376,7 @@
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 26 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 28 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
@@ -4580,23 +4580,23 @@
   const ANCHOR_SETTINGS_KEY = "crypto100AnchorSettings_v3";
   const REST_INTERVAL = 30_000;
   const PRIMARY_STALE_MS = 10_000;
-  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v44_26coin_add_cc_";
+  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v45_28coin_add_mnt_eigen_";
   const ICON_KEY = "fullCapitalIcons_v40_cg";
   const SHEET_ID = "1oXTD35cnMZEeiGX9oQ4XepH7jWCNilHIXfNHLnrjXs0";
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v14_26coin_add_cc";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v15_28coin_add_mnt_eigen";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_MILESTONE_MODE_KEY = "cryptoQuantityMilestoneMode_v1";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v11_26coin_add_cc";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v12_28coin_add_mnt_eigen";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["BTC","ETH","HYPE","AAVE","SOL","LINK","SKY","BNB","UNI","CAKE","PUMP","JUP","PENDLE","LIT","LDO","ETHFI","MORPHO","RENDER","TAO","AERO","SUI","ONDO","INJ","GRAM","OKB","CC"];
+  const ROTATION_SYMBOLS = ["BTC","ETH","HYPE","AAVE","SOL","LINK","SKY","BNB","UNI","CAKE","PUMP","JUP","PENDLE","LIT","LDO","ETHFI","MORPHO","RENDER","TAO","AERO","SUI","ONDO","INJ","GRAM","OKB","CC","MNT","EIGEN"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 26 coin đang hoạt động.
+  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 28 coin đang hoạt động.
   // ASSETS vẫn giữ ánh xạ các mã cũ chỉ để mục Lịch sử đọc và định giá giao dịch quá khứ.
   const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
   const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
@@ -4608,7 +4608,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v49_26coin_add_cc";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v50_28coin_add_mnt_eigen";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4768,7 +4768,7 @@
     TIA:    {name:"Celestia",    primary:"binance", binance:"TIAUSDT",    okx:"TIA-USDT",    bybit:"TIAUSDT", cg:"celestia",                   d:6},
     ZRO:    {name:"LayerZero",   primary:"binance", binance:"ZROUSDT",    okx:"ZRO-USDT",    bybit:"ZROUSDT", cg:"layerzero",                  d:5},
     MON:    {name:"Monad",       primary:"bybit",   binance:"MONUSDT",    okx:"MON-USDT",    bybit:"MONUSDT", cg:"monad",                      d:7},
-    EIGEN:  {name:"EigenLayer",  primary:"binance", binance:"EIGENUSDT",  okx:"EIGEN-USDT",  bybit:"EIGENUSDT", cg:"eigenlayer",                 d:7},
+    EIGEN:  {name:"EigenLayer",  primary:"binance", binance:"EIGENUSDT",  okx:"EIGEN-USDT",  bybit:"EIGENUSDT", cg:"eigencloud",                 d:7},
     JTO:    {name:"Jito",        primary:"binance", binance:"JTOUSDT",    okx:"JTO-USDT",    bybit:"JTOUSDT", cg:"jito-governance-token",      d:6},
     AERO:   {name:"Aerodrome",   primary:"okx",     binance:null,         okx:"AERO-USDT",   bybit:"AEROUSDT", cg:"aerodrome-finance",          d:6},
     HYPE:   {name:"Hyperliquid", primary:"binance", binance:"HYPEUSDT",   okx:"HYPE-USDT",   bybit:"HYPEUSDT", cg:"hyperliquid",                d:4},
@@ -5222,7 +5222,7 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị đúng 26 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
+    // Chỉ hiển thị đúng 28 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -5876,15 +5876,15 @@
 
   let coinGeckoFundamentalsLastFetch=0;
   const COINGECKO_FUNDAMENTALS_INTERVAL=5*60*1000;
-  const COINGECKO_MARKET_CACHE_KEY="millionaireCoinGeckoMarketV6_26coin_cc";
-  const COINGECKO_ID_CACHE_KEY="millionaireCoinGeckoResolvedIdsV4_26coin_cc";
+  const COINGECKO_MARKET_CACHE_KEY="millionaireCoinGeckoMarketV7_28coin_mnt_eigen";
+  const COINGECKO_ID_CACHE_KEY="millionaireCoinGeckoResolvedIdsV5_28coin_mnt_eigen";
   const COINGECKO_ID_CANDIDATES={
     BTC:["bitcoin"],ETH:["ethereum"],HYPE:["hyperliquid"],AAVE:["aave"],SOL:["solana"],
     LINK:["chainlink"],SKY:["sky"],BNB:["binancecoin"],UNI:["uniswap"],
     CAKE:["pancakeswap-token","pancakeswap"],PUMP:["pump-fun"],JUP:["jupiter-exchange-solana"],
     PENDLE:["pendle"],LIT:["lighter"],LDO:["lido-dao"],ETHFI:["ether-fi"],MORPHO:["morpho"],
     RENDER:["render-token"],TAO:["bittensor"],AERO:["aerodrome-finance"],SUI:["sui"],
-    ONDO:["ondo-finance"],INJ:["injective-protocol"],GRAM:["gram","the-open-network"],OKB:["okb"],CC:["canton"]
+    ONDO:["ondo-finance"],INJ:["injective-protocol"],GRAM:["gram","the-open-network"],OKB:["okb"],CC:["canton"],MNT:["mantle"],EIGEN:["eigencloud","eigenlayer"]
   };
 
   function chunkArray(values,size){
@@ -6074,7 +6074,7 @@
     if(!successful&&bulkError)throw bulkError;
   }
 
-  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV6_26coin_cc";
+  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV7_28coin_mnt_eigen";
   const REVENUE_FETCH_INTERVAL=30*60*1000;
   const REVENUE_CONFIG={
     BTC:{slugs:["bitcoin"],aliases:["bitcoin"],label:"Bitcoin network"},
@@ -6102,7 +6102,9 @@
     INJ:{slugs:["injective"],aliases:["injective"],label:"Injective network"},
     GRAM:{slugs:["ton","the-open-network"],aliases:["ton","the open network","gram"],label:"TON / Gram network"},
     OKB:{slugs:["x-layer"],aliases:["x layer"],label:"X Layer"},
-    CC:{slugs:["canton"],aliases:["canton","canton network"],label:"Canton network"}
+    CC:{slugs:["canton"],aliases:["canton","canton network"],label:"Canton network"},
+    MNT:{slugs:["mantle"],aliases:["mantle","mantle network"],label:"Mantle Network"},
+    EIGEN:{slugs:["eigencloud","eigenlayer"],aliases:["eigencloud","eigen layer","eigenlayer"],label:"EigenCloud / EigenLayer"}
   };
 
   function normalizedRevenueName(value){
@@ -7294,7 +7296,7 @@
     const latestChanged=state.latestTradeKeySeen&&state.latestTradeKeySeen!==latestKey;
     const selectedExists=state.tradeRows.some(t=>tradeKey(t)===state.selectedHistoryTradeKey);
 
-    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 26 coin.
+    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 28 coin.
     if(!state.historySelectionExplicit||!selectedExists||latestChanged){
       state.selectedHistoryTradeKey=latestKey;
       state.historySelectionExplicit=false;
