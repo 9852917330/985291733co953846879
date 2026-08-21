@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v42-28coin-add-mnt-eigen-live-data"/>
+<meta name="app-build" content="v44-17coin-eigen-shortlist"/>
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -4200,7 +4200,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 28 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 17 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -4274,7 +4274,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 28 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 17 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4376,7 +4376,7 @@
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 28 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 17 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
@@ -4593,10 +4593,10 @@
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
   const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v12_28coin_mnt_eigen";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["BTC","ETH","HYPE","AAVE","SOL","LINK","SKY","BNB","UNI","CAKE","PUMP","JUP","PENDLE","LIT","LDO","ETHFI","EIGEN","MORPHO","RENDER","TAO","AERO","SUI","MNT","ONDO","INJ","GRAM","OKB","CC"];
+  const ROTATION_SYMBOLS = ["JUP","PENDLE","ETHFI","AERO","MNT","OKB","UNI","CAKE","AAVE","VIRTUAL","TAO","RENDER","SUI","INJ","MORPHO","EIGEN","BTC"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 28 coin đang hoạt động.
+  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 17 coin đang hoạt động.
   // ASSETS vẫn giữ ánh xạ các mã cũ chỉ để mục Lịch sử đọc và định giá giao dịch quá khứ.
   const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
   const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
@@ -5222,7 +5222,7 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị đúng 28 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
+    // Chỉ hiển thị đúng 17 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -7296,7 +7296,7 @@
     const latestChanged=state.latestTradeKeySeen&&state.latestTradeKeySeen!==latestKey;
     const selectedExists=state.tradeRows.some(t=>tradeKey(t)===state.selectedHistoryTradeKey);
 
-    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 28 coin.
+    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 17 coin.
     if(!state.historySelectionExplicit||!selectedExists||latestChanged){
       state.selectedHistoryTradeKey=latestKey;
       state.historySelectionExplicit=false;
@@ -7844,7 +7844,7 @@
           `Đã kết nối Sheet · đang giữ: <strong>${formatQtyExact(sheetLatest.buyQty)} ${sheetLatest.buyCoin}</strong><br>`+
           `Đang tải dữ liệu giá lịch sử cho ${symbols.length} coin…`;
       }else if(rawLatest){
-        $("rotationCurrentHolding").textContent="Giao dịch gần nhất thuộc coin ngoài rổ 28. Chi tiết chỉ hiển thị tại mục Lịch sử.";
+        $("rotationCurrentHolding").textContent="Giao dịch gần nhất thuộc coin ngoài rổ 16. Chi tiết chỉ hiển thị tại mục Lịch sử.";
       }else{
         $("rotationCurrentHolding").textContent="Đã kết nối Sheet nhưng chưa có giao dịch hợp lệ.";
       }
