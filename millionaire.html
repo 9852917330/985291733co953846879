@@ -1775,7 +1775,6 @@
     }
 
 
-    /* ===== Forecast columns & sticky coin V39 ===== */
     #page-comparison table{min-width:1880px}
     #page-comparison th:nth-child(2),
     #page-comparison td:nth-child(2){
@@ -1798,18 +1797,8 @@
     #tableBody tr.dual-reference-row td:nth-child(2){
       background:linear-gradient(90deg,#124b3f 0 48%,#512c58 52% 100%)!important
     }
-    #page-comparison th.forecast-head,
-    #page-comparison td.forecast-cell{min-width:122px;text-align:center}
-    .forecast-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
-    .forecast-price{font-weight:950;font-variant-numeric:tabular-nums;color:#e9f2ff}
-    .forecast-change{font-size:9px;font-weight:900;line-height:1.2}
-    .forecast-change.up{color:#67f0bf}
-    .forecast-change.down{color:#ff7f93}
-    .forecast-change.flat{color:#9aaac1}
-    .forecast-model-note{display:block;margin-top:3px;color:#6f86a8;font-size:7px;font-weight:700}
     @media(max-width:850px){
       #page-comparison table{min-width:1740px}
-      #page-comparison th.forecast-head,#page-comparison td.forecast-cell{min-width:108px}
       #page-comparison th:nth-child(2),#page-comparison td:nth-child(2){left:0}
     }
 
@@ -1864,7 +1853,7 @@
 
 
 
-    /* ===== Reordered analytics columns V42: divergence + forecast immediately before latency ===== */
+    /* ===== Reordered analytics columns V52: compact divergence immediately before latency ===== */
     /* ===== Sticky comparison header V41 ===== */
     #comparisonStickyHeaderOverlay{
       position:fixed;display:none;overflow:hidden;z-index:1190;
@@ -1902,9 +1891,6 @@
     }
     #comparisonStickyHeaderOverlay th.divergence-first{border-left:2px solid rgba(169,132,255,.42)}
     #comparisonStickyHeaderOverlay th.divergence-last{border-right:2px solid rgba(169,132,255,.42)}
-    #comparisonStickyHeaderOverlay th.forecast-head{
-      color:#dbeaff;background:linear-gradient(180deg,#1d3554,#13243d)
-    }
     @media(max-width:850px){
       #comparisonStickyHeaderOverlay th{padding:10px 8px}
     }
@@ -1914,6 +1900,18 @@
 
 
 
+
+    /* ===== Compact 5-timeframe divergence + funding V52 ===== */
+    #page-comparison th.funding-head,#page-comparison td.funding-cell{min-width:112px;text-align:center}
+    #page-comparison th.divergence-head,#page-comparison td.divergence-cell{min-width:190px;max-width:210px}
+    .divergence-matrix{display:flex;flex-direction:column;gap:2px;padding:4px 5px;border:1px solid rgba(132,142,156,.2);border-radius:5px;background:rgba(13,18,28,.38)}
+    .divergence-mini-row{display:grid;grid-template-columns:30px 1fr 1fr;align-items:center;gap:4px;min-height:18px;font-size:8.5px;line-height:1.15}
+    .div-tf{font-weight:900;color:#AEB7C4;text-align:left}
+    .div-bull-mini,.div-bear-mini{font-weight:850;white-space:nowrap;opacity:.48}
+    .div-bull-mini{color:#0ECB81}.div-bear-mini{color:#F6465D}
+    .div-bull-mini.active,.div-bear-mini.active{opacity:1;font-weight:950}
+    .divergence-key{display:block;margin-top:2px;color:#5E6673;font-size:7px;text-align:center}
+    @media(max-width:780px){#page-comparison th.divergence-head,#page-comparison td.divergence-cell{min-width:170px}.divergence-mini-row{font-size:8px}}
 </style>
 
 
@@ -2518,9 +2516,6 @@
   .v10-column-head.divergence-column{
     background:linear-gradient(180deg,#453a79 0%,#282957 58%,#171f42 100%);
   }
-  .v10-column-head.forecast-column{
-    background:linear-gradient(180deg,#285174 0%,#183957 58%,#102740 100%);
-  }
   @media(max-width:620px){
     #v10ComparisonTitle{height:34px;padding:0 10px;font-size:11px}
     .v10-column-head{padding:0 8px;font-size:9px}
@@ -2781,7 +2776,7 @@
     font-weight:600!important;
   }
   #v10ComparisonColumns{background:#181A20!important}
-  .v10-column-head,.v10-column-head.coin-column,.v10-column-head.divergence-column,.v10-column-head.forecast-column{
+  .v10-column-head,.v10-column-head.coin-column,.v10-column-head.divergence-column{
     background:#1E2329!important;color:#848E9C!important;border-right:1px solid #2B3139!important;
     border-bottom:1px solid #2B3139!important;text-shadow:none!important;box-shadow:none!important;
   }
@@ -2830,7 +2825,7 @@
   #page-benchmark .benchmark-control-host label{color:#848E9C!important}
   .benchmark-history-table tbody tr.open td{background:rgba(14,203,129,.045)!important}
 
-  /* Divergence and forecast */
+  /* Divergence */
   .divergence-wrap{border-radius:4px!important;box-shadow:none!important}
   .divergence-wrap.div-strong-bull,.divergence-wrap.div-bull{
     color:#0ECB81!important;background:rgba(14,203,129,.08)!important;border-color:rgba(14,203,129,.24)!important;
@@ -2842,9 +2837,7 @@
     color:#848E9C!important;background:#1E2329!important;border-color:#2B3139!important;
   }
   .divergence-rsi{color:#B7BDC6!important}
-  .divergence-confirm,.divergence-method-note,.forecast-model-note{color:#5E6673!important}
-  .forecast-price{color:#EAECEF!important}
-  .forecast-change.up{color:#0ECB81!important}.forecast-change.down{color:#F6465D!important}.forecast-change.flat{color:#848E9C!important}
+  .divergence-confirm,.divergence-method-note{color:#5E6673!important}
 
   /* Modal and messages */
   .quality-detail{background:rgba(11,14,17,.82)!important;backdrop-filter:blur(8px)!important}
@@ -4200,7 +4193,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 17 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 19 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -4274,7 +4267,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 17 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 19 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4376,13 +4369,13 @@
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 17 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.<br><strong>Dự đoán giá:</strong> Bốn cột 1 ngày, 1 tuần, 1 tháng và 1 năm là kịch bản cơ sở tự động, kết hợp động lượng 24h/7d/30d/1y, sức mạnh tương đối với BTC, chất lượng dự án, thanh khoản và mức pha loãng. Đây không phải cam kết lợi nhuận.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 19 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. “Mạnh · RSI+MACD” chỉ hiện khi giá, RSI và MACD cùng tạo phân kỳ thường theo một hướng trên cùng cặp swing. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>BTC · ETH · HYPE · AAVE · SOL · LINK · SKY · BNB · UNI · CAKE · PUMP · JUP · PENDLE · LIT · LDO · ETHFI · EIGEN · MORPHO · RENDER · TAO · AERO · SUI · MNT · ONDO · INJ · GRAM · OKB · CC</span>
+<span>JUP · PENDLE · ETHFI · AERO · MNT · OKB · UNI · CAKE · AAVE · VIRTUAL · TAO · RENDER · SUI · INJ · MORPHO · EIGEN · SOL · LINK · BTC</span>
 </div>
 <span>26 tài sản</span>
 </div>
@@ -4393,7 +4386,7 @@
 <span class="quality-badge quality-normal">Bình thường</span>
 <span class="quality-badge quality-bad">Không ngon</span>
 <span class="quality-legend-label">Chạm vào nhãn để xem toàn bộ tiêu chí chấm điểm.</span>
-<span class="quality-legend-label" title="Doanh thu là phần protocol revenue, không phải tổng phí người dùng trả">Doanh thu: DefiLlama protocol revenue lăn 1/30/365 ngày · Vốn hóa, cung, FDV và Volume 24h: CoinGecko; giá live: Binance/OKX/Bybit. Dấu “—” nghĩa là nguồn chưa công bố dữ liệu chuẩn hóa, không phải bằng 0.</span>
+<span class="quality-legend-label" title="Doanh thu là phần protocol revenue, không phải tổng phí người dùng trả">Doanh thu: DefiLlama protocol revenue lăn 1/30/365 ngày · Vốn hóa, cung, FDV và Volume 24h: CoinGecko; giá live: Binance/OKX/Bybit · Tổng vốn được rót: vòng gọi vốn/token sale công khai đã định lượng; vòng không công bố số tiền không được tự ước tính. Dấu “—” nghĩa là chưa có dữ liệu chuẩn hóa, không phải bằng 0.</span>
 </div>
 <div class="quality-detail" id="qualityDetail"></div>
 <div class="table-wrap">
@@ -4413,23 +4406,16 @@
 <th title="Tổng doanh thu giao thức 30 ngày gần nhất theo DefiLlama dailyRevenue">Doanh thu 1 tháng</th>
 <th title="Tổng doanh thu giao thức 1 năm gần nhất theo DefiLlama dailyRevenue">Doanh thu 1 năm</th>
 <th title="Volume giao dịch 24 giờ tổng hợp toàn thị trường từ CoinGecko">Volume 24h</th>
+<th class="funding-head" title="Tổng vốn huy động/capital raised được công bố và định lượng; không tự ước tính các vòng không công bố số tiền">Tổng vốn được rót</th>
 <th class="unlock-head" title="Sự kiện phân phối token gần nhất được công bố; % tính trên tổng cung nếu có dữ liệu">Lịch unlock</th>
 <th class="sector-head">Mảng</th>
 <th class="sr-head" title="Chỉ báo các khung mà giá live đang thực sự nằm trong vùng Hỗ trợ hoặc Kháng cự đã xác nhận">Vùng HT / KC</th>
-<th class="divergence-head divergence-first" title="Phân kỳ thường RSI(14), xác nhận mạnh hơn khi MACD(12,26,9) cùng chiều">Phân kỳ 15m</th>
-<th class="divergence-head" title="Phân kỳ thường RSI(14), xác nhận mạnh hơn khi MACD(12,26,9) cùng chiều">Phân kỳ 1h</th>
-<th class="divergence-head" title="Phân kỳ thường RSI(14), xác nhận mạnh hơn khi MACD(12,26,9) cùng chiều">Phân kỳ 4h</th>
-<th class="divergence-head" title="Phân kỳ thường RSI(14), xác nhận mạnh hơn khi MACD(12,26,9) cùng chiều">Phân kỳ 1D</th>
-<th class="divergence-head divergence-last" title="Phân kỳ thường RSI(14), xác nhận mạnh hơn khi MACD(12,26,9) cùng chiều">Phân kỳ 1W</th>
-<th class="forecast-head">Dự đoán 1 ngày</th>
-<th class="forecast-head">Dự đoán 1 tuần</th>
-<th class="forecast-head">Dự đoán 1 tháng</th>
-<th class="forecast-head">Dự đoán 1 năm</th>
+<th class="divergence-head divergence-first divergence-last" title="Một cột tổng hợp phân kỳ tăng/giảm RSI(14); MACD(12,26,9) dùng làm xác nhận mạnh cho 5 khung 15m, 1h, 4h, 1D, 1W">Phân kỳ 5 khung</th>
 <th>Độ trễ</th>
 </tr>
 </thead>
 <tbody id="tableBody">
-<tr class="loading-row"><td colspan="26">Đang tải nến đã đóng, dựng vùng giá xác nhận và ma trận phân kỳ đa khung…</td></tr>
+<tr class="loading-row"><td colspan="19">Đang tải nến đã đóng, dựng vùng giá xác nhận và ma trận phân kỳ đa khung…</td></tr>
 </tbody>
 </table>
 </div>
@@ -4586,17 +4572,17 @@
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v15_28coin_mnt_eigen";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v16_19coin_sol_link";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_MILESTONE_MODE_KEY = "cryptoQuantityMilestoneMode_v1";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v12_28coin_mnt_eigen";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v13_19coin_sol_link";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["JUP","PENDLE","ETHFI","AERO","MNT","OKB","UNI","CAKE","AAVE","VIRTUAL","TAO","RENDER","SUI","INJ","MORPHO","EIGEN","BTC"];
+  const ROTATION_SYMBOLS = ["JUP","PENDLE","ETHFI","AERO","MNT","OKB","UNI","CAKE","AAVE","VIRTUAL","TAO","RENDER","SUI","INJ","MORPHO","EIGEN","SOL","LINK","BTC"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 17 coin đang hoạt động.
+  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 19 coin đang hoạt động.
   // ASSETS vẫn giữ ánh xạ các mã cũ chỉ để mục Lịch sử đọc và định giá giao dịch quá khứ.
   const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
   const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
@@ -4608,7 +4594,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v50_28coin_mnt_eigen";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v51_19coin_sol_link";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4642,6 +4628,28 @@
     VIRTUAL:"AI · Agent economy", NEAR:"L1 · AI", AVAX:"L1 · Subnet", INJ:"L1 · Trading DeFi", DOGE:"Meme · PoW",
     ARB:"L2 · Ethereum", ZK:"L2 · Ethereum · ZK", ZRO:"Hạ tầng · Cross-chain", CC:"L1 · Tài chính tổ chức",
     PUMP:"Meme · Launchpad Solana", SKY:"DeFi · Stablecoin", CARDS:"RWA · Collectibles", WLFI:"DeFi · Governance"
+  };
+
+  const FUNDING_RAISED = {
+    JUP:{label:"$35M",value:35_000_000,source:"DefiLlama · strategic round quantified"},
+    PENDLE:{label:"$3.7M",value:3_700_000,source:"DefiLlama · quantified seed round; later undisclosed rounds excluded"},
+    ETHFI:{label:"$32.3M",value:32_300_000,source:"DefiLlama · quantified rounds"},
+    AERO:{label:"—",value:null,source:"No standardized quantified external raise found; protocol funded through token emissions/ecosystem"},
+    MNT:{label:"DAO-funded",value:null,source:"Mantle is primarily treasury/DAO funded; not comparable to a conventional VC total"},
+    OKB:{label:"—",value:null,source:"OKX corporate financing exists but a comparable OKB-project total is not publicly standardized"},
+    UNI:{label:"≥$11M",value:11_000_000,source:"DefiLlama · quantified Series A; later undisclosed strategic amount excluded"},
+    CAKE:{label:"—",value:null,source:"Binance Labs strategic investment disclosed without standardized public amount"},
+    AAVE:{label:"$48.7M",value:48_700_000,source:"DefiLlama · ICO/private/strategic rounds"},
+    VIRTUAL:{label:"~$16.6M",value:16_600_000,source:"PathDAO/Virtuals public fundraising history; includes token-sale rounds"},
+    TAO:{label:"—",value:null,source:"No comparable standardized external capital-raised total disclosed"},
+    RENDER:{label:"~$35.2M",value:35_200_000,source:"Public sale + private sale + $30M venture round"},
+    SUI:{label:"$336M",value:336_000_000,source:"Mysten Labs · $36M Series A + $300M Series B"},
+    INJ:{label:"$56.7M",value:56_700_000,source:"DefiLlama · quantified pre-seed/seed/ICO/strategic rounds"},
+    MORPHO:{label:"≥$68M",value:68_000_000,source:"DefiLlama · $18M + $50M quantified; undisclosed Pantera round excluded"},
+    EIGEN:{label:"$220M",value:220_000_000,source:"DefiLlama · $50M + $100M + $70M rounds"},
+    SOL:{label:"$315.76M",value:315_760_000,source:"DefiLlama · quantified Solana fundraising"},
+    LINK:{label:"$32M",value:32_000_000,source:"DefiLlama · ICO"},
+    BTC:{label:"Không VC",value:null,source:"Bitcoin had no venture funding round or token sale by an issuing company"}
   };
 
   const TOKEN_UNLOCKS = {
@@ -4690,6 +4698,11 @@
     const d=new Date(`${iso}T00:00:00Z`);
     if(!Number.isFinite(d.getTime()))return iso;
     return new Intl.DateTimeFormat("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric",timeZone:"UTC"}).format(d);
+  }
+
+  function fundingCellHTML(symbol){
+    const item=FUNDING_RAISED[symbol]||{label:"—",value:null,source:"Chưa có dữ liệu chuẩn hóa"};
+    return `<td class="funding-cell num" title="${escapeHTML(item.source||'')}"><strong>${escapeHTML(item.label||'—')}</strong></td>`;
   }
 
   function unlockCellHTML(symbol){
@@ -5222,7 +5235,7 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị đúng 17 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
+    // Chỉ hiển thị đúng 19 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -7296,7 +7309,7 @@
     const latestChanged=state.latestTradeKeySeen&&state.latestTradeKeySeen!==latestKey;
     const selectedExists=state.tradeRows.some(t=>tradeKey(t)===state.selectedHistoryTradeKey);
 
-    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 17 coin.
+    // Chỉ bám “HIỆN TẠI” khi giao dịch mới nhất thực sự thuộc rổ 19 coin.
     if(!state.historySelectionExplicit||!selectedExists||latestChanged){
       state.selectedHistoryTradeKey=latestKey;
       state.historySelectionExplicit=false;
@@ -9359,76 +9372,24 @@
     return parts.join(" | ")||"Không ở vùng HT/KC";
   }
 
-  function divergenceCellHTML(signal,timeframe,index){
-    const edgeClass=index===0?" divergence-first":index===DIVERGENCE_TIMEFRAMES.length-1?" divergence-last":"";
-    if(!signal){
-      const loading=state.divergence.loading;
-      return `<td class="divergence-cell${edgeClass}"><div class="divergence-wrap ${loading?"div-loading":"div-none"}"><strong class="divergence-signal">${loading?"Đang tính…":"Chưa tải"}</strong><small class="divergence-rsi">RSI 14: —</small><small class="divergence-confirm">${timeframe.label}</small></div></td>`;
-    }
-    if(signal.status!=="ready"){
-      return `<td class="divergence-cell${edgeClass}" title="${String(signal.error||"Không tải được dữ liệu").replaceAll('"','&quot;')}"><div class="divergence-wrap div-error"><strong class="divergence-signal">Lỗi dữ liệu</strong><small class="divergence-rsi">RSI 14: —</small><small class="divergence-confirm">Bấm Cập nhật ngay</small></div></td>`;
-    }
-    const rsi=Number(signal.rsi),rsiText=Number.isFinite(rsi)?rsi.toFixed(1):"—";
-    const rsiClass=Number.isFinite(rsi)?(rsi>=70?"rsi-overbought":rsi<=30?"rsi-oversold":""):"";
-    let css="div-none",label="Không có phân kỳ",confirm="RSI không tạo phân kỳ gần";
-    if(signal.direction==="bullish"){
-      css=signal.macdConfirmed?"div-strong-bull":"div-bull";
-      label=signal.macdConfirmed?"MẠNH · RSI+MACD ↑":"PHÂN KỲ RSI ↑";
-      confirm=signal.macdConfirmed?"MACD 12/26/9 cùng chiều":"Chưa có MACD xác nhận";
-    }else if(signal.direction==="bearish"){
-      css=signal.macdConfirmed?"div-strong-bear":"div-bear";
-      label=signal.macdConfirmed?"MẠNH · RSI+MACD ↓":"PHÂN KỲ RSI ↓";
-      confirm=signal.macdConfirmed?"MACD 12/26/9 cùng chiều":"Chưa có MACD xác nhận";
-    }else if(Number.isFinite(rsi)&&rsi>=70)confirm="RSI đang ở vùng quá mua";
-    else if(Number.isFinite(rsi)&&rsi<=30)confirm="RSI đang ở vùng quá bán";
-    const signalTime=Number.isFinite(signal.signalTs)?new Date(signal.signalTs).toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—";
-    const title=[
-      `${timeframe.label} · RSI(14) ${rsiText} · MACD(12,26,9)`,
-      signal.direction==="none"?"Không phát hiện phân kỳ thường trên swing gần nhất":`${signal.direction==="bullish"?"Phân kỳ tăng":"Phân kỳ giảm"}${signal.macdConfirmed?"; MACD cùng xác nhận":""}`,
-      signal.direction!=="none"?`Swing xác nhận: ${signalTime} · cách hiện tại ${signal.barsAgo} nến · chênh RSI ${Number(signal.rsiDelta).toFixed(1)}`:"",
-      `Nguồn nến: ${signal.source}${signal.stale?" · dữ liệu cache":""}`
-    ].filter(Boolean).join(" | ").replaceAll('"','&quot;');
-    return `<td class="divergence-cell${edgeClass}" title="${title}"><div class="divergence-wrap ${css}"><strong class="divergence-signal">${label}</strong><small class="divergence-rsi ${rsiClass}">RSI 14: ${rsiText}</small><small class="divergence-confirm">${confirm}</small><small class="divergence-method-note">Swing 3–3 · ${timeframe.label}</small></div></td>`;
-  }
-
-  function forecastModelFor(row){
-    const live=Number(row.live?.price);
-    if(!(live>0))return null;
-    const meta=state.marketMeta[row.symbol]||{};
-    const btc=state.marketMeta.BTC||{};
-    const q=Number(row.quality?.total)||70;
-    const c24=Number.isFinite(row.daily7amPct)?row.daily7amPct:(Number.isFinite(meta.change24h)?meta.change24h:0);
-    const c7=Number.isFinite(meta.change7d)?meta.change7d:0;
-    const c30=Number.isFinite(meta.change30d)?meta.change30d:0;
-    const c1y=Number.isFinite(meta.change1y)?meta.change1y:0;
-    const btc7=Number.isFinite(btc.change7d)?btc.change7d:0;
-    const btc30=Number.isFinite(btc.change30d)?btc.change30d:0;
-    const relative7=c7-btc7;
-    const relative30=c30-btc30;
-    const circulation=Number(row.circulationPct);
-    const dilutionPenalty=Number.isFinite(circulation)?clamp((70-circulation)*.18,0,12):3;
-    const overheat7=Math.max(0,c7-35)*.20;
-    const overheat30=Math.max(0,c30-90)*.12;
-
-    const returns={
-      day:clamp(.45*c24+.035*c7+.008*c30+.015*(q-75),-15,15),
-      week:clamp(.55*c7+.08*c30+.10*relative7+.05*(q-75)-overheat7,-40,45),
-      month:clamp(.52*c30+.40*c7+.10*relative30+.15*(q-75)-overheat30-dilutionPenalty*.25,-70,100),
-      year:clamp(8+1.25*(q-70)+.12*clamp(c1y,-100,300)+.25*clamp(c30,-80,120)+.08*clamp(relative30,-80,80)-dilutionPenalty,-80,250)
-    };
-    const result={};
-    for(const [key,pct] of Object.entries(returns)){
-      result[key]={pct,price:live*(1+pct/100)};
-    }
-    return result;
-  }
-
-  function forecastCellHTML(point,digits,title){
-    if(!point||!Number.isFinite(point.price)||!Number.isFinite(point.pct)){
-      return '<td class="forecast-cell"><span class="neu">—</span></td>';
-    }
-    const css=point.pct>.05?'up':point.pct<-.05?'down':'flat';
-    return `<td class="forecast-cell" title="${title}"><div class="forecast-wrap"><span class="forecast-price">${formatPrice(point.price,digits)}</span><small class="forecast-change ${css}">${point.pct>=0?'+':''}${point.pct.toFixed(2)}%</small><small class="forecast-model-note">Kịch bản cơ sở</small></div></td>`;
+  function divergenceSummaryCellHTML(signals){
+    const rows=DIVERGENCE_TIMEFRAMES.map(timeframe=>{
+      const signal=signals?.[timeframe.key];
+      if(!signal){
+        const waiting=state.divergence.loading?"…":"—";
+        return `<div class="divergence-mini-row"><span class="div-tf">${timeframe.label}</span><span class="div-bull-mini">↑ ${waiting}</span><span class="div-bear-mini">↓ ${waiting}</span></div>`;
+      }
+      if(signal.status!=="ready"){
+        return `<div class="divergence-mini-row"><span class="div-tf">${timeframe.label}</span><span class="div-bull-mini">↑ —</span><span class="div-bear-mini">↓ —</span></div>`;
+      }
+      const strong=signal.macdConfirmed?" • M":"";
+      const bull=signal.direction==="bullish"?`TĂNG${strong}`:"—";
+      const bear=signal.direction==="bearish"?`GIẢM${strong}`:"—";
+      const rsi=Number(signal.rsi);
+      const rsiText=Number.isFinite(rsi)?` · RSI ${rsi.toFixed(0)}`:"";
+      return `<div class="divergence-mini-row" title="${timeframe.label}${rsiText}; M = RSI + MACD cùng xác nhận"><span class="div-tf">${timeframe.label}</span><span class="div-bull-mini ${signal.direction==='bullish'?'active':''}">↑ ${bull}</span><span class="div-bear-mini ${signal.direction==='bearish'?'active':''}">↓ ${bear}</span></div>`;
+    }).join("");
+    return `<td class="divergence-cell divergence-first divergence-last"><div class="divergence-matrix">${rows}<small class="divergence-key">M = RSI + MACD</small></div></td>`;
   }
 
   function rowFor(symbol){
@@ -9457,7 +9418,6 @@
     };
     row.quality=qualityFor(row);
     row.divergence=divergenceForSymbol(symbol);
-    row.forecast=forecastModelFor(row);
     return row;
   }
 
@@ -9531,14 +9491,11 @@
         ${revenueCellHTML(r,"month")}
         ${revenueCellHTML(r,"year")}
         <td class="num" title="${escapeHTML(r.volume24hSource||'CoinGecko · tổng hợp toàn thị trường')}">${formatCompactUSD(r.volume24h)}</td>
+        ${fundingCellHTML(r.symbol)}
         ${unlockCellHTML(r.symbol)}
         ${sectorCellHTML(r.symbol)}
         ${supportResistanceCellHTML(r.divergence,r.live?.price,r.a.d)}
-        ${DIVERGENCE_TIMEFRAMES.map((timeframe,index)=>divergenceCellHTML(r.divergence?.[timeframe.key],timeframe,index)).join("")}
-        ${forecastCellHTML(r.forecast?.day,r.a.d,"Kịch bản cơ sở 1 ngày: động lượng 24h/7d/30d và chất lượng tổng hợp")}
-        ${forecastCellHTML(r.forecast?.week,r.a.d,"Kịch bản cơ sở 1 tuần: động lượng 7d/30d, sức mạnh tương đối với BTC và chất lượng")}
-        ${forecastCellHTML(r.forecast?.month,r.a.d,"Kịch bản cơ sở 1 tháng: xu hướng 7d/30d, sức mạnh tương đối, chất lượng và pha loãng")}
-        ${forecastCellHTML(r.forecast?.year,r.a.d,"Kịch bản cơ sở 1 năm: chất lượng dự án, xu hướng dài hạn, thanh khoản và pha loãng")}
+        ${divergenceSummaryCellHTML(r.divergence)}
         <td><span class="fresh ${fm.c}">${fm.label}</span></td>
       </tr>`;
     }).join("");
@@ -9601,15 +9558,15 @@
 
   function exportCSV(){
     const rows=rowsSorted();
-    const header=["Hạng","Coin","Nhãn chất lượng","Điểm tổng","Nền tảng 14 tiêu chí","Doanh thu & tăng trưởng (điểm)","Định giá theo doanh thu (điểm)","Quỹ lớn hậu thuẫn","Đội ngũ","Adoption","Vốn rót","Độ uy tín","Tăng trưởng dài hạn","Narrative","Sản phẩm/sử dụng thật","Moat","Token value capture","Tokenomics/pha loãng","Mức độ phi tập trung","Độ bền thesis","Năng lực thực thi","Volume & vị thế","Sức mạnh thị trường","Giá trị hiện tại","Lãi/lỗ %","Tăng/giảm từ 07:00 VN","Giá live","Giá mua","Giá 07:00 VN","Vốn hóa","Tỷ lệ lưu hành %","Doanh thu 1D","Doanh thu 1 tháng","Doanh thu 1 năm","Volume 24h","Vùng Hỗ trợ/Kháng cự","RSI 14 15m","Phân kỳ 15m","RSI 14 1h","Phân kỳ 1h","RSI 14 4h","Phân kỳ 4h","RSI 14 1D","Phân kỳ 1D","RSI 14 1W","Phân kỳ 1W","Dự đoán giá 1 ngày","Dự đoán % 1 ngày","Dự đoán giá 1 tuần","Dự đoán % 1 tuần","Dự đoán giá 1 tháng","Dự đoán % 1 tháng","Dự đoán giá 1 năm","Dự đoán % 1 năm","Độ trễ giây","Mốc mua Việt Nam","Mốc 07:00 Việt Nam"];
+    const header=["Hạng","Coin","Nhãn chất lượng","Điểm tổng","Nền tảng 14 tiêu chí","Doanh thu & tăng trưởng (điểm)","Định giá theo doanh thu (điểm)","Quỹ lớn hậu thuẫn","Đội ngũ","Adoption","Vốn rót (điểm)","Độ uy tín","Tăng trưởng dài hạn","Narrative","Sản phẩm/sử dụng thật","Moat","Token value capture","Tokenomics/pha loãng","Mức độ phi tập trung","Độ bền thesis","Năng lực thực thi","Volume & vị thế","Sức mạnh thị trường","Giá trị hiện tại","Lãi/lỗ %","Tăng/giảm từ 07:00 VN","Giá live","Giá mua","Giá 07:00 VN","Vốn hóa","Tỷ lệ lưu hành %","Doanh thu 1D","Doanh thu 1 tháng","Doanh thu 1 năm","Volume 24h","Tổng vốn được rót","Vùng Hỗ trợ/Kháng cự","Phân kỳ 15m","Phân kỳ 1h","Phân kỳ 4h","Phân kỳ 1D","Phân kỳ 1W","Độ trễ giây","Mốc mua Việt Nam","Mốc 07:00 Việt Nam"];
     const body=rows.map((r,i)=>{
       const p=r.quality.profile||{},x=r.quality.factors||{};
-      return [i+1,r.symbol,r.quality.label,r.quality.total,r.quality.structural,r.quality.revenueStrength,r.quality.revenueValuation,x.backing,x.team,x.adoption,x.capital,x.credibility,x.growth,x.narrative,p.product,p.moat,p.valueCapture,p.tokenomics,p.decentralization,p.durability,p.execution,r.quality.market,r.quality.momentum,r.currentValue,r.returnPct,r.daily7amPct,r.live?.price,r.buyPrice,r.daily7amPrice,r.marketCap,r.circulationPct,r.revenue?.day,r.revenue?.month,r.revenue?.year,r.volume24h,supportResistanceCSV(r.divergence,r.live?.price),
-        ...DIVERGENCE_TIMEFRAMES.flatMap(tf=>{
+      return [i+1,r.symbol,r.quality.label,r.quality.total,r.quality.structural,r.quality.revenueStrength,r.quality.revenueValuation,x.backing,x.team,x.adoption,x.capital,x.credibility,x.growth,x.narrative,p.product,p.moat,p.valueCapture,p.tokenomics,p.decentralization,p.durability,p.execution,r.quality.market,r.quality.momentum,r.currentValue,r.returnPct,r.daily7amPct,r.live?.price,r.buyPrice,r.daily7amPrice,r.marketCap,r.circulationPct,r.revenue?.day,r.revenue?.month,r.revenue?.year,r.volume24h,FUNDING_RAISED[r.symbol]?.label||"—",supportResistanceCSV(r.divergence,r.live?.price),
+        ...DIVERGENCE_TIMEFRAMES.map(tf=>{
           const signal=r.divergence?.[tf.key];
-          const status=signal?.status==="ready"?(signal.direction==="none"?"Không có":`${signal.direction==="bullish"?"Tăng":"Giảm"}${signal.macdConfirmed?" · RSI+MACD":" · RSI"}`):(signal?.status==="error"?"Lỗi dữ liệu":"Chưa tải");
-          return [signal?.rsi??null,status];
-        }),r.forecast?.day?.price,r.forecast?.day?.pct,r.forecast?.week?.price,r.forecast?.week?.pct,r.forecast?.month?.price,r.forecast?.month?.pct,r.forecast?.year?.price,r.forecast?.year?.pct,Number.isFinite(r.age)?r.age/1000:null,formatAnchorLabel(),formatDaily7amLabel()];
+          if(!signal||signal.status!=="ready")return "—";
+          return signal.direction==="bullish"?`Tăng${signal.macdConfirmed?" · RSI+MACD":" · RSI"}`:signal.direction==="bearish"?`Giảm${signal.macdConfirmed?" · RSI+MACD":" · RSI"}`:"Không có";
+        }),Number.isFinite(r.age)?r.age/1000:null,formatAnchorLabel(),formatDaily7amLabel()];
     });
     const csv=[header,...body].map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
     const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
@@ -10378,7 +10335,6 @@
       cell.className = 'v10-column-head';
       if(index === 1) cell.classList.add('coin-column');
       if(th.classList.contains('divergence-head')) cell.classList.add('divergence-column');
-      if(th.classList.contains('forecast-head')) cell.classList.add('forecast-column');
       cell.textContent = th.textContent.trim();
       cell.style.left = left + 'px';
       cell.style.width = width + 'px';

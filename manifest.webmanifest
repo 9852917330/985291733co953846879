@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v42-28coin-mnt-eigen",
+  "id": "./millionaire.html?app=Millionaire-v45-19coin-sol-link-compact",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=43-16coin-core",
+  "start_url": "./millionaire.html?v=45-19coin-sol-link-compact",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=43-16coin-core",
+      "url": "./millionaire.html?v=45-19coin-sol-link-compact",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",
