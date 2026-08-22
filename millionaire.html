@@ -4089,7 +4089,7 @@
   }
 </style>
 
-<style id="v46-23coin-compact-table-and-signals">
+<style id="v47-24coin-compact-table-and-signals">
   /* Portfolio first-page quantity signals */
   #page-comparison .overview-quantity-section{padding:12px!important}
   #page-comparison .overview-quantity-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 0 10px}
@@ -4156,6 +4156,16 @@
   }
 </style>
 
+
+<style id="v47-overview-positive-only">
+  #page-comparison #overviewHistoryBenchmarkButtons .history-coin-chip.up{
+    background:linear-gradient(145deg,rgba(14,203,129,.22),rgba(6,76,51,.42))!important;
+    border:1px solid #0ECB81!important;box-shadow:0 0 12px rgba(14,203,129,.15)!important;outline:none!important
+  }
+  #page-comparison #overviewHistoryBenchmarkButtons .history-coin-chip.up .chip-copy strong,
+  #page-comparison #overviewHistoryBenchmarkButtons .history-coin-chip.up .chip-copy small{color:#55E7AD!important}
+  #page-comparison .overview-rebuy-detail,#page-comparison #overviewRebuyHistoryList{display:none!important}
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4261,7 +4271,7 @@
 <div class="rotation-control-card">
 <label for="rotationSectorMode">Phạm vi so sánh</label>
 <select id="rotationSectorMode">
-<option selected="" value="all">Toàn bộ rổ 23 coin xoay</option>
+<option selected="" value="all">Toàn bộ rổ 24 coin xoay</option>
 <option value="same">Ưu tiên cùng nhóm narrative</option>
 </select>
 <small>Cùng nhóm được cộng điểm nhẹ, không khóa cứng.</small>
@@ -4335,7 +4345,7 @@
 <div class="rotation-table-head">
 <div>
 <h3>Top ứng viên xoay</h3>
-<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 23 coin xoay…</p>
+<p id="rotationTableSubtitle">Đang chuẩn bị dữ liệu lịch sử của 24 coin xoay…</p>
 </div>
 <div class="rotation-legend">
 <span class="rotation-status status-strong">Mạnh</span>
@@ -4370,9 +4380,21 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">23 tài sản · một rổ xoay thống nhất</div></div><section class="overview-history-chip-section overview-quantity-section" id="overviewHistoryMilestoneSection">
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">24 tài sản · một rổ xoay thống nhất</div></div><section class="rebuy-top-signal-section" id="rebuyTopSignalSection">
+  <div class="rebuy-section-head">
+    <div>
+      <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
+      <h3>Tín hiệu tăng số lượng</h3>
+    </div>
+    <div class="rebuy-nav-badge" id="rebuyNavBadgeTop">NAV hiện tại: —</div>
+  </div>
+  <div class="rebuy-signal-grid" id="rebuySignalGridTop">
+    <div class="rebuy-empty">Đang chờ dữ liệu giá live…</div>
+  </div>
+</section>
+<section class="overview-history-chip-section overview-quantity-section" id="overviewHistoryMilestoneSection">
   <div class="overview-quantity-head">
-    <div><div class="rebuy-section-kicker">SO SÁNH SỐ LƯỢNG</div><h3>Tín hiệu tăng số lượng</h3></div>
+    <div><div class="rebuy-section-kicker">SO VỚI MỐC</div><h3>Tăng số lượng so với mốc</h3></div>
     <span class="overview-milestone-caption" id="overviewMilestoneCaption">So với mốc đang chọn</span>
   </div>
   <div class="history-chip-toolbar overview-history-chip-toolbar">
@@ -4384,14 +4406,10 @@
   <div id="overviewHistoryBenchmarkButtons">
     <div class="history-chip-placeholder">Đang tải tín hiệu tăng số lượng…</div>
   </div>
-  <div class="overview-rebuy-detail">
-    <div class="rebuy-detail-head"><strong>Chi tiết qua các lần mua vào</strong><span>Nhấn coin để mở/đóng</span></div>
-    <div class="rebuy-history-list" id="overviewRebuyHistoryList"><div class="rebuy-empty">Đang đọc lịch sử mua…</div></div>
-  </div>
 </section><section class="toolbar">
 <div class="toolbar-summary">
 <span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
-<span class="badge badge-count">Danh sách so sánh: <strong>23 tài sản</strong></span>
+<span class="badge badge-count">Danh sách so sánh: <strong>24 tài sản</strong></span>
 <span class="badge badge-total">Mô hình vốn: <strong>100% một coin</strong></span>
 <span class="badge badge-anchor">Mốc mặc định: <strong id="latestTradeAnchorInfo">Đang đọc lần xoay gần nhất…</strong></span>
 </div>
@@ -4437,23 +4455,23 @@
 </div>
 </div>
 </section><section class="stats">
-<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">23 tài sản</div><div class="s">Một rổ duy nhất · BTC và OKB cũng là ứng viên xoay</div></div>
+<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">24 tài sản</div><div class="s">Một rổ duy nhất · BTC và OKB cũng là ứng viên xoay</div></div>
 <div class="stat"><div class="k">Tổng giá trị hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
 <div class="stat"><div class="k">Coin mạnh nhất</div><div class="v" id="bestCoin">—</div><div class="s" id="bestCoinInfo">—</div></div>
 <div class="stat"><div class="k">Khoảng cách mạnh/yếu</div><div class="v" id="spreadValue">—</div><div class="s" id="spreadInfo">—</div></div>
-<div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/23</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
+<div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/24</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 23 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. Chỉ hiển thị khi thực sự có phân kỳ; nếu không có sẽ ghi “Không phân kỳ”. “RSI & MACD” nghĩa là cả hai chỉ báo cùng xác nhận. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 24 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. Chỉ hiển thị khi thực sự có phân kỳ; nếu không có sẽ ghi “Không phân kỳ”. “RSI & MACD” nghĩa là cả hai chỉ báo cùng xác nhận. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>JUP · PENDLE · ETHFI · AERO · MNT · OKB · UNI · CAKE · AAVE · VIRTUAL · TAO · RENDER · SUI · INJ · MORPHO · EIGEN · SOL · LINK · ONDO · NEAR · PUMP · XPL · BTC</span>
+<span>JUP · PENDLE · ETHFI · AERO · MNT · OKB · UNI · CAKE · AAVE · VIRTUAL · TAO · RENDER · SUI · INJ · MORPHO · EIGEN · SOL · LINK · ONDO · NEAR · PUMP · XPL · ENA · BTC</span>
 </div>
-<span>23 tài sản</span>
+<span>24 tài sản</span>
 </div>
 <div class="quality-legend">
 <span class="quality-legend-label">Nhãn chất lượng tổng hợp:</span>
@@ -4640,23 +4658,23 @@
   const ANCHOR_SETTINGS_KEY = "crypto100AnchorSettings_v3";
   const REST_INTERVAL = 30_000;
   const PRIMARY_STALE_MS = 10_000;
-  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v46_23coin_compact_signals_";
+  const ANCHOR_KEY_PREFIX = "fullCapitalAnchor_v47_24coin_ena_";
   const ICON_KEY = "fullCapitalIcons_v40_cg";
   const SHEET_ID = "1oXTD35cnMZEeiGX9oQ4XepH7jWCNilHIXfNHLnrjXs0";
   const SHEET_NAME = "Trang tính1";
   const SHEET_REFRESH_MS = 60_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
-  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v17_23coin_ondo_near_pump_xpl";
+  const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v18_24coin_ena";
   const HISTORY_BENCHMARK_KEY = "cryptoTradeHistoryBenchmark_v2";
   const HISTORY_MILESTONE_MODE_KEY = "cryptoQuantityMilestoneMode_v1";
   const HISTORY_SELECTED_TRADE_KEY = "cryptoTradeHistorySelectedTrade_v2";
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
-  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v14_23coin_ondo_near_pump_xpl";
+  const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v15_24coin_ena";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["JUP","PENDLE","ETHFI","AERO","MNT","OKB","UNI","CAKE","AAVE","VIRTUAL","TAO","RENDER","SUI","INJ","MORPHO","EIGEN","SOL","LINK","ONDO","NEAR","PUMP","XPL","BTC"];
+  const ROTATION_SYMBOLS = ["JUP","PENDLE","ETHFI","AERO","MNT","OKB","UNI","CAKE","AAVE","VIRTUAL","TAO","RENDER","SUI","INJ","MORPHO","EIGEN","SOL","LINK","ONDO","NEAR","PUMP","XPL","ENA","BTC"];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 23 coin đang hoạt động.
+  // Toàn bộ trang ngoài mục Lịch sử chỉ dùng đúng 24 coin đang hoạt động.
   // ASSETS vẫn giữ ánh xạ các mã cũ chỉ để mục Lịch sử đọc và định giá giao dịch quá khứ.
   const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
   const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
@@ -4668,7 +4686,7 @@
   const BTC_CHAPTER_ONE_STARTED_AT = Date.UTC(2026,5,21,2,12,0,0); // 09:12 21/06/2026, Asia/Ho_Chi_Minh
   const BTC_CHAPTER_ONE_BASELINE_QTY = 0.0592663; // Lần 1: số BTC thực tế đã mua
 
-  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v52_23coin_compact";
+  const DIVERGENCE_CACHE_KEY = "cryptoDivergenceSignals_v53_24coin_ena";
   const DIVERGENCE_CANDLE_LIMIT = 240;
   const DIVERGENCE_CONCURRENCY = 5;
   const DIVERGENCE_TIMEFRAMES = [
@@ -4727,6 +4745,7 @@
     NEAR:{label:"$533.7M",value:533_700_000,source:"DefiLlama · quantified NEAR fundraising rounds"},
     PUMP:{label:"$1.32B sale",value:1_320_000_000,source:"PUMP token sale · $720M private/institutional + $600M public/CEX sale"},
     XPL:{label:"$74M",value:74_000_000,source:"Plasma · $24M Seed/Series A + $50M capped XPL public token sale"},
+    ENA:{label:"$120M",value:120_000_000,source:"Ethena Labs · $6M seed + $14M strategic + $100M private ENA token sale (publicly quantified rounds)"},
     BTC:{label:"Không VC",value:null,source:"Bitcoin had no venture funding round or token sale by an issuing company"}
   };
 
@@ -5315,7 +5334,7 @@
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị đúng 23 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
+    // Chỉ hiển thị đúng 24 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -5350,10 +5369,8 @@
       const isOverview=host.id==='overviewHistoryBenchmarkButtons';
       if(isOverview){
         const positive=rankedSymbols.filter(item=>Number.isFinite(item.pct)&&item.pct>0.005);
-        host.innerHTML=positive.length?positive.map(({symbol,pct,isCurrentHolding})=>{
-          const btcSpecial=symbol==='BTC'?'btc-special':'';
-          const holdingClass=isCurrentHolding?'current-holding':'';
-          return `<button class="history-coin-chip up ${btcSpecial} ${holdingClass}" data-history-chip="${symbol}" type="button" title="${milestoneTitle}"><span class="chip-copy"><strong>${symbol}</strong><small>+${pct.toFixed(2)}%</small></span></button>`;
+        host.innerHTML=positive.length?positive.map(({symbol,pct})=>{
+          return `<button class="history-coin-chip up" data-history-chip="${symbol}" type="button" title="${milestoneTitle}"><span class="chip-copy"><strong>${symbol}</strong><small>+${pct.toFixed(2)}%</small></span></button>`;
         }).join(''):`<div class="history-chip-placeholder">Không có tín hiệu tăng số lượng so với ${historyMilestoneContext().shortLabel}.</div>`;
         const caption=$("overviewMilestoneCaption");if(caption)caption.textContent=milestoneTitle;
       }else host.innerHTML=chipsHtml;
@@ -5978,15 +5995,15 @@
 
   let coinGeckoFundamentalsLastFetch=0;
   const COINGECKO_FUNDAMENTALS_INTERVAL=5*60*1000;
-  const COINGECKO_MARKET_CACHE_KEY="millionaireCoinGeckoMarketV8_23coin_ondo_near_pump_xpl";
-  const COINGECKO_ID_CACHE_KEY="millionaireCoinGeckoResolvedIdsV6_23coin_ondo_near_pump_xpl";
+  const COINGECKO_MARKET_CACHE_KEY="millionaireCoinGeckoMarketV9_24coin_ena";
+  const COINGECKO_ID_CACHE_KEY="millionaireCoinGeckoResolvedIdsV7_24coin_ena";
   const COINGECKO_ID_CANDIDATES={
     BTC:["bitcoin"],ETH:["ethereum"],HYPE:["hyperliquid"],AAVE:["aave"],SOL:["solana"],
     LINK:["chainlink"],SKY:["sky"],BNB:["binancecoin"],UNI:["uniswap"],
     CAKE:["pancakeswap-token","pancakeswap"],PUMP:["pump-fun"],JUP:["jupiter-exchange-solana"],
     PENDLE:["pendle"],LIT:["lighter"],LDO:["lido-dao"],ETHFI:["ether-fi"],MORPHO:["morpho"],
     RENDER:["render-token"],TAO:["bittensor"],AERO:["aerodrome-finance"],SUI:["sui"],
-    ONDO:["ondo-finance"],NEAR:["near"],XPL:["plasma"],INJ:["injective-protocol"],GRAM:["gram","the-open-network"],OKB:["okb"],CC:["canton"],MNT:["mantle"],EIGEN:["eigenlayer"]
+    ONDO:["ondo-finance"],NEAR:["near"],XPL:["plasma"],ENA:["ethena"],INJ:["injective-protocol"],GRAM:["gram","the-open-network"],OKB:["okb"],CC:["canton"],MNT:["mantle"],EIGEN:["eigenlayer"]
   };
 
   function chunkArray(values,size){
@@ -6176,7 +6193,7 @@
     if(!successful&&bulkError)throw bulkError;
   }
 
-  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV8_23coin_compact";
+  const REVENUE_CACHE_KEY="millionaireRevenueDefiLlamaV9_24coin_ena";
   const REVENUE_FETCH_INTERVAL=30*60*1000;
   const REVENUE_CONFIG={
     BTC:{slugs:["bitcoin"],aliases:["bitcoin"],label:"Bitcoin network"},
@@ -6203,6 +6220,7 @@
     ONDO:{slugs:["ondo-finance","ondo"],aliases:["ondo finance","ondo"],label:"Ondo"},
     NEAR:{slugs:["near"],aliases:["near","near protocol"],label:"NEAR network"},
     XPL:{slugs:["plasma"],aliases:["plasma","plasma network"],label:"Plasma network"},
+    ENA:{slugs:["ethena"],aliases:["ethena","ethena labs"],label:"Ethena"},
     INJ:{slugs:["injective"],aliases:["injective"],label:"Injective network"},
     GRAM:{slugs:["ton","the-open-network"],aliases:["ton","the open network","gram"],label:"TON / Gram network"},
     OKB:{slugs:["x-layer"],aliases:["x layer"],label:"X Layer"},
@@ -7944,7 +7962,7 @@
           `Đã kết nối Sheet · đang giữ: <strong>${formatQtyExact(sheetLatest.buyQty)} ${sheetLatest.buyCoin}</strong><br>`+
           `Đang tải dữ liệu giá lịch sử cho ${symbols.length} coin…`;
       }else if(rawLatest){
-        $("rotationCurrentHolding").textContent="Giao dịch gần nhất thuộc coin ngoài rổ 23. Chi tiết chỉ hiển thị tại mục Lịch sử.";
+        $("rotationCurrentHolding").textContent="Giao dịch gần nhất thuộc coin ngoài rổ 24. Chi tiết chỉ hiển thị tại mục Lịch sử.";
       }else{
         $("rotationCurrentHolding").textContent="Đã kết nối Sheet nhưng chưa có giao dịch hợp lệ.";
       }
@@ -11381,6 +11399,20 @@
     body.v6-sticky-compact #appNav .app-nav-btn .nav-copy strong{font-size:11px!important}
   }
 </style>
+<style id="v47-exact-column-header-alignment">
+  #v7ComparisonHeader{border-left:0!important;border-right:0!important;box-sizing:border-box!important}
+  #v7ComparisonHeaderViewport{position:relative!important;width:100%!important;overflow:hidden!important}
+  #v7ComparisonHeaderTable{position:relative!important;left:0!important;top:0!important;width:100%!important;height:100%!important;min-width:0!important;transform:none!important;will-change:auto!important}
+  .v7-exact-head-cell{
+    position:absolute;top:0;display:flex;align-items:center;box-sizing:border-box;
+    padding:10px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    background:#232831;color:#B7BDC6;border-bottom:1px solid #474D57;border-right:1px solid #343A42;
+    font-size:10px;font-weight:700;text-transform:none;letter-spacing:0;line-height:1.2
+  }
+  .v7-exact-head-cell.coin-column{z-index:9;background:#2B3139;color:#EAECEF;box-shadow:6px 0 12px rgba(0,0,0,.20)}
+  .v7-exact-head-cell.divergence-column{white-space:normal}
+  @media(max-width:850px){.v7-exact-head-cell{padding:9px 7px;font-size:9px}}
+</style>
 
 <script id="v7-active-page-and-scroll-owner">
 (() => {
@@ -11424,60 +11456,63 @@
   overlay.setAttribute("aria-hidden","true");
   const viewport=document.createElement("div");
   viewport.id="v7ComparisonHeaderViewport";
-  const cloneTable=document.createElement("table");
-  cloneTable.id="v7ComparisonHeaderTable";
-  cloneTable.setAttribute("role","presentation");
-  const coinHead=document.createElement("div");
-  coinHead.id="v7ComparisonCoinHead";
-  coinHead.textContent="Coin";
-  viewport.append(cloneTable,coinHead);
+  const columns=document.createElement("div");
+  columns.id="v7ComparisonHeaderTable";
+  viewport.appendChild(columns);
   overlay.appendChild(viewport);
   document.body.appendChild(overlay);
 
-  let widths=[];
+  let sourceHeaders=[];
+  let cells=[];
   let headHeight=38;
   let raf=0;
   let timer=0;
 
   function active(){return page.classList.contains("active")&&getComputedStyle(page).display!=="none"}
+  function alignFor(th){
+    const a=getComputedStyle(th).textAlign;
+    return a==="center"?"center":a==="left"||a==="start"?"flex-start":"flex-end";
+  }
 
   function rebuild(){
     clearTimeout(timer);
-    const headers=Array.from(thead.querySelectorAll("th"));
-    if(!headers.length)return;
-    widths=headers.map(th=>Math.max(1,Math.round(th.getBoundingClientRect().width||th.offsetWidth||1)));
-    headHeight=Math.max(34,Math.round(thead.getBoundingClientRect().height||headers[0].getBoundingClientRect().height||38));
-    const colgroup=document.createElement("colgroup");
-    widths.forEach(width=>{
-      const col=document.createElement("col");
-      col.style.width=`${width}px`;
-      col.style.minWidth=`${width}px`;
-      col.style.maxWidth=`${width}px`;
-      colgroup.appendChild(col);
+    sourceHeaders=Array.from(thead.querySelectorAll("th"));
+    if(!sourceHeaders.length)return;
+    headHeight=Math.max(34,thead.getBoundingClientRect().height||sourceHeaders[0].getBoundingClientRect().height||38);
+    columns.replaceChildren();
+    cells=sourceHeaders.map((th,index)=>{
+      const cell=document.createElement("div");
+      cell.className="v7-exact-head-cell";
+      if(index===1)cell.classList.add("coin-column");
+      if(th.classList.contains("divergence-head"))cell.classList.add("divergence-column");
+      cell.innerHTML=th.innerHTML;
+      cell.title=th.title||"";
+      cell.style.justifyContent=alignFor(th);
+      columns.appendChild(cell);
+      return cell;
     });
-    const cloned=thead.cloneNode(true);
-    Array.from(cloned.querySelectorAll("th")).forEach((th,index)=>{
-      const width=widths[index];
-      th.style.width=`${width}px`;
-      th.style.minWidth=`${width}px`;
-      th.style.maxWidth=`${width}px`;
-      th.style.height=`${headHeight}px`;
-    });
-    cloneTable.replaceChildren(colgroup,cloned);
-    cloneTable.style.width=`${widths.reduce((sum,n)=>sum+n,0)}px`;
     overlay.style.height=`${headHeight}px`;
     viewport.style.height=`${headHeight}px`;
-    coinHead.style.height=`${headHeight}px`;
+    layoutCells();
     schedule();
   }
 
-  function syncHorizontal(){
-    cloneTable.style.transform=`translate3d(${-wrap.scrollLeft}px,0,0)`;
-    const rankWidth=widths[0]||0;
-    const coinWidth=widths[1]||0;
-    coinHead.style.left=`${Math.max(0,Math.round(rankWidth-wrap.scrollLeft))}px`;
-    coinHead.style.width=`${Math.round(coinWidth)}px`;
-    coinHead.style.display=coinWidth>0?"flex":"none";
+  function layoutCells(){
+    if(!sourceHeaders.length||!cells.length)return;
+    const wrapRect=wrap.getBoundingClientRect();
+    const viewportWidth=wrapRect.width;
+    sourceHeaders.forEach((th,index)=>{
+      const rect=th.getBoundingClientRect();
+      let left=rect.left-wrapRect.left;
+      // Cột Coin trong tbody là sticky: clamp theo đúng vị trí tự nhiên thay vì cộng width tích lũy.
+      if(index===1)left=Math.max(0,left);
+      const width=rect.width;
+      const cell=cells[index];
+      cell.style.left=`${left}px`;
+      cell.style.width=`${width}px`;
+      cell.style.height=`${headHeight}px`;
+      cell.style.display=(width>0&&left<viewportWidth&&left+width>0)?"flex":"none";
+    });
   }
 
   function update(){
@@ -11488,7 +11523,7 @@
     }
     const wrapRect=wrap.getBoundingClientRect();
     const headRect=thead.getBoundingClientRect();
-    const navBottom=Math.max(0,Math.round(nav.getBoundingClientRect().bottom));
+    const navBottom=Math.max(0,nav.getBoundingClientRect().bottom);
     const show=headRect.top<=navBottom&&wrapRect.bottom>navBottom+headHeight+3;
     if(!show){
       overlay.style.display="none";
@@ -11496,15 +11531,17 @@
     }
     overlay.style.display="block";
     overlay.style.top=`${navBottom}px`;
-    overlay.style.left=`${Math.round(wrapRect.left)}px`;
-    overlay.style.width=`${Math.round(wrapRect.width)}px`;
-    syncHorizontal();
+    overlay.style.left=`${wrapRect.left}px`;
+    overlay.style.width=`${wrapRect.width}px`;
+    overlay.style.height=`${headHeight}px`;
+    viewport.style.height=`${headHeight}px`;
+    layoutCells();
   }
 
   function schedule(){if(raf)return;raf=requestAnimationFrame(update)}
-  function scheduleRebuild(){clearTimeout(timer);timer=setTimeout(rebuild,80)}
+  function scheduleRebuild(){clearTimeout(timer);timer=setTimeout(rebuild,70)}
 
-  wrap.addEventListener("scroll",()=>{syncHorizontal();schedule()},{passive:true});
+  wrap.addEventListener("scroll",schedule,{passive:true});
   window.addEventListener("scroll",schedule,{passive:true});
   window.addEventListener("resize",scheduleRebuild,{passive:true});
   window.addEventListener("v7pagechange",()=>setTimeout(scheduleRebuild,20));
@@ -11515,8 +11552,6 @@
   if("MutationObserver" in window){
     const mo=new MutationObserver(scheduleRebuild);
     mo.observe(thead,{childList:true,subtree:true,characterData:true});
-    const tbody=table.querySelector("tbody");
-    if(tbody)mo.observe(tbody,{childList:true,subtree:true});
   }
   rebuild();
   setTimeout(rebuild,350);
