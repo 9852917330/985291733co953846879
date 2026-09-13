@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v47-24coin-ena-exact-header";
+const CACHE_NAME="millionaire-v48-20coin-hype-eth";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",
