@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v48-20coin-hype-eth",
+  "id": "./millionaire.html?app=Millionaire-v49-16coin",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=48-20coin-hype-eth",
+  "start_url": "./millionaire.html?v=49-16coin",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=48-20coin-hype-eth",
+      "url": "./millionaire.html?v=49-16coin",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",
