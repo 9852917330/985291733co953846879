@@ -4170,6 +4170,43 @@
 .sheet-sync-status{display:inline-flex;align-items:center;font-size:11px;line-height:1.5;color:#6ee7c8;padding:6px 9px;border:1px solid rgba(82,230,177,.26);background:rgba(82,230,177,.07);border-radius:8px;max-width:100%}
 .sheet-sync-status.is-backup{color:#ffcf82;border-color:rgba(255,207,130,.3);background:rgba(255,207,130,.07)}
 </style>
+<style id="coin-watchlist-v1">
+.header-actions{gap:8px!important;display:flex!important;align-items:center!important;flex-wrap:wrap!important}
+.coin-settings-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(135deg,#233a58,#172a43);color:#eef7ff;border:1px solid rgba(112,183,244,.42);border-radius:12px;padding:9px 12px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap}
+.coin-settings-btn:hover{border-color:#69e8c0;background:#1d4260}
+.coin-settings-btn .count{display:inline-flex;justify-content:center;align-items:center;min-width:27px;height:23px;padding:0 5px;border-radius:9px;background:#2bdbad;color:#082b23;font-weight:900}
+.coin-watch-overlay[hidden]{display:none!important}
+.coin-watch-overlay{position:fixed;inset:0;z-index:90000;background:rgba(3,9,17,.82);display:grid;place-items:center;padding:14px;backdrop-filter:blur(6px)}
+.coin-watch-modal{display:flex;flex-direction:column;max-height:min(90dvh,830px);width:min(100%,740px);overflow:hidden;border-radius:20px;border:1px solid rgba(77,234,191,.35);background:#101b2c;color:#f3f7fc;box-shadow:0 24px 80px #000a;font-size:13px}
+.coin-watch-head{padding:19px 20px 12px;border-bottom:1px solid #2c435d;display:flex;align-items:start;justify-content:space-between;gap:12px}
+.coin-watch-head h2{font-size:20px;margin:0 0 5px;font-weight:900;color:#fff}
+.coin-watch-head p{font-size:12px;margin:0;color:#9cafca;line-height:1.6}
+.coin-watch-close{font-size:22px;min-width:34px;height:34px;cursor:pointer;background:#21314a;border:1px solid #405371;color:#e5efff;border-radius:10px}
+.coin-watch-search{display:flex;gap:10px;align-items:center;margin:13px 18px 10px}
+.coin-watch-search input{flex:1;min-width:0;border-radius:10px;border:1px solid #3a5677;background:#091422;color:#fff;padding:11px 12px;font-size:14px}
+.coin-watch-tools{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px 11px;align-items:center}
+.coin-watch-tools button{padding:8px 10px;font-size:11px;font-weight:700;color:#dbf4ff;background:#1b3047;border:1px solid #405976;border-radius:9px;cursor:pointer}
+.coin-watch-counter{margin-left:auto;color:#57eac0;font-weight:900}
+.coin-watch-list{flex:1;overflow-y:auto;padding:1px 18px 12px;overscroll-behavior:contain;min-height:100px}
+.coin-watch-group-name{font-size:11px;color:#6de5bc;text-transform:uppercase;letter-spacing:.07em;margin:17px 0 9px;font-weight:900}
+.coin-watch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.coin-watch-item{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid #30445d;border-radius:12px;background:#17253a;cursor:pointer}
+.coin-watch-item:has(input:checked){background:#103d37;border-color:#28bf99}
+.coin-watch-item input{width:18px;height:18px;flex:0 0 auto;accent-color:#39dbaa;cursor:pointer}
+.coin-watch-copy{display:flex;flex-direction:column;min-width:0;gap:3px}
+.coin-watch-copy strong{font-size:12px;font-weight:900;color:#fff}
+.coin-watch-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#aabdd4;font-size:10px}
+.coin-watch-foot{padding:13px 18px 18px;border-top:1px solid #2d445b}
+.coin-watch-foot p{color:#acbad0;font-size:11px;margin:0 0 10px;line-height:1.5}
+.coin-watch-foot-actions{display:flex;gap:9px;justify-content:flex-end}
+.coin-watch-foot-actions button{border-radius:10px;padding:11px 17px;font-weight:900;cursor:pointer;border:1px solid #43617b;color:#e8f5ff;background:#26384d}
+.coin-watch-foot-actions button.primary{background:#2bdbad;color:#061c19;border-color:#2bdbad}
+.coin-watch-foot-actions button:disabled{opacity:.55;cursor:not-allowed}
+.coin-watch-error{color:#ff9da8!important;font-size:12px!important;min-height:14px}
+body.coin-watch-open{overflow:hidden!important}
+body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
+@media(max-width:620px){.coin-watch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.coin-settings-btn{padding:8px 10px}.coin-watch-modal{max-height:94dvh}.coin-watch-head{padding:15px}.coin-watch-foot-actions button{flex:1}}
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4182,10 +4219,20 @@
 </div>
 </div>
 <div class="header-actions">
-
+<button class="coin-settings-btn" id="coinSettingsBtn" type="button" aria-haspopup="dialog" aria-controls="coinWatchOverlay">⚙ Cài đặt coin <span class="count" id="coinWatchCount">15</span></button>
 <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Đang khởi tạo…</span></div>
 </div>
-</header><nav class="app-nav" id="appNav"><div class="app-nav-inner">
+</header>
+<div class="coin-watch-overlay" id="coinWatchOverlay" hidden>
+  <section class="coin-watch-modal" role="dialog" aria-modal="true" aria-labelledby="coinWatchHeading">
+    <div class="coin-watch-head"><div><h2 id="coinWatchHeading">Cài đặt coin theo dõi</h2><p>Tick coin muốn hiển thị ở mọi trang, bao gồm cả lịch sử. Bỏ tick chỉ ẩn khỏi giao diện, không xóa giao dịch đã lưu.</p></div><button id="coinWatchClose" class="coin-watch-close" type="button" aria-label="Đóng cài đặt">×</button></div>
+    <div class="coin-watch-search"><input id="coinWatchSearch" type="search" placeholder="Tìm mã hoặc tên coin…" autocomplete="off" aria-label="Tìm coin"></div>
+    <div class="coin-watch-tools"><button id="coinWatchAll" type="button">Chọn tất cả</button><button id="coinWatchNone" type="button">Bỏ chọn</button><button id="coinWatchDefaults" type="button">Mặc định 15 coin</button><strong class="coin-watch-counter" id="coinWatchPendingCount">15 coin</strong></div>
+    <div class="coin-watch-list" id="coinWatchList" role="group" aria-label="Danh sách coin có thể chọn"></div>
+    <div class="coin-watch-foot"><p>Danh sách tham khảo để theo dõi, không phải khuyến nghị mua. Coin chưa có dữ liệu hoặc niêm yết phù hợp có thể hiển thị “—”. Giao dịch chỉ hiện khi <strong>cả coin bán và coin mua</strong> đều được tick.</p><p class="coin-watch-error" id="coinWatchError" role="alert"></p><div class="coin-watch-foot-actions"><button id="coinWatchCancel" type="button">Hủy</button><button id="coinWatchApply" class="primary" type="button">Áp dụng lựa chọn</button></div></div>
+  </section>
+</div>
+<nav class="app-nav" id="appNav"><div class="app-nav-inner">
 <button class="app-nav-btn active" data-page-target="comparison" type="button"><span class="nav-number">01</span><span class="nav-copy"><strong>Danh mục</strong><small>Tổng quan</small></span></button>
 <button class="app-nav-btn" data-page-target="growth" type="button"><span class="nav-number">02</span><span class="nav-copy"><strong>Số lượng</strong><small>Qua từng lần mua</small></span></button>
 <button class="app-nav-btn" data-page-target="trades" type="button"><span class="nav-number">03</span><span class="nav-copy"><strong>Lịch sử</strong><small>Mua · bán</small></span></button>
@@ -4384,7 +4431,7 @@
 </div>
 </details>
 
-</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority">15 tài sản · một rổ xoay thống nhất</div></div><section class="rebuy-top-signal-section" id="rebuyTopSignalSection">
+</section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority" id="coinWatchHeadline">15 tài sản · một rổ xoay thống nhất</div></div><section class="rebuy-top-signal-section" id="rebuyTopSignalSection">
   <div class="rebuy-section-head">
     <div>
       <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
@@ -4676,7 +4723,10 @@
   const TRADE_COMPARISON_BENCHMARK_KEY = "cryptoTradeComparisonBenchmark_v1";
   const ROTATION_SETTINGS_KEY = "cryptoRotationSettings_v19_14coin";
   const ROTATION_REFRESH_MS = 3_000;
-  const ROTATION_SYMBOLS = ["JUP","ETHFI","AERO","OKB","UNI","AAVE","INJ","SOL","LINK","ONDO","MNT","PUMP","HYPE","ETH","BTC"];
+  const DEFAULT_TRACKED_SYMBOLS = ["JUP","ETHFI","AERO","OKB","UNI","AAVE","INJ","SOL","LINK","ONDO","MNT","PUMP","HYPE","ETH","BTC"];
+  const COIN_WATCHLIST_KEY = "millionaireSelectedCoins_v1";
+  // Mọi mảng theo dõi được thay đổi TẠI CHỖ: WebSocket, bảng so sánh, bộ chọn chuẩn và lịch sử dùng chung lựa chọn.
+  const ROTATION_SYMBOLS = [...DEFAULT_TRACKED_SYMBOLS];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
   // Rổ so sánh/xoay gồm 15 coin; lịch sử vẫn giữ toàn bộ giao dịch cũ, không lọc theo rổ mới.
@@ -4711,6 +4761,10 @@
     TAO:"Decentralized AI",RENDER:"AI / DePIN",VIRTUAL:"AI Agents",ONDO:"RWA",ENA:"Stablecoin / Yield",RESOLV:"Stablecoin / Yield",
     HYPE:"Derivatives",LIT:"Derivatives",LDO:"Liquid Staking",INJ:"Trading / DeFi",PUMP:"Meme / Launchpad",XPL:"Stablecoin L1",SKY:"Stablecoin / DeFi",CARDS:"RWA / Collectibles",WLFI:"DeFi / Governance",DOGE:"Meme"
   };
+
+  Object.assign(ROTATION_GROUPS,{
+    XRP:"Payments",ADA:"Smart-contract L1",TRX:"Payments L1",XLM:"Payments",HBAR:"Enterprise L1",LTC:"PoW",BCH:"PoW",DOT:"Interoperability",ATOM:"Interoperability",TON:"Consumer L1",ICP:"Compute L1",FIL:"Decentralized storage",APT:"Move L1",SEI:"Trading L1",POL:"Ethereum scaling",GRT:"Indexing",PYTH:"Oracle",BONK:"Meme",WIF:"Meme",PEPE:"Meme",SHIB:"Meme",ZEC:"Privacy",XMR:"Privacy",JASMY:"IoT",ALGO:"L1",ETC:"PoW",KAS:"PoW",STX:"Bitcoin L2",SAND:"Gaming",AR:"Storage"
+  });
 
   // Phân loại chiến lược và lịch phân phối token. Dữ liệu lịch unlock tĩnh cập nhật 27/06/2026.
   // Chỉ hiển thị % khi có nguồn công khai đủ rõ; các coin phát hành liên tục được ghi theo cơ chế thay vì tạo ngày giả.
@@ -4883,7 +4937,37 @@
     INJ:    {name:"Injective",   primary:"binance", binance:"INJUSDT",    okx:"INJ-USDT",    bybit:"INJUSDT", cg:"injective-protocol",         d:4},
     JUP:    {name:"Jupiter",     primary:"binance", binance:"JUPUSDT",    okx:"JUP-USDT",    bybit:"JUPUSDT", cg:"jupiter-exchange-solana",    d:6},
     VIRTUAL:{name:"Virtuals Protocol",primary:"okx",     binance:"VIRTUALUSDT",okx:"VIRTUAL-USDT",bybit:"VIRTUALUSDT", cg:"virtual-protocol",             d:6},
-    DOGE:   {name:"Dogecoin",    primary:"binance", binance:"DOGEUSDT",   okx:"DOGE-USDT",   bybit:"DOGEUSDT", cg:"dogecoin",                   d:6}
+    DOGE:   {name:"Dogecoin",    primary:"binance", binance:"DOGEUSDT",   okx:"DOGE-USDT",   bybit:"DOGEUSDT", cg:"dogecoin",                   d:6},
+    XRP:    {name:"XRP",         primary:"binance", binance:"XRPUSDT",   okx:"XRP-USDT",   bybit:"XRPUSDT", cg:"ripple",                     d:5},
+    ADA:    {name:"Cardano",     primary:"binance", binance:"ADAUSDT",   okx:"ADA-USDT",   bybit:"ADAUSDT", cg:"cardano",                    d:6},
+    TRX:    {name:"TRON",        primary:"binance", binance:"TRXUSDT",   okx:"TRX-USDT",   bybit:"TRXUSDT", cg:"tron",                       d:6},
+    XLM:    {name:"Stellar",     primary:"binance", binance:"XLMUSDT",   okx:"XLM-USDT",   bybit:"XLMUSDT", cg:"stellar",                    d:6},
+    HBAR:   {name:"Hedera",      primary:"binance", binance:"HBARUSDT",  okx:"HBAR-USDT",  bybit:"HBARUSDT",cg:"hedera-hashgraph",           d:6},
+    LTC:    {name:"Litecoin",    primary:"binance", binance:"LTCUSDT",   okx:"LTC-USDT",   bybit:"LTCUSDT", cg:"litecoin",                   d:3},
+    BCH:    {name:"Bitcoin Cash",primary:"binance", binance:"BCHUSDT",   okx:"BCH-USDT",   bybit:"BCHUSDT", cg:"bitcoin-cash",               d:3},
+    DOT:    {name:"Polkadot",    primary:"binance", binance:"DOTUSDT",   okx:"DOT-USDT",   bybit:"DOTUSDT", cg:"polkadot",                   d:5},
+    ATOM:   {name:"Cosmos",      primary:"binance", binance:"ATOMUSDT",  okx:"ATOM-USDT",  bybit:"ATOMUSDT",cg:"cosmos",                     d:4},
+    TON:    {name:"Toncoin",     primary:"binance", binance:"TONUSDT",   okx:"TON-USDT",   bybit:"TONUSDT", cg:"the-open-network",           d:6},
+    ICP:    {name:"Internet Computer",primary:"binance",binance:"ICPUSDT",okx:"ICP-USDT",bybit:"ICPUSDT",cg:"internet-computer",d:5},
+    FIL:    {name:"Filecoin",    primary:"binance", binance:"FILUSDT",   okx:"FIL-USDT",   bybit:"FILUSDT", cg:"filecoin",                   d:5},
+    APT:    {name:"Aptos",       primary:"binance", binance:"APTUSDT",   okx:"APT-USDT",   bybit:"APTUSDT", cg:"aptos",                      d:6},
+    SEI:    {name:"Sei",         primary:"binance", binance:"SEIUSDT",   okx:"SEI-USDT",   bybit:"SEIUSDT", cg:"sei-network",                d:6},
+    POL:    {name:"POL (ex-MATIC)",primary:"binance",binance:"POLUSDT",  okx:"POL-USDT",   bybit:"POLUSDT", cg:"polygon-ecosystem-token",   d:6},
+    GRT:    {name:"The Graph",   primary:"binance", binance:"GRTUSDT",   okx:"GRT-USDT",   bybit:"GRTUSDT", cg:"the-graph",                  d:6},
+    PYTH:   {name:"Pyth Network",primary:"binance", binance:"PYTHUSDT",  okx:"PYTH-USDT",  bybit:"PYTHUSDT",cg:"pyth-network",                d:6},
+    BONK:   {name:"Bonk",        primary:"binance", binance:"BONKUSDT",  okx:"BONK-USDT",  bybit:"BONKUSDT",cg:"bonk",                       d:9},
+    WIF:    {name:"dogwifhat",   primary:"binance", binance:"WIFUSDT",   okx:"WIF-USDT",   bybit:"WIFUSDT", cg:"dogwifcoin",                 d:6},
+    PEPE:   {name:"Pepe",        primary:"binance", binance:"PEPEUSDT",  okx:"PEPE-USDT",  bybit:"PEPEUSDT",cg:"pepe",                       d:9},
+    SHIB:   {name:"Shiba Inu",   primary:"binance", binance:"SHIBUSDT",  okx:"SHIB-USDT",  bybit:"SHIBUSDT",cg:"shiba-inu",                  d:9},
+    ZEC:    {name:"Zcash",       primary:"binance", binance:"ZECUSDT",   okx:"ZEC-USDT",   bybit:"ZECUSDT", cg:"zcash",                      d:5},
+    XMR:    {name:"Monero",      primary:"binance", binance:"XMRUSDT",   okx:null,         bybit:null,      cg:"monero",                     d:5},
+    JASMY:  {name:"JasmyCoin",   primary:"binance", binance:"JASMYUSDT", okx:"JASMY-USDT", bybit:"JASMYUSDT",cg:"jasmycoin",                 d:8},
+    ALGO:   {name:"Algorand",    primary:"binance", binance:"ALGOUSDT",  okx:"ALGO-USDT",  bybit:"ALGOUSDT",cg:"algorand",                   d:6},
+    ETC:    {name:"Ethereum Classic",primary:"binance",binance:"ETCUSDT",okx:"ETC-USDT",bybit:"ETCUSDT",cg:"ethereum-classic",d:5},
+    KAS:    {name:"Kaspa",       primary:"bybit",   binance:null,        okx:"KAS-USDT",   bybit:"KASUSDT", cg:"kaspa",                      d:6},
+    STX:    {name:"Stacks",      primary:"binance", binance:"STXUSDT",   okx:"STX-USDT",   bybit:"STXUSDT", cg:"blockstack",                 d:6},
+    SAND:   {name:"The Sandbox", primary:"binance", binance:"SANDUSDT",  okx:"SAND-USDT",  bybit:"SANDUSDT",cg:"the-sandbox",                 d:6},
+    AR:     {name:"Arweave",     primary:"binance", binance:"ARUSDT",    okx:"AR-USDT",    bybit:"ARUSDT",  cg:"arweave",                    d:5}
   };
 
   const STANDARD_PROFILES = {"OKB":{"product":78,"moat":79,"valueCapture":76,"tokenomics":72,"decentralization":44,"durability":74,"execution":86,"reason":"Token hệ sinh thái OKX có utility, buyback/burn và thanh khoản tốt; điểm trừ chính là phụ thuộc mạnh vào một sàn tập trung và mức độ phi tập trung thấp."},"BTC":{"product":95,"moat":100,"valueCapture":96,"tokenomics":100,"decentralization":95,"durability":100,"execution":95,"reason":"Thanh khoản sâu nhất, nguồn cung hữu hạn và không phụ thuộc một doanh nghiệp vận hành. Vai trò tài sản tiền tệ là thesis bền nhất trong rổ."},"ETH":{"product":98,"moat":98,"valueCapture":90,"tokenomics":85,"decentralization":94,"durability":98,"execution":96,"reason":"Lớp thanh toán và thanh khoản lớn nhất cho smart contract; hệ sinh thái, bảo mật kinh tế và hiệu ứng mạng rất sâu."},"SOL":{"product":96,"moat":91,"valueCapture":84,"tokenomics":75,"decentralization":72,"durability":90,"execution":93,"reason":"Product-market fit mạnh trong giao dịch, thanh toán và ứng dụng tiêu dùng; phí, staking và hệ sinh thái tạo nhu cầu thật cho SOL."},"BNB":{"product":92,"moat":90,"valueCapture":88,"tokenomics":88,"decentralization":52,"durability":91,"execution":92,"reason":"Utility rộng trên Binance và BNB Chain, thanh khoản lớn, cơ chế burn và hệ sinh thái người dùng thực."},"LINK":{"product":92,"moat":96,"valueCapture":83,"tokenomics":82,"decentralization":86,"durability":95,"execution":94,"reason":"Moat mạnh ở oracle, data services và CCIP; tích hợp rộng và chi phí thay thế cao đối với hạ tầng tài chính on-chain."},"AAVE":{"product":94,"moat":92,"valueCapture":86,"tokenomics":90,"decentralization":87,"durability":92,"execution":92,"reason":"Hạ tầng lending dẫn đầu, doanh thu thật, treasury và cơ chế mua lại tạo liên kết kinh tế rõ hơn nhiều governance token khác."},"HYPE":{"product":98,"moat":93,"valueCapture":95,"tokenomics":80,"decentralization":55,"durability":82,"execution":94,"reason":"Sản phẩm giao dịch có product-market fit rất mạnh; phí mua lại và burn HYPE, staking và gas tạo value capture trực tiếp."},"SUI":{"product":90,"moat":83,"valueCapture":78,"tokenomics":63,"decentralization":68,"durability":78,"execution":90,"reason":"Công nghệ Move và khả năng mở rộng tốt, hệ sinh thái phát triển nhanh và có vốn hỗ trợ mạnh."},"TAO":{"product":89,"moat":90,"valueCapture":80,"tokenomics":82,"decentralization":70,"durability":74,"execution":88,"reason":"Mô hình subnet tạo thị trường khuyến khích cho AI phi tập trung, có khác biệt kiến trúc và nguồn cung kỷ luật hơn nhiều token AI."},"RENDER":{"product":84,"moat":83,"valueCapture":84,"tokenomics":78,"decentralization":76,"durability":78,"execution":82,"reason":"Có nhu cầu GPU/rendering thật và mô hình burn-mint gắn mức sử dụng mạng với token tốt hơn token AI thuần narrative."},"UNI":{"product":96,"moat":97,"valueCapture":64,"tokenomics":84,"decentralization":92,"durability":94,"execution":92,"reason":"Uniswap là hạ tầng DEX có moat, thương hiệu và thanh khoản rất mạnh; giao thức có độ bền cao."},"GRAM":{"product":72,"moat":66,"valueCapture":62,"tokenomics":60,"decentralization":58,"durability":60,"execution":68,"reason":"Dùng trực tiếp cặp GRAM-USDT trên OKX để tránh lỗi dữ liệu của mã cũ trong dashboard."},"EIGEN":{"product":85,"moat":88,"valueCapture":62,"tokenomics":48,"decentralization":64,"durability":80,"execution":88,"reason":"EigenLayer/EigenCloud có vị thế hạ tầng restaking và verifiable services khác biệt; EIGEN có utility staking, slashing và bảo mật cho các tác vụ liên chủ quan."},"AERO":{"product":86,"moat":78,"valueCapture":82,"tokenomics":60,"decentralization":72,"durability":68,"execution":84,"reason":"Là liquidity hub quan trọng của Base; veAERO nhận phí và incentive, tạo flywheel hoạt động rõ."},"ONDO":{"product":83,"moat":84,"valueCapture":60,"tokenomics":62,"decentralization":54,"durability":73,"execution":88,"reason":"Đội ngũ và vị thế RWA mạnh, khả năng triển khai sản phẩm tài chính tokenized có chất lượng cao."},"MNT":{"product":82,"moat":80,"valueCapture":70,"tokenomics":68,"decentralization":52,"durability":74,"execution":86,"reason":"Treasury lớn, tích hợp Bybit và hệ sinh thái L2/RWA cho Mantle nguồn lực triển khai dài hạn."}};
@@ -4956,6 +5040,7 @@
     binanceReconnect:0,okxReconnect:0,bybitReconnect:0,
     restTimer:null,countdownTimer:null,renderTimer:null,
     nextRest:0,anchorLoading:false,
+    rawTradeLogRows:[],rawAllValidTradeRows:[],
     tradeRows:[],tradeLogRows:[],allValidTradeRows:[],tradeSnapshots:[],historyBenchmark:localStorage.getItem(HISTORY_BENCHMARK_KEY)||DEFAULT_BENCHMARK,
     tradeComparisonBenchmark:localStorage.getItem(TRADE_COMPARISON_BENCHMARK_KEY)||DEFAULT_BENCHMARK,tradeComparisonSnapshots:[],tradeComparisonLoading:false,
     selectedHistoryTradeKey:"",historySelectionExplicit:false,latestTradeKeySeen:"",
@@ -4981,12 +5066,155 @@
   const benchmarkSymbols=[...BENCHMARK_SYMBOLS];
   const trackedSymbols=[...TRACKED_SYMBOLS];
   const isActiveSymbol=symbol=>ACTIVE_SYMBOL_SET.has(String(symbol||"").toUpperCase());
+  const ALL_COIN_SYMBOLS = Object.keys(ASSETS);
+  const COIN_CATEGORIES = [
+    {name:"Rổ mặc định", symbols:DEFAULT_TRACKED_SYMBOLS},
+    {name:"Coin lớn & phổ biến",symbols:["XRP","ADA","TRX","XLM","HBAR","BNB","LTC","BCH","XMR","ZEC","DOGE","WBT","CRO"]},
+    {name:"Layer 1 · Layer 2 · Scaling",symbols:["SUI","AVAX","NEAR","TON","DOT","ATOM","APT","SEI","POL","ARB","OP","ZK","IMX","MON","CC","ICP","ALGO","ETC","KAS","STX","GRAM","XPL"]},
+    {name:"DeFi · RWA · Hạ tầng",symbols:["MORPHO","PENDLE","ENA","LDO","CAKE","JTO","EIGEN","TIA","ZRO","PYTH","GRT","FIL","AR","SKY","RESOLV","LIT","CARDS","WLFI"]},
+    {name:"AI · Gaming · Meme · Khác",symbols:["TAO","RENDER","VIRTUAL","SAND","JASMY","BONK","WIF","PEPE","SHIB"]}
+  ];
+  const isCoinVisibleTrade=trade=>Boolean(trade&&isActiveSymbol(trade.sellCoin)&&isActiveSymbol(trade.buyCoin));
+  function overwriteSymbols(target,values){target.splice(0,target.length,...values)}
+  function setWatchedSymbols(selected){
+    const unique=ALL_COIN_SYMBOLS.filter(symbol=>selected.includes(symbol));
+    if(!unique.length)return false;
+    for(const target of [ROTATION_SYMBOLS,BENCHMARK_SYMBOLS,COMPARISON_SYMBOLS,TRACKED_SYMBOLS,symbols,benchmarkSymbols,trackedSymbols])overwriteSymbols(target,unique);
+    ACTIVE_SYMBOL_SET.clear(); unique.forEach(symbol=>ACTIVE_SYMBOL_SET.add(symbol));
+    return true;
+  }
+  function loadWatchedSymbols(){
+    let saved=null;
+    try{saved=JSON.parse(localStorage.getItem(COIN_WATCHLIST_KEY)||"null")}catch(_){}
+    if(Array.isArray(saved)&&saved.length)setWatchedSymbols(saved.filter(symbol=>typeof symbol==="string"));
+  }
+  loadWatchedSymbols();
   if(state.rebuyExpandedSymbol&&!isActiveSymbol(state.rebuyExpandedSymbol)){
     state.rebuyExpandedSymbol="";
     localStorage.removeItem("millionaireRebuyExpandedV1");
   }
 
   setupSimplifiedLayout();
+  initCoinSettings();
+
+  // Chỉ dùng lựa chọn đã áp dụng cho mọi màn hình; giao dịch gốc không bao giờ bị ghi đè bởi bộ lọc.
+  function syncCoinSettingsVisuals(){
+    $("coinWatchCount").textContent=String(symbols.length);
+    const h=$("coinWatchHeadline");if(h)h.textContent=`${symbols.length} tài sản · một rổ theo dõi thống nhất`;
+    document.body.classList.toggle("coin-watch-btc-hidden",!isActiveSymbol("BTC"));
+  }
+  function initCoinSettings(){
+    const overlay=$("coinWatchOverlay"),search=$("coinWatchSearch"),list=$("coinWatchList");
+    let pending=new Set(symbols);
+    const groups=COIN_CATEGORIES.map(group=>({...group,symbols:group.symbols.filter(s=>ALL_COIN_SYMBOLS.includes(s))}));
+    const categorized=new Set(groups.flatMap(x=>x.symbols));
+    const leftovers=ALL_COIN_SYMBOLS.filter(x=>!categorized.has(x));
+    if(leftovers.length)groups.push({name:"Coin khác",symbols:leftovers});
+    const renderList=()=>{
+      const query=search.value.trim().toLowerCase();
+      list.innerHTML=groups.map(group=>{
+        const matches=group.symbols.filter(symbol=>!query||symbol.toLowerCase().includes(query)||ASSETS[symbol].name.toLowerCase().includes(query));
+        if(!matches.length)return "";
+        return `<div class="coin-watch-group-name">${group.name}</div><div class="coin-watch-grid">${matches.map(symbol=>`<label class="coin-watch-item"><input type="checkbox" data-watch-symbol="${symbol}" ${pending.has(symbol)?"checked":""}><span class="coin-watch-copy"><strong>${symbol}</strong><small>${ASSETS[symbol].name}</small></span></label>`).join("")}</div>`;
+      }).join("")||'<p>Không tìm thấy coin phù hợp.</p>';
+      $("coinWatchPendingCount").textContent=`${pending.size}/${ALL_COIN_SYMBOLS.length} coin`;
+      $("coinWatchError").textContent="";
+    };
+    const close=()=>{if($("coinWatchApply").disabled)return;overlay.hidden=true;document.body.classList.remove("coin-watch-open");$("coinSettingsBtn").focus()};
+    $("coinSettingsBtn").addEventListener("click",()=>{
+      pending=new Set(symbols);search.value="";renderList();overlay.hidden=false;document.body.classList.add("coin-watch-open");search.focus();
+    });
+    $("coinWatchClose").addEventListener("click",close);
+    $("coinWatchCancel").addEventListener("click",close);
+    overlay.addEventListener("click",e=>{if(e.target===overlay)close()});
+    window.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.hidden)close()});
+    search.addEventListener("input",renderList);
+    list.addEventListener("change",e=>{
+      const el=e.target.closest("[data-watch-symbol]");if(!el)return;
+      if(el.checked)pending.add(el.dataset.watchSymbol);else pending.delete(el.dataset.watchSymbol);
+      renderList();
+    });
+    $("coinWatchAll").addEventListener("click",()=>{pending=new Set(ALL_COIN_SYMBOLS);renderList()});
+    $("coinWatchNone").addEventListener("click",()=>{pending.clear();renderList()});
+    $("coinWatchDefaults").addEventListener("click",()=>{pending=new Set(DEFAULT_TRACKED_SYMBOLS);renderList()});
+    $("coinWatchApply").addEventListener("click",async()=>{
+      if(!pending.size){$("coinWatchError").textContent="Hãy chọn ít nhất một coin trước khi áp dụng.";return}
+      const desired=ALL_COIN_SYMBOLS.filter(s=>pending.has(s));
+      if(desired.length===symbols.length&&desired.every(s=>isActiveSymbol(s))){close();return}
+      const btn=$("coinWatchApply");btn.disabled=true;btn.textContent="Đang áp dụng…";
+      try{
+        setWatchedSymbols(desired);
+        try{localStorage.setItem(COIN_WATCHLIST_KEY,JSON.stringify(desired))}catch(_){}
+        syncCoinSettingsVisuals();
+        state.historyBenchmark=isActiveSymbol(state.historyBenchmark)?state.historyBenchmark:desired[0];
+        state.tradeComparisonBenchmark=isActiveSymbol(state.tradeComparisonBenchmark)?state.tradeComparisonBenchmark:desired[0];
+        state.historyButtonBaselines={};state.historyBaselineCache={};state.allEquivalentCache={};
+        state.rebuyRenderSignature="";
+        if(!isActiveSymbol(state.rebuyExpandedSymbol))state.rebuyExpandedSymbol="";
+        if(!isActiveSymbol(state.qualitySelected))closeQualityDetails();
+        updateCoinSelectOptions();
+       applyTradeVisibilityFilter();
+        updateTradeSelector();updateAnchorTradeSelector();
+        const lastRaw=state.rawAllValidTradeRows[state.rawAllValidTradeRows.length-1];
+        state.syncedHoldingSymbol=lastRaw&&isCoinVisibleTrade(lastRaw)?lastRaw.buyCoin:"";
+        // Hiển thị bảng ngay trước khi gọi giá lịch sử, tránh lịch sử cũ lọt lại trong lúc tải.
+        const fastRows=state.tradeLogRows.map(row=>({...row,
+          holdingPrice:row.sheetBuyPrice>0?{price:row.sheetBuyPrice}:null,
+          sellPrice:row.sheetSellPrice>0?{price:row.sheetSellPrice}:null}));
+        state.tradeComparisonSnapshots=fastRows;
+        state.tradeSnapshots=[];state.historyChartData=[];
+        renderTradeLog(fastRows,state.tradeComparisonBenchmark,false);
+        renderTradeHistory([],state.historyBenchmark,false);
+        renderHistoryBenchmarkButtons();renderRebuyQuantityComparison(true);
+        renderBenchmarkHistory(benchmarkAnalytics());
+        renderBenchmarkAnalytics(benchmarkAnalytics());
+        renderGlobalPortfolioSummary();scheduleRender();
+        overlay.hidden=true;document.body.classList.remove("coin-watch-open");
+        await Promise.allSettled([loadMarkets(),refreshCoinSelectionData()]);
+      }catch(e){$("coinWatchError").textContent=e.message||String(e)}
+      finally{btn.disabled=false;btn.textContent="Áp dụng lựa chọn"}
+    });
+    syncCoinSettingsVisuals();
+  }
+
+  function updateCoinSelectOptions(){
+    const make=s=>`<option value="${s}">${s} — ${ASSETS[s].name}</option>`;
+    const selected=state.benchmark.symbol;
+    $("benchmarkSelect").innerHTML=benchmarkSymbols.map(make).join("");
+    // Coin chuẩn đã chọn có thể tạm ẩn; không thay đổi hoặc xóa lịch sử các chương.
+    $("benchmarkSelect").value=isActiveSymbol(selected)?selected:benchmarkSymbols[0];
+    $("historyBenchmark").innerHTML=benchmarkSymbols.map(make).join("");
+    $("historyBenchmark").value=state.historyBenchmark;
+    $("tradeBenchmark").innerHTML=benchmarkSymbols.map(make).join("");
+    $("tradeBenchmark").value=state.tradeComparisonBenchmark;
+  }
+
+  async function refreshCoinSelectionData(){
+    // Reconnect WS sau khi đổi danh sách; giữ cache giá cho các coin đã từng tải.
+    connectBinanceWS();connectOKXWS();connectBybitWS();
+    const operations=[
+      async()=>{if(!state.historyLoading){
+        state.historyLoading=true;
+        try{
+          state.tradeSnapshots=await buildTradeSnapshots(state.tradeRows,state.historyBenchmark,(part,b,l)=>renderTradeHistory(part,b,l));
+          renderTradeHistory(state.tradeSnapshots,state.historyBenchmark,false);
+          state.tradeComparisonSnapshots=await buildTradeLogSnapshots(state.tradeLogRows,(part,b,l)=>renderTradeLog(part,b,l));
+          renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false);
+        }finally{state.historyLoading=false}
+      }},
+      async()=>{await fetchAnchorPrices(false)},
+      async()=>{await loadDaily7amPrices(false)},
+      async()=>{await loadHistoryBenchmarkBaselines(true)},
+      async()=>{await loadRotationEngine(false)},
+      async()=>{await loadAllEquivalentsForSelectedTrade(false)},
+      async()=>{await refreshDivergenceSignals(false)},
+      async()=>{await fetchCoinGeckoFundamentals(true)}
+    ];
+    // Tránh giữ khóa UI quá lâu; phần nặng được xử lý không đồng bộ.
+    Promise.allSettled(operations.map(job=>job())).then(()=>{
+      renderHistoryBenchmarkButtons();renderRebuyQuantityComparison(true);scheduleRender();
+    });
+  }
 
   function setupSimplifiedLayout(){
     const navSmall=document.querySelector('[data-page-target="comparison"] .nav-copy small');
@@ -6938,16 +7166,23 @@
     });
   }
 
+  // Giao dịch gốc không bị lọc/xóa. Chỉ tạo bản sao hiển thị; một dòng chỉ hiện khi cả coin bán và mua được tick.
+  function applyTradeVisibilityFilter(){
+    state.tradeLogRows=state.rawTradeLogRows.filter(isCoinVisibleTrade);
+    state.allValidTradeRows=state.rawAllValidTradeRows.filter(isCoinVisibleTrade);
+    state.tradeRows=[...state.allValidTradeRows];
+  }
+
   // Khôi phục từ bản sao đã đồng bộ nếu Google Sheet không truy cập được.
   async function restoreTradeHistoryBackup(){
     const backup=readTradeHistoryBackup();
     if(!backup)return false;
-    state.tradeLogRows=reconcileTradeChainRows(backup.rows);
-    state.allValidTradeRows=state.tradeLogRows.filter(r=>
+    state.rawTradeLogRows=reconcileTradeChainRows(backup.rows);
+    state.rawAllValidTradeRows=state.rawTradeLogRows.filter(r=>
       Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&
       r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0
     );
-    state.tradeRows=[...state.allValidTradeRows];
+    applyTradeVisibilityFilter();
     state.lastSheetSync=backup.syncedAt;
     updateTradeHistorySource(true);
     updateTradeSelector();
@@ -7651,6 +7886,7 @@
   }
 
   function renderTradeHistory(snapshots,benchmark,loading=false){
+    if(!isActiveSymbol(benchmark)||state.historyBenchmark!==benchmark)return;
     const series=completeHistorySeries(snapshots,benchmark);
     $("historyTradeCount").textContent=state.tradeRows.length||"0";
     $("historySyncInfo").textContent=state.lastSheetSync
@@ -7673,6 +7909,8 @@
   }
 
   function renderTradeLog(snapshots,benchmark,loading=false){
+    // Chốt lọc tại điểm vẽ để callback async cũ không thể làm lộ coin đã bỏ tick.
+    snapshots=(snapshots||[]).filter(isCoinVisibleTrade);
     const current=currentLogHoldingTrade();
     const totalNode=document.getElementById("tradeTotalCount");
     const latestBtn=document.getElementById("goLatestTradeBtn");
@@ -7682,7 +7920,7 @@
     $("tradeComparisonCoin").textContent=benchmark;
     $("tradeBenchmarkInfo").textContent="Trang này chỉ hiển thị dữ liệu mua bán gốc.";
     if(!snapshots.length){
-      const emptyText=loading?"Đang tải lịch sử…":"Google Sheet chưa có giao dịch hợp lệ.";
+      const emptyText=loading?"Đang tải lịch sử…":"Không có giao dịch của các coin đang được tick.";
       $("historyBody").innerHTML=`<tr class="loading-row"><td colspan="8">${emptyText}</td></tr>`;
       $("historyMobileList").innerHTML=`<div class="history-mobile-card">${emptyText}</div>`;
       $("tradeLatestEquivalent").textContent="—";$("tradeVsFirst").textContent="—";return;
@@ -7720,12 +7958,13 @@
   }
 
   function currentLogHoldingTrade(){
-    return state.allValidTradeRows[state.allValidTradeRows.length-1]||null;
+    // Vị thế hiện tại phải lấy từ lịch sử GỐC, không phải dòng hiển thị cuối cùng.
+    return state.rawAllValidTradeRows[state.rawAllValidTradeRows.length-1]||null;
   }
 
   function currentHoldingTrade(){
     const latest=currentLogHoldingTrade();
-    return latest&&isActiveSymbol(latest.buyCoin)?latest:null;
+    return latest&&isCoinVisibleTrade(latest)?latest:null;
   }
 
   function selectedBasisTrade(){
@@ -7949,7 +8188,7 @@
   }
 
   async function setHistoryBenchmark(symbol){
-    if(!ASSETS[symbol]||state.historyLoading)return;
+    if(!isActiveSymbol(symbol)||state.historyLoading)return;
     state.historyBenchmark=symbol;
     updateHistoryChartLatency();
     localStorage.setItem(HISTORY_BENCHMARK_KEY,symbol);
@@ -8008,10 +8247,10 @@
       if(savedBackup&&freshRows.length<savedBackup.rows.length){
         throw new Error(`Google Sheet chỉ trả ${freshRows.length}/${savedBackup.rows.length} giao dịch từng lưu. Giữ bản sao để tránh mất lịch sử.`);
       }
-      state.tradeLogRows=freshRows;
-      saveTradeHistoryBackup(state.tradeLogRows);
-      state.allValidTradeRows=state.tradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
-      state.tradeRows=[...state.allValidTradeRows]; // Biểu đồ và mốc lịch sử bao gồm cả coin cũ, không chỉ 15 coin hiện hành.
+      state.rawTradeLogRows=freshRows;
+      saveTradeHistoryBackup(state.rawTradeLogRows);
+      state.rawAllValidTradeRows=state.rawTradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
+      applyTradeVisibilityFilter(); // Lọc giao diện; dữ liệu gốc và bản sao luôn đầy đủ.
       state.lastSheetSync=Date.now();
       updateTradeHistorySource(false);
       state.allEquivalentCache={};
@@ -8044,7 +8283,7 @@
           `Đã kết nối Sheet · đang giữ: <strong>${formatQtyExact(sheetLatest.buyQty)} ${sheetLatest.buyCoin}</strong><br>`+
           `Đang tải dữ liệu giá lịch sử cho ${symbols.length} coin…`;
       }else if(rawLatest){
-        $("rotationCurrentHolding").textContent="Giao dịch gần nhất thuộc coin ngoài rổ 15. Chi tiết vẫn có tại Lịch sử mua bán.";
+        $("rotationCurrentHolding").textContent="Coin đang giữ không được tick nên tạm ẩn khỏi các trang phân tích. Lịch sử gốc vẫn được bảo toàn.";
       }else{
         $("rotationCurrentHolding").textContent="Đã kết nối Sheet nhưng chưa có giao dịch hợp lệ.";
       }
@@ -8120,7 +8359,7 @@
   function syncBenchmarkSelect(symbol,force=false){
     const select=$("benchmarkSelect");
     if(!select)return;
-    if(force||select.dataset.pendingChange!=="1")select.value=symbol;
+    if(force||select.dataset.pendingChange!=="1")select.value=isActiveSymbol(symbol)?symbol:(benchmarkSymbols[0]||"");
   }
 
   function showBenchmarkSwitchMessage(text,kind="info"){
@@ -8160,7 +8399,7 @@
       // Một lần duy nhất: xóa chương OKB cũ, coi BTC là Chương 01, bắt đầu 09:12 21/06/2026 và lấy đúng 0.0592663 BTC của Lần 1 làm số lượng đầu.
       if(!resetApplied){
         const savedChapters=Array.isArray(saved?.chapters)
-          ?saved.chapters.filter(x=>x&&BENCHMARK_SYMBOLS.includes(x.symbol))
+          ?saved.chapters.filter(x=>x&&typeof x.symbol==="string")
           :[];
         const activeBtc=[...savedChapters].reverse().find(x=>x.symbol==="BTC"&&!x.endedAt);
         state.benchmark.chapters=activeBtc?[normalizeBtcChapterOne(activeBtc)]:[];
@@ -8178,7 +8417,7 @@
       }
 
       if(saved&&Array.isArray(saved.chapters)){
-        state.benchmark.chapters=saved.chapters.filter(x=>x&&BENCHMARK_SYMBOLS.includes(x.symbol));
+        state.benchmark.chapters=saved.chapters.filter(x=>x&&typeof x.symbol==="string");
         const open=[...state.benchmark.chapters].reverse().find(x=>!x.endedAt);
         state.benchmark.symbol=open?.symbol||(
           BENCHMARK_SYMBOLS.includes(saved.symbol)?saved.symbol:DEFAULT_BENCHMARK
@@ -8207,7 +8446,8 @@
   }
 
   function currentPortfolioSnapshot(){
-    const latest=state.tradeRows[state.tradeRows.length-1];
+    // Không coi một giao dịch cũ đang hiển thị là vị thế hiện tại khi giao dịch mới nhất đã bị ẩn.
+    const latest=currentHoldingTrade();
     if(!latest)return null;
     const heldLive=state.live[latest.buyCoin]?.price;
     if(!(heldLive>0))return null;
@@ -8233,7 +8473,7 @@
     // BTC là Chương 01: bắt đầu 09:12 21/06/2026, số lượng đầu lấy từ Lần 1 (0.0592663 BTC).
     const snapshot=currentPortfolioSnapshot();
     const benchmarkPrice=state.live[DEFAULT_BENCHMARK]?.price;
-    if(!snapshot||!(benchmarkPrice>0))return null;
+    if(!isActiveSymbol(DEFAULT_BENCHMARK)||!snapshot||!(benchmarkPrice>0))return null;
 
     const now=BTC_CHAPTER_ONE_STARTED_AT;
     const firstTrade=state.tradeRows[0]||null;
@@ -8273,7 +8513,7 @@
     const chapter=activeBenchmarkChapter();
     const symbol=chapter?.symbol||state.benchmark.symbol||DEFAULT_BENCHMARK;
     const benchmarkPrice=state.live[symbol]?.price;
-    if(!snapshot||!chapter||!(benchmarkPrice>0))return null;
+    if(!isActiveSymbol(symbol)||!snapshot||!chapter||!(benchmarkPrice>0))return null;
 
     const currentEquivalent=snapshot.nav/benchmarkPrice;
     const growthPct=(currentEquivalent/chapter.baselineEquivalent-1)*100;
@@ -8295,8 +8535,9 @@
 
   function renderGlobalPortfolioSummary(){
     const latest=currentHoldingTrade();
-    const benchmark=state.benchmark?.symbol||DEFAULT_BENCHMARK;
-    const benchmarkLive=state.live[benchmark]?.price;
+    const originalBenchmark=state.benchmark?.symbol||DEFAULT_BENCHMARK;
+    const benchmark=isActiveSymbol(originalBenchmark)?originalBenchmark:"—";
+    const benchmarkLive=benchmark!=="—"?state.live[benchmark]?.price:null;
     const navCard=$("globalNavCard"), benchmarkCard=$("globalBenchmarkCard"), holdingCard=$("globalHoldingCard");
 
     $("globalBenchmarkValue").textContent=benchmark;
@@ -8332,7 +8573,7 @@
 
     const chapter=activeBenchmarkChapter();
     const equivalent=Number.isFinite(nav)&&benchmarkLive>0?nav/benchmarkLive:null;
-    const growth=chapter&&chapter.baselineEquivalent>0&&Number.isFinite(equivalent)?(equivalent/chapter.baselineEquivalent-1)*100:null;
+    const growth=chapter&&chapter.symbol===benchmark&&chapter.baselineEquivalent>0&&Number.isFinite(equivalent)?(equivalent/chapter.baselineEquivalent-1)*100:null;
     $("globalBenchmarkEquivalent").textContent=Number.isFinite(equivalent)?`${formatQtyExact(equivalent)} ${benchmark}`:"—";
     $("globalBenchmarkEquivalentInfo").textContent=Number.isFinite(nav)&&benchmarkLive>0?`${formatUSD(nav)} ÷ ${formatPrice(benchmarkLive,ASSETS[benchmark]?.d||6)}`:"Đang chờ NAV hoặc giá chuẩn";
     $("globalBenchmarkGrowth").textContent=Number.isFinite(growth)?formatSignedPct(growth):"—";
@@ -8383,7 +8624,7 @@
   }
 
   function renderBenchmarkHistory(activeMetrics){
-    const chapters=state.benchmark.chapters||[];
+    const chapters=(state.benchmark.chapters||[]).filter(c=>isActiveSymbol(c.symbol));
     if(!chapters.length){
       $("benchmarkHistoryBody").innerHTML='<div class="benchmark-empty-state">Chưa khởi tạo chương coin chuẩn.</div>';return;
     }
@@ -8568,7 +8809,7 @@
 
   function computeRotationAnalytics(){
     const trades=state.tradeRows;
-    if(!trades.length)return null;
+    if(!trades.length||!currentHoldingTrade())return null;
     const first=trades[0],latest=trades[trades.length-1];
     const heldSymbol=latest.buyCoin;
     const heldLive=state.live[heldSymbol]?.price;
@@ -8681,12 +8922,13 @@
   function renderRotationAnalytics(){
     const result=computeRotationAnalytics();
     if(!result){
-      const latest=state.tradeRows[state.tradeRows.length-1];
+      const latest=currentHoldingTrade();
       if(latest){
         $("rotationCurrentHolding").innerHTML=
           `Đã kết nối Sheet · đang giữ: <strong>${formatQtyExact(latest.buyQty)} ${latest.buyCoin}</strong><br>`+
           `Đang chờ đủ giá live và giá lịch sử…`;
       }
+      if(!latest)$("rotationCurrentHolding").textContent="Coin đang giữ đã bị ẩn bằng cài đặt; tick lại để xem phân tích xoay vốn.";
       $("rotationBody").innerHTML='<tr class="loading-row"><td colspan="11">Đang chờ đủ giá live và giá mốc lịch sử…</td></tr>';
       $("rotationMobileList").innerHTML='<div class="rotation-mobile-card">Đang chờ đủ dữ liệu.</div>';
       return;
@@ -8701,8 +8943,8 @@
     $("rotationNavInfo").textContent=`${formatQtyExact(m.latest.buyQty)} ${m.heldSymbol} × ${formatPrice(state.live[m.heldSymbol]?.price,ASSETS[m.heldSymbol]?.d||6)}`;
     $("rotationReferenceHolding").textContent=`${formatQtyExact(m.latest.buyQty)} ${m.heldSymbol}`;
     $("rotationReferenceHoldingInfo").textContent=`NAV ${formatUSD(m.currentNav)} · mua lần ${m.latest.round}`;
-    $("rotationReferenceBenchmark").textContent=state.benchmark.symbol;
-    $("rotationReferenceBenchmarkInfo").textContent=`Giá ${formatPrice(state.live[state.benchmark.symbol]?.price,ASSETS[state.benchmark.symbol]?.d||6)} · chương đang mở`;
+    $("rotationReferenceBenchmark").textContent=isActiveSymbol(state.benchmark.symbol)?state.benchmark.symbol:"—";
+    $("rotationReferenceBenchmarkInfo").textContent=isActiveSymbol(state.benchmark.symbol)?`Giá ${formatPrice(state.live[state.benchmark.symbol]?.price,ASSETS[state.benchmark.symbol]?.d||6)} · chương đang mở`:"Coin chuẩn đang ẩn trong cài đặt";
     renderBenchmarkAnalytics(benchmarkAnalytics());
     renderGlobalPortfolioSummary();
 
@@ -8768,7 +9010,7 @@
   }
 
   async function loadRotationEngine(force=false){
-    if(state.rotation.loading||!state.tradeRows.length)return;
+    if(state.rotation.loading||!state.tradeRows.length||!currentHoldingTrade())return;
     const first=state.tradeRows[0],latest=state.tradeRows[state.tradeRows.length-1];
 
     if(!ASSETS[latest.buyCoin]){
@@ -8953,6 +9195,7 @@
 
   function qualityBadgeHTML(row){
     const q=row.quality;
+    if(!STANDARD_PROFILES[row.symbol]||!QUALITY_FACTORS[row.symbol])return `<span class="quality-badge" style="opacity:.66;cursor:default" title="Chưa có bộ dữ liệu thẩm định chuyên sâu">Chưa thẩm định</span>`;
     const title=`${row.symbol}: ${q.label} ${q.total.toFixed(1)}/100 · Nền tảng ${q.structural.toFixed(1)} · Doanh thu ${q.revenueStrength.toFixed(1)} · Định giá/DT ${q.revenueValuation.toFixed(1)} · Volume & vị thế ${q.market.toFixed(1)} · Sức mạnh ${q.momentum.toFixed(1)}`;
     return `<button type="button" class="quality-badge ${q.css}" data-quality-symbol="${row.symbol}" title="${title}">${q.label}</button>`;
   }
@@ -9686,9 +9929,7 @@
       ?`Đủ giá mua · ${formatAnchorLabel()}`
       :state.anchorLoading?`Đang tải ${anchorCount}/${symbols.length} · ${formatAnchorLabel()}`:`Thiếu ${symbols.length-anchorCount} giá mốc · ${formatAnchorLabel()}`;
 
-    const latestHoldingCoin=state.tradeRows.length
-      ?state.tradeRows[state.tradeRows.length-1].buyCoin
-      :null;
+    const latestHoldingCoin=currentHoldingTrade()?.buyCoin||null;
 
     $("tableBody").innerHTML=rows.map((r,i)=>{
       const hasLive=Boolean(r.live&&Number.isFinite(r.live.price));
@@ -9824,7 +10065,8 @@
   }catch(_){}
   loadAnchorSettings();
   loadBenchmarkState();
-  state.historyBenchmark=state.benchmark.symbol||DEFAULT_BENCHMARK;
+  state.historyBenchmark=isActiveSymbol(state.benchmark.symbol)?state.benchmark.symbol:ROTATION_SYMBOLS[0];
+  if(!isActiveSymbol(state.tradeComparisonBenchmark))state.tradeComparisonBenchmark=ROTATION_SYMBOLS[0];
 
   $("benchmarkSelect").innerHTML=benchmarkSymbols
     .map(s=>`<option value="${s}">${s} — ${ASSETS[s].name}${s===DEFAULT_BENCHMARK?" · chuẩn mặc định":""}</option>`).join("");
@@ -9833,11 +10075,11 @@
 
   $("historyBenchmark").innerHTML=benchmarkSymbols
     .map(s=>`<option value="${s}">${s} — ${ASSETS[s].name}</option>`).join("");
-  if(!BENCHMARK_SYMBOLS.includes(state.historyBenchmark))state.historyBenchmark=DEFAULT_BENCHMARK;
+    if(!BENCHMARK_SYMBOLS.includes(state.historyBenchmark))state.historyBenchmark=benchmarkSymbols[0]||DEFAULT_BENCHMARK;
   $("historyBenchmark").value=state.historyBenchmark;
   $("tradeBenchmark").innerHTML=benchmarkSymbols
     .map(s=>`<option value="${s}">${s} — ${ASSETS[s].name}</option>`).join("");
-  if(!BENCHMARK_SYMBOLS.includes(state.tradeComparisonBenchmark))state.tradeComparisonBenchmark=DEFAULT_BENCHMARK;
+    if(!BENCHMARK_SYMBOLS.includes(state.tradeComparisonBenchmark))state.tradeComparisonBenchmark=benchmarkSymbols[0]||DEFAULT_BENCHMARK;
   $("tradeBenchmark").value=state.tradeComparisonBenchmark;
   $("tradeComparisonCoin").textContent=state.tradeComparisonBenchmark;
   setSnapshotInputs(Date.now());
@@ -10135,8 +10377,8 @@
   }
 
   function updateNavigationState(){
-    const latest=state.tradeRows[state.tradeRows.length-1];
-    const benchmark=state.benchmark?.symbol||DEFAULT_BENCHMARK;
+    const latest=currentHoldingTrade();
+    const benchmark=isActiveSymbol(state.benchmark?.symbol)?state.benchmark.symbol:"—";
     const holding=latest?.buyCoin||"—";
     const text=latest
       ?`Đang giữ ${holding} · Chuẩn ${benchmark}`
