@@ -1,10 +1,10 @@
 {
-  "id": "./millionaire.html?app=Millionaire-v53-coin-settings",
+  "id": "./millionaire.html?app=Millionaire-v55-buy-price-sync",
   "name": "Millionaire",
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=54-trade-fast-sync",
+  "start_url": "./millionaire.html?v=55-buy-price-sync",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=54-trade-fast-sync",
+      "url": "./millionaire.html?v=55-buy-price-sync",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",
