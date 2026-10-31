@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Millionaire"/>
-<link rel="manifest" href="./manifest.webmanifest?v=55-buy-price-sync">
+<link rel="manifest" href="./manifest.webmanifest?v=56-pnl-anchor">
 <link rel="shortcut icon" href="./millionaire-favicon-v14.ico?v=14" type="image/x-icon"/>
 <link rel="icon" href="./millionaire-favicon-v14.ico" sizes="any" type="image/x-icon"/>
 <link rel="icon" type="image/png" sizes="16x16" href="./millionaire-favicon-16-v14.png"/>
@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v44-17coin-eigen-shortlist"/>
+<meta name="app-build" content="v56-pnl-anchor">
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -4049,6 +4049,15 @@
     #overviewHistoryBenchmarkButtons .history-coin-chip .chip-copy small{font-size:9.5px!important}
   }
 </style>
+<style id="v56-explicit-pnl-separation">
+  #page-comparison .real-holding-pnl{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:5px 7px;border:1px solid rgba(14,203,129,.32);background:rgba(14,203,129,.08);border-radius:7px;font-size:9px;font-weight:800;white-space:normal;line-height:1.35;color:var(--ui-text,#EAECEF)}
+  #page-comparison .real-holding-pnl.neg{border-color:rgba(246,70,93,.36);background:rgba(246,70,93,.09);color:var(--ui-red,#F6465D)!important}
+  #page-comparison .real-holding-pnl.pos{color:var(--ui-green,#0ECB81)!important}
+  #page-comparison .real-holding-pnl strong{font-size:11px!important;color:inherit!important;font-weight:900!important}
+  #page-comparison .simulation-note{display:block;font-size:8px;line-height:1.2;color:var(--ui-text-2,#848E9C);margin-top:3px;font-weight:700}
+  #page-comparison .coin-quantity-growth{font-size:10px!important}
+  #page-comparison .card-head span{white-space:normal}
+</style>
 
 <style id="ui-remove-milestone-first-and-anchor-actions-v34">
   /* Góc màn hình chỉ giữ 01/08/25 và Gần nhất. */
@@ -4462,7 +4471,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </section><section class="toolbar">
 <div class="toolbar-summary">
 <span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
-<span class="badge badge-count">Danh sách so sánh: <strong>15 tài sản</strong></span>
+<span class="badge badge-count">Danh sách so sánh: <strong id="comparisonAnchorAssetCount">15 tài sản</strong></span>
 <span class="badge badge-total">Mô hình vốn: <strong>100% một coin</strong></span>
 <span class="badge badge-anchor">Mốc mặc định: <strong id="latestTradeAnchorInfo">Đang đọc lần xoay gần nhất…</strong></span>
 </div>
@@ -4492,7 +4501,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <label for="sortMode">Sắp xếp:</label>
 <select id="sortMode">
 <option selected="" value="currentValue">Giá trị hiện tại cao → thấp</option>
-<option value="returnPct">Lãi/lỗ % cao → thấp</option>
+<option value="returnPct">% mô phỏng từ mốc cao → thấp</option>
 <option value="qualityScore">Chất lượng tổng hợp cao → thấp</option>
 <option value="symbol">Tên coin A → Z</option>
 </select>
@@ -4508,7 +4517,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </div>
 </div>
 </section><section class="stats">
-<div class="stat"><div class="k">Danh sách so sánh</div><div class="v">15 tài sản</div><div class="s">Một rổ duy nhất · BTC và OKB cũng là ứng viên xoay</div></div>
+<div class="stat"><div class="k">Danh sách so sánh</div><div class="v" id="comparisonStatAssetCount">15 tài sản</div><div class="s">Một rổ duy nhất · BTC và OKB cũng là ứng viên xoay</div></div>
 <div class="stat"><div class="k">Tổng giá trị hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
 <div class="stat"><div class="k">Coin mạnh nhất</div><div class="v" id="bestCoin">—</div><div class="s" id="bestCoinInfo">—</div></div>
 <div class="stat"><div class="k">Khoảng cách mạnh/yếu</div><div class="v" id="spreadValue">—</div><div class="s" id="spreadInfo">—</div></div>
@@ -4516,15 +4525,15 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </section><div class="note">
 <strong>Cách vận hành:</strong> Web đọc giao dịch gần nhất trong Google Sheet để xác định coin đang giữ và số lượng thực nhận.
     Từ đúng mốc đó, hệ thống so coin đang giữ với toàn bộ rổ ứng viên, tính lợi thế số lượng trước và sau chi phí,
-    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Toàn bộ 15 coin trong bảng đều thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. Chỉ hiển thị khi thực sự có phân kỳ; nếu không có sẽ ghi “Không phân kỳ”. “RSI & MACD” nghĩa là cả hai chỉ báo cùng xác nhận. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.
+    rồi chấm điểm chất lượng, phục hồi, thanh khoản và pha loãng. <strong>Tất cả coin đã tick thuộc cùng một rổ xoay; coin chuẩn chỉ là đơn vị đo và vẫn có thể trở thành ứng viên nếu đạt điều kiện.</strong><br><strong>Phân kỳ RSI/MACD:</strong> Năm khung 15m, 1h, 4h, 1D và 1W dùng RSI(14), MACD(12,26,9) và hai swing đã được xác nhận bằng 3 nến mỗi phía. Chỉ hiển thị khi thực sự có phân kỳ; nếu không có sẽ ghi “Không phân kỳ”. “RSI & MACD” nghĩa là cả hai chỉ báo cùng xác nhận. RSI hiện tại vẫn có thể thay đổi khi nến đang chạy.
     Khi đổi coin chuẩn, web đóng chương cũ và mở chương mới tại thời điểm đổi; lịch sử cũ không bị xóa.
   </div><div class="card">
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>JUP · ETHFI · AERO · OKB · UNI · AAVE · INJ · SOL · LINK · ONDO · MNT · PUMP · HYPE · ETH · BTC</span>
+<span>Mỗi coin được mô phỏng mua 100 USDT tại mốc đang chọn. Riêng coin đang giữ có nhãn “THỰC TẾ TỪ MUA” tính cùng công thức với ô tổng quan.</span>
 </div>
-<span>15 tài sản</span>
+<span id="comparisonTableAssetCount">15 tài sản</span>
 </div>
 <div class="quality-legend">
 <span class="quality-legend-label">Nhãn chất lượng tổng hợp:</span>
@@ -4542,8 +4551,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <tr>
 <th>Hạng</th>
 <th>Coin</th>
-<th>Giá trị</th>
-<th>Lãi/lỗ %</th>
+<th title="Giả lập đầu tư 100 USDT cho MỖI coin tại mốc đã chọn, không phải NAV thực tế">Mô phỏng $100</th>
+<th title="Lãi/lỗ giả định nếu mua từng coin tại mốc được chọn. Lãi/lỗ THỰC TẾ của coin đang giữ ở nhãn THỰC TẾ TỪ MUA ngay dưới tên coin">% từ mốc</th>
 <th>Từ 07:00 VN</th>
 <th>Giá live</th>
 <th>Giá mua</th>
@@ -4731,7 +4740,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   const ROTATION_SYMBOLS = [...DEFAULT_TRACKED_SYMBOLS];
   const BENCHMARK_SYMBOLS = [...ROTATION_SYMBOLS];
   const COMPARISON_SYMBOLS = [...ROTATION_SYMBOLS];
-  // Rổ so sánh/xoay gồm 15 coin; lịch sử vẫn giữ toàn bộ giao dịch cũ, không lọc theo rổ mới.
+  // Rổ theo dõi có thể tùy chọn; lịch sử gốc giữ nguyên, giao dịch ẩn chỉ là bộ lọc giao diện.
   // ASSETS tiếp tục chứa mã coin cũ để định giá và hiển thị giao dịch quá khứ.
   const ACTIVE_SYMBOL_SET = new Set(COMPARISON_SYMBOLS);
   const TRACKED_SYMBOLS = [...COMPARISON_SYMBOLS];
@@ -5041,7 +5050,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     binanceWS:null,okxWS:null,bybitWS:null,okxPing:null,bybitPing:null,
     binanceReconnect:0,okxReconnect:0,bybitReconnect:0,
     restTimer:null,countdownTimer:null,renderTimer:null,
-    nextRest:0,anchorLoading:false,
+    nextRest:0,anchorLoading:false,anchorRequestId:0,anchorLoadingTs:null,
     rawTradeLogRows:[],rawAllValidTradeRows:[],
     tradeRows:[],tradeLogRows:[],allValidTradeRows:[],tradeSnapshots:[],historyBenchmark:localStorage.getItem(HISTORY_BENCHMARK_KEY)||DEFAULT_BENCHMARK,
     tradeComparisonBenchmark:localStorage.getItem(TRADE_COMPARISON_BENCHMARK_KEY)||DEFAULT_BENCHMARK,tradeComparisonSnapshots:[],tradeComparisonLoading:false,
@@ -5105,6 +5114,11 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   function syncCoinSettingsVisuals(){
     $("coinWatchCount").textContent=String(symbols.length);
     const h=$("coinWatchHeadline");if(h)h.textContent=`${symbols.length} tài sản · một rổ theo dõi thống nhất`;
+    ["comparisonTableAssetCount","comparisonAnchorAssetCount","comparisonStatAssetCount"].forEach(id=>{
+      const el=$(id);if(el)el.textContent=`${symbols.length} tài sản`;
+    });
+    const allMode=$("rotationSectorMode")?.querySelector('option[value="all"]');
+    if(allMode)allMode.textContent=`Toàn bộ rổ ${symbols.length} coin xoay`;
     document.body.classList.toggle("coin-watch-btc-hidden",!isActiveSymbol("BTC"));
   }
   function initCoinSettings(){
@@ -5159,6 +5173,10 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
         updateCoinSelectOptions();
        applyTradeVisibilityFilter();
         updateTradeSelector();updateAnchorTradeSelector();
+        if(state.historyMilestoneMode==="latest"||state.anchorAutoLatest){
+          const anchorChanged=applyLatestTradeAsAnchor(true);
+          if(anchorChanged)void fetchAnchorPrices(false);
+        }
         const lastRaw=state.rawAllValidTradeRows[state.rawAllValidTradeRows.length-1];
         state.syncedHoldingSymbol=lastRaw&&isActiveSymbol(lastRaw.buyCoin)?lastRaw.buyCoin:"";
         // Hiển thị bảng ngay trước khi gọi giá lịch sử, tránh lịch sử cũ lọt lại trong lúc tải.
@@ -5472,6 +5490,12 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
         shortLabel:"Gần nhất",title:"So với mốc gần nhất"
       };
     }
+    if(mode==="custom"){
+      const selected=state.tradeRows.find(t=>tradeKey(t)===state.selectedAnchorTradeKey)||null;
+      return {mode:"custom",ts:selected?.timestamp||state.anchorTs,capitalTrade:selected,
+        cacheKey:`custom_${selected?tradeKey(selected):"none"}`,
+        shortLabel:"Mốc chọn",title:"So với mốc giao dịch đã chọn"};
+    }
     return {
       mode:"first",ts:first?.timestamp||null,capitalTrade:first,
       cacheKey:`first_${first?tradeKey(first):"none"}`,
@@ -5499,7 +5523,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       button.classList.toggle('is-active',active);
       button.setAttribute('aria-pressed',String(active));
       if(mode==='first')button.disabled=!state.tradeRows[0];
-      else if(mode==='latest')button.disabled=!(currentHoldingTrade()||state.tradeRows[state.tradeRows.length-1]);
+      else if(mode==='latest')button.disabled=!latestAnchorTrade();
       else button.disabled=false;
       if(!button.dataset.historyMilestoneBound){
         button.dataset.historyMilestoneBound='1';
@@ -5509,9 +5533,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   }
 
   async function setHistoryMilestoneMode(mode,{syncAnchor=true,force=false}={}){
-    if(!["pre","first","latest"].includes(mode))return;
+    if(!["pre","first","latest","custom"].includes(mode))return;
     state.historyMilestoneMode=mode;
-    localStorage.setItem(HISTORY_MILESTONE_MODE_KEY,mode);
+    if(mode!=="custom")localStorage.setItem(HISTORY_MILESTONE_MODE_KEY,mode);
     state.historyButtonBaselines={};
     syncHistoryMilestoneControls();
     renderHistoryBenchmarkButtons();
@@ -5552,7 +5576,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     const hosts=[$("historyBenchmarkButtons"),$("overviewHistoryBenchmarkButtons")].filter(Boolean);
     if(!hosts.length)return;
     syncHistoryMilestoneControls();
-    if(!state.tradeRows.length){
+    if(!state.tradeRows.length&&!currentHoldingTrade()){
       hosts.forEach(host=>{host.innerHTML='<div class="history-chip-placeholder">Chưa có giao dịch để hiển thị biểu đồ.</div>'});
       return;
     }
@@ -5562,7 +5586,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     const nav=latest&&latestLive>0?latest.buyQty*latestLive:null;
     const baselines=state.historyButtonBaselines||{};
 
-    // Chỉ hiển thị đúng 15 coin trong rổ hiện tại ở cả Số lượng và Tổng quan.
+    // Chỉ hiển thị coin đã tick trong rổ hiện tại ở cả Số lượng và Tổng quan.
     const visibleHistorySymbols=[...benchmarkSymbols];
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
@@ -5618,7 +5642,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   async function loadHistoryBenchmarkBaselines(force=false){
     const hosts=[$("historyBenchmarkButtons"),$("overviewHistoryBenchmarkButtons")].filter(Boolean);
     if(!hosts.length)return;
-    if(!state.tradeRows.length){
+    if(!state.tradeRows.length&&!currentHoldingTrade()){
       state.historyButtonBaselines={};
       syncHistoryMilestoneControls();
       renderHistoryBenchmarkButtons();
@@ -6743,35 +6767,35 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     state.restTimer=setTimeout(restWatchdog,REST_INTERVAL);
   }
 
-  async function anchorFromBinance(a){
+  async function anchorFromBinance(a,anchorTs){
     if(!a.binance||!providerIsAvailable(a,"binance"))throw new Error("Không có Binance pair");
-    const url=`https://api.binance.com/api/v3/klines?symbol=${a.binance}&interval=1m&startTime=${state.anchorTs}&endTime=${state.anchorTs+60000}&limit=1`;
+    const url=`https://api.binance.com/api/v3/klines?symbol=${a.binance}&interval=1m&startTime=${anchorTs}&endTime=${anchorTs+60000}&limit=1`;
     const r=await withTimeout(url,{},16000);
     if(!r.ok)throw new Error("Binance "+r.status);
     const j=await r.json(),x=j?.[0];
-    if(!x||!Number(x[1]))throw new Error("Binance thiếu nến");
-    return {price:Number(x[1]),ts:Number(x[0]),source:"Binance 1m"};
+    if(!x||!Number(x[1])||Number(x[0])!==anchorTs)throw new Error("Binance thiếu đúng nến 1m của mốc");
+    return {price:Number(x[1]),ts:Number(x[0]),source:"Binance 1m (đúng phút)"};
   }
 
-  async function anchorFromBybit(a){
+  async function anchorFromBybit(a,anchorTs){
     if(!a.bybit||!providerIsAvailable(a,"bybit"))throw new Error("Không có Bybit pair");
-    const url=`https://api.bybit.com/v5/market/kline?category=spot&symbol=${a.bybit}&interval=1&start=${state.anchorTs}&end=${state.anchorTs+60000}&limit=5`;
+    const url=`https://api.bybit.com/v5/market/kline?category=spot&symbol=${a.bybit}&interval=1&start=${anchorTs}&end=${anchorTs+60000}&limit=5`;
     const r=await withTimeout(url,{},16000);
     if(!r.ok)throw new Error("Bybit "+r.status);
     const j=await r.json(),rows=j?.result?.list||[];
-    const x=rows.sort((m,n)=>Math.abs(Number(m[0])-state.anchorTs)-Math.abs(Number(n[0])-state.anchorTs))[0];
-    if(!x||!Number(x[1])||Math.abs(Number(x[0])-state.anchorTs)>120000)throw new Error("Bybit thiếu nến");
-    return {price:Number(x[1]),ts:Number(x[0]),source:"Bybit 1m"};
+    const x=rows.find(row=>Number(row[0])===anchorTs);
+    if(!x||!Number(x[1]))throw new Error("Bybit thiếu đúng nến 1m của mốc");
+    return {price:Number(x[1]),ts:Number(x[0]),source:"Bybit 1m (đúng phút)"};
   }
 
   function okxHistoricalPairs(a){
     return [...new Set([a?.okx,...(a?.okxHistoricalAliases||[])].filter(Boolean))];
   }
 
-  async function anchorFromOKX(a){
+  async function anchorFromOKX(a,anchorTs){
     const pairs=okxHistoricalPairs(a);
     if(!pairs.length)throw new Error("Không có OKX pair");
-    const after=state.anchorTs+120000;
+    const after=anchorTs+120000;
     let lastError=null;
     for(const instId of pairs){
       try{
@@ -6779,71 +6803,89 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
         const r=await withTimeout(url,{},16000);
         if(!r.ok)throw new Error("OKX "+r.status);
         const j=await r.json(),rows=j.data||[];
-        const x=rows.sort((m,n)=>Math.abs(Number(m[0])-state.anchorTs)-Math.abs(Number(n[0])-state.anchorTs))[0];
-        if(!x||!Number(x[1])||Math.abs(Number(x[0])-state.anchorTs)>180000)throw new Error(`OKX ${instId} thiếu nến`);
-        return {price:Number(x[1]),ts:Number(x[0]),source:`OKX ${instId} 1m`};
+        const x=rows.find(row=>Number(row[0])===anchorTs);
+        if(!x||!Number(x[1]))throw new Error(`OKX ${instId} thiếu đúng nến 1m của mốc`);
+        return {price:Number(x[1]),ts:Number(x[0]),source:`OKX ${instId} 1m (đúng phút)`};
       }catch(error){lastError=error}
     }
-    throw lastError||new Error("OKX thiếu nến");
+    throw lastError||new Error("OKX thiếu đúng nến");
   }
 
 
-  async function fetchOneAnchor(symbol){
+  async function fetchOneAnchor(symbol,anchorTs){
     const a=ASSETS[symbol],order=providerOrder(a);
     let lastError=null;
     for(const provider of order){
       try{
-        if(provider==="binance")return await anchorFromBinance(a);
-        if(provider==="okx")return await anchorFromOKX(a);
-        if(provider==="bybit")return await anchorFromBybit(a);
+        if(provider==="binance")return await anchorFromBinance(a,anchorTs);
+        if(provider==="okx")return await anchorFromOKX(a,anchorTs);
+        if(provider==="bybit")return await anchorFromBybit(a,anchorTs);
       }catch(error){lastError=error}
     }
     throw lastError||new Error(`Không có giá mốc trên Binance, OKX hoặc Bybit cho ${symbol}`);
   }
 
+  // Chỉ ghi giá đúng đúng một mốc (symbol, phút). Mốc mới không bị kết quả cũ ghi đè.
   async function fetchAnchorPrices(force=false){
-    if(state.anchorLoading)return;
+    const requestedTs=state.anchorTs;
+    if(state.anchorLoading&&state.anchorLoadingTs===requestedTs&&!force)return;
+    const requestId=++state.anchorRequestId;
     state.anchorLoading=true;
+    state.anchorLoadingTs=requestedTs;
     $("reloadAnchorBtn").disabled=true;$("applyAnchorBtn").disabled=true;
     $("anchorTradeSelect").disabled=true;$("firstAnchorBtn").disabled=true;
     showError("");
-
     if(!force){
       try{
-        const cached=JSON.parse(localStorage.getItem(anchorCacheKey())||"null");
+        const cached=JSON.parse(localStorage.getItem(ANCHOR_KEY_PREFIX+requestedTs)||"null");
         if(cached?.prices&&Object.keys(cached.prices).length){
-          state.anchor=cached;
+          const clean={prices:{},sources:{},capturedAt:{}};
+          for(const [symbol,price] of Object.entries(cached.prices)){
+            // Cache v55 có thể chứa nhầm giá các phút khác. Không nhận nếu không có dấu phút chính xác.
+            if(Number(cached.capturedAt?.[symbol])!==requestedTs||!(Number(price)>0))continue;
+            clean.prices[symbol]=Number(price);
+            clean.sources[symbol]=cached.sources?.[symbol]||"Nến 1m trong cache";
+            clean.capturedAt[symbol]=requestedTs;
+          }
+          state.anchor=clean;
           scheduleRender();
         }
       }catch(_){}
     }
-
-    const missing=force?symbols:symbols.filter(s=>!Number(state.anchor.prices?.[s]));
+    const anchorData=state.anchor;
+    const isCurrent=()=>state.anchorRequestId===requestId&&state.anchorTs===requestedTs&&state.anchor===anchorData;
+    const missing=force?[...symbols]:symbols.filter(symbol=>!(Number(anchorData.prices?.[symbol])>0));
     const failed=[];
-
-    for(let i=0;i<missing.length;i+=4){
-      const batch=missing.slice(i,i+4);
-      const settled=await Promise.allSettled(batch.map(fetchOneAnchor));
-      settled.forEach((r,k)=>{
-        const s=batch[k];
-        if(r.status==="fulfilled"){
-          state.anchor.prices[s]=r.value.price;
-          state.anchor.sources[s]=r.value.source;
-          state.anchor.capturedAt[s]=r.value.ts;
-        }else failed.push(s);
-      });
-      try{localStorage.setItem(anchorCacheKey(),JSON.stringify(state.anchor))}catch(_){}
-      scheduleRender();
-      await new Promise(r=>setTimeout(r,180));
+    try{
+      for(let i=0;i<missing.length;i+=4){
+        if(!isCurrent())return;
+        const batch=missing.slice(i,i+4);
+        const settled=await Promise.allSettled(batch.map(symbol=>fetchOneAnchor(symbol,requestedTs)));
+        if(!isCurrent())return;
+        settled.forEach((result,k)=>{
+          const symbol=batch[k];
+          if(result.status==="fulfilled"&&Number(result.value?.ts)===requestedTs&&result.value.price>0){
+            anchorData.prices[symbol]=result.value.price;
+            anchorData.sources[symbol]=result.value.source;
+            anchorData.capturedAt[symbol]=requestedTs;
+          }else failed.push(symbol);
+        });
+        try{localStorage.setItem(ANCHOR_KEY_PREFIX+requestedTs,JSON.stringify(anchorData))}catch(_){}
+        scheduleRender();
+        await new Promise(resolve=>setTimeout(resolve,180));
+      }
+    }finally{
+      if(isCurrent()){
+        state.anchorLoading=false;
+        state.anchorLoadingTs=null;
+        $("reloadAnchorBtn").disabled=false;$("applyAnchorBtn").disabled=false;
+        $("anchorTradeSelect").disabled=!state.tradeRows.length;
+        $("firstAnchorBtn").disabled=!state.tradeRows.length;
+        if(failed.length)showError(`Thiếu đúng nến 1 phút tại ${formatAnchorLabel()} cho: ${failed.join(", ")}. Không sử dụng giá từ phút khác.`);
+        else showError("");
+        scheduleRender();
+      }
     }
-
-    state.anchorLoading=false;
-    $("reloadAnchorBtn").disabled=false;$("applyAnchorBtn").disabled=false;
-    $("anchorTradeSelect").disabled=!state.tradeRows.length;
-    $("firstAnchorBtn").disabled=!state.tradeRows.length;
-    if(failed.length)showError(`Chưa lấy được giá tại mốc đã chọn cho: ${failed.join(", ")}. Bấm “Tải lại giá mốc” để thử lại.`);
-    else showError("");
-    scheduleRender();
   }
 
 
@@ -6924,7 +6966,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       if(pieces.length===2){
         const fraction=pieces[1];
         // 45,953 là phân tách hàng nghìn; 50,35 là số thập phân theo locale Việt Nam.
-        text=fraction.length===3?pieces.join(""):pieces[0]+"."+fraction;
+        // 0,123 là 0.123, KHÔNG phải 123. Raw numeric được ưu tiên ở numberFromSheetCell.
+        text=fraction.length===3&&!/^[-+]?0$/.test(pieces[0])?pieces.join(""):pieces[0]+"."+fraction;
       }else{
         text=pieces.join("");
       }
@@ -6936,16 +6979,15 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
   function numberFromSheetCell(cell){
     if(!cell)return null;
-    // Ưu tiên cả giá trị hiển thị lẫn giá trị thô. Một số ô Google Sheets có v=0
-    // nhưng f vẫn chứa đúng số thập phân (ví dụ 50.35 hoặc 46.07).
-    const formatted=parseSheetNumber(cell.f);
+    // v = số GỐC từ Sheets; f = chuỗi HIỂN THỊ thường đã làm tròn.
+    // Không được lấy Math.max(v,f) vì có thể làm sai giá mua, số lượng và NAV.
+    // Ngoại lệ Google GViz: v=0 do lỗi serial hóa trong khi f chứa số dương hợp lệ.
     const raw=parseSheetNumber(cell.v);
-    const candidates=[formatted,raw].filter(Number.isFinite);
-    if(!candidates.length)return null;
-    const positive=candidates.filter(value=>value>0);
-    if(positive.length)return Math.max(...positive);
-    if(candidates.some(value=>value===0))return 0;
-    return candidates[0];
+    const formatted=parseSheetNumber(cell.f);
+    if(Number.isFinite(raw)&&raw!==0)return raw;
+    if(raw===0&&Number.isFinite(formatted)&&formatted>0)return formatted;
+    if(Number.isFinite(raw))return raw;
+    return Number.isFinite(formatted)?formatted:null;
   }
 
   function textFromSheetCell(cell){
@@ -6983,9 +7025,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
       const params=new URLSearchParams({
         sheet:SHEET_NAME,
-        range:"A1:F1000",
+        range:"A1:H1000",
         headers:"1",
-        tq:"select A,B,C,D,E,F",
+        tq:"select A,B,C,D,E,F,G,H",
         tqx:`out:json;responseHandler:${callback}`,
         cacheBust:String(Date.now())
       });
@@ -7577,10 +7619,16 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     return `${trade.round}_${trade.timestamp}`;
   }
 
+  function latestAnchorTrade(){
+    // History may hide a trade because its SELL coin is unchecked; the current holding
+    // still comes from the original Sheet and must remain usable as a valuation anchor.
+    return currentHoldingTrade()||state.tradeRows[state.tradeRows.length-1]||null;
+  }
+
   function setAnchorTradeInfo(trade,prefix=""){
     if(!trade)return;
-    $("latestTradeAnchorInfo").textContent=
-      `${prefix}Lần ${trade.round} · ${trade.sellCoin||"—"} → ${trade.buyCoin}`;
+    const from=isActiveSymbol(trade.sellCoin)?trade.sellCoin:"coin bán ẩn";
+    $("latestTradeAnchorInfo").textContent=`${prefix}Lần ${trade.round} · ${from} → ${trade.buyCoin}`;
   }
 
   function applyTradeAsAnchor(trade,{autoLatest=false,force=false}={}){
@@ -7604,6 +7652,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     setAnchorTradeInfo(trade,autoLatest?"Mới nhất · ":"");
 
     if(!force&&state.anchorTs===minuteTs){
+      syncMilestoneDock();
       return false;
     }
 
@@ -7620,38 +7669,38 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   }
 
   function updateAnchorTradeSelector(){
-    const select=$("anchorTradeSelect");
-    const firstBtn=$("firstAnchorBtn");
+    const select=$("anchorTradeSelect"),firstBtn=$("firstAnchorBtn");
     if(!select||!firstBtn)return;
-
-    if(!state.tradeRows.length){
-      select.innerHTML='<option value="">Chưa có mốc giao dịch</option>';
-      select.disabled=true;
-      firstBtn.disabled=true;
-      return;
+    const latest=latestAnchorTrade();
+    const visible=[...state.tradeRows];
+    if(latest&&!visible.some(trade=>tradeKey(trade)===tradeKey(latest))){
+      // Only add the current holding anchor, not a hidden trade-history row.
+      visible.push(latest);
     }
-
+    if(!visible.length){
+      select.innerHTML='<option value="">Chưa có mốc giao dịch</option>';
+      select.disabled=true;firstBtn.disabled=true;syncMilestoneDock();return;
+    }
     select.disabled=false;
-    firstBtn.disabled=false;
-    select.innerHTML=`<option value="${FIXED_PRE_MILESTONE_KEY}">Mốc 01/08/2025 · 07:00</option>`+state.tradeRows.map(t=>
-      `<option value="${tradeKey(t)}">Lần ${t.round} · ${formatTradeDate(t.timestamp)} · ${t.sellCoin||"—"} → ${t.buyCoin}</option>`
-    ).join("");
-
-    const selectedExists=state.selectedAnchorTradeKey===FIXED_PRE_MILESTONE_KEY||state.tradeRows.some(t=>tradeKey(t)===state.selectedAnchorTradeKey);
-    if(state.anchorAutoLatest||!selectedExists){
-      const latest=state.tradeRows[state.tradeRows.length-1];
-      state.selectedAnchorTradeKey=tradeKey(latest);
+    firstBtn.disabled=!state.tradeRows.length;
+    select.innerHTML=`<option value="${FIXED_PRE_MILESTONE_KEY}">Mốc 01/08/2025 · 07:00</option>`+visible.map(trade=>{
+      const currentlyHeld=latest&&tradeKey(trade)===tradeKey(latest);
+      const from=isActiveSymbol(trade.sellCoin)?trade.sellCoin:"coin bán ẩn";
+      return `<option value="${tradeKey(trade)}">${currentlyHeld?"HIỆN TẠI · ":""}Lần ${trade.round} · ${formatTradeDate(trade.timestamp)} · ${from} → ${trade.buyCoin}</option>`;
+    }).join("");
+    const exists=state.selectedAnchorTradeKey===FIXED_PRE_MILESTONE_KEY||visible.some(trade=>tradeKey(trade)===state.selectedAnchorTradeKey);
+    if(state.anchorAutoLatest||!exists){
+      state.selectedAnchorTradeKey=latest?tradeKey(latest):tradeKey(visible.at(-1));
     }
     select.value=state.selectedAnchorTradeKey;
     syncMilestoneDock();
   }
 
-
   function syncMilestoneDock(){
     const pre=$("milestonePreBtn"),first=$("milestoneFirstBtn"),latest=$("milestoneLatestBtn");
     if(!pre||!first||!latest)return;
     const firstTrade=state.tradeRows[0]||null;
-    const latestTrade=state.tradeRows[state.tradeRows.length-1]||null;
+    const latestTrade=latestAnchorTrade();
     first.disabled=!firstTrade;
     latest.disabled=!latestTrade;
     first.title=firstTrade?`Mốc 1 · Lần ${firstTrade.round} · ${formatTradeDate(firstTrade.timestamp)}`:"Chưa đọc được mốc 1";
@@ -7709,7 +7758,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   }
 
   function applyLatestTradeAsAnchor(force=false){
-    const latest=state.tradeRows[state.tradeRows.length-1];
+    const latest=latestAnchorTrade();
     if(!latest||(!state.anchorAutoLatest&&!force))return false;
 
     const key=tradeKey(latest);
@@ -8023,7 +8072,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     return `${type}: ${formatPrice(entry.price,d)} USDT · ${date} (VN)${provider}`;
   }
 
-  function holdingReturnDetails(trade,livePrice){
+  function holdingReturnDetails(trade){
     const entry=currentHoldingEntry();
     const quote=holdingLiveQuote(trade);
     // Cả hai thẻ lãi/lỗ dùng cùng một tick live, không dùng snapshot chưa làm mới.
@@ -8380,6 +8429,11 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
             }
           }
           updateTradeSelector();updateAnchorTradeSelector();
+          // Mốc "Gần nhất" phải theo Sheet NGAY khi có lần mới, không chờ tải 76 nến / Rotation.
+          if(state.historyMilestoneMode==="latest"||state.anchorAutoLatest){
+            const anchorChanged=applyLatestTradeAsAnchor(true);
+            if(anchorChanged)void fetchAnchorPrices(false);
+          }
           if(current){
             $("rotationCurrentHolding").innerHTML=`Sheet mới nhất · đang giữ: <strong>${formatQtyExact(current.buyQty)} ${current.buyCoin}</strong>`;
           }else if(rawLatest){
@@ -10074,6 +10128,11 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       const isBenchmark=r.symbol===state.benchmark.symbol;
       const rowClasses=[isHeld?"portfolio-held-row":"",isBenchmark?"comparison-benchmark-row":"",isHeld&&isBenchmark?"dual-reference-row":""].filter(Boolean).join(" ");
       const nameClasses=[isHeld?"portfolio-held-symbol":"",isBenchmark?"comparison-benchmark-name":""].filter(Boolean).join(" ");
+      const realHoldingPnl=isHeld?holdingReturnDetails(currentHoldingTrade()):null;
+      const realHoldingPct=realHoldingPnl?.pnl;
+      const realHoldingClass=Number.isFinite(realHoldingPct)?realHoldingPct>0?"pos":realHoldingPct<0?"neg":"neu":"neu";
+      const realHoldingText=Number.isFinite(realHoldingPct)?formatSignedPct(realHoldingPct):"—";
+      const realHoldingBadge=isHeld?`<span class="real-holding-pnl ${realHoldingClass}" data-role="held-actual-pnl" title="${escapeHTML(realHoldingPnl.description)}">THỰC TẾ TỪ MUA: <strong>${realHoldingText}</strong></span>`:"";
       const referenceBadges=`${isHeld?'<span class="holding-mini">Đang nắm giữ</span>':""}${isBenchmark?'<span class="benchmark-mini">Coin chuẩn</span>':""}`;
       const valueText=hasValue?formatUSD(r.currentValue):(hasLive?"Thiếu giá mốc":"Đang tải live");
       const returnText=hasReturn?`${r.returnPct>=0?"+":""}${r.returnPct.toFixed(2)}%`:"—";
@@ -10084,9 +10143,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
       return `<tr class="${rowClasses}">
         <td><span class="rank">${i+1}</span></td>
-        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div><span class="coin-quantity-growth ${quantityGrowthClass}" title="${historyMilestoneContext().title}">${quantityGrowthText}</span><div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
+        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div><span class="coin-quantity-growth ${quantityGrowthClass}" title="${historyMilestoneContext().title} · thay đổi SỐ LƯỢNG, không phải thay đổi GIÁ">SL vs mốc: ${quantityGrowthText}</span>${realHoldingBadge}<div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
         <td><span class="value-pill ${valueClass} ${hasValue?"":"value-pending"}">${valueText}</span></td>
-        <td class="num ${pnlClass}"><strong>${returnText}</strong></td>
+        <td class="num ${pnlClass}" title="Mô phỏng 100 USDT tại ${escapeHTML(formatAnchorLabel())}; KHÔNG phải lãi/lỗ vị thế thực tế"><strong>${returnText}</strong><small class="simulation-note">Mô phỏng</small></td>
         <td class="num ${dailyClass}" title="${escapeHTML(state.daily7am.sources?.[r.symbol]||state.daily7am.errors?.[r.symbol]||'Đang tải đúng nến 07:00')}"><strong>${dailyText}</strong><small class="daily-7am-note">${formatDaily7amLabel()}</small></td>
         <td class="num"><strong>${hasLive?formatPrice(r.live.price,r.a.d):"—"}</strong></td>
         <td class="num">${Number.isFinite(r.buyPrice)?formatPrice(r.buyPrice,r.a.d):"—"}</td>
@@ -10229,14 +10288,16 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       setHistoryMilestoneMode("pre",{syncAnchor:false,force:false});
       return;
     }
-    const trade=state.tradeRows.find(t=>tradeKey(t)===e.target.value);
+    const trade=state.tradeRows.find(t=>tradeKey(t)===e.target.value)
+      ||(latestAnchorTrade()&&tradeKey(latestAnchorTrade())===e.target.value?latestAnchorTrade():null);
     if(!trade)return;
     const changed=applyTradeAsAnchor(trade,{autoLatest:false,force:true});
     showError("");
     if(changed)fetchAnchorPrices(false);
-    const first=state.tradeRows[0],latest=currentHoldingTrade()||state.tradeRows[state.tradeRows.length-1];
+    const first=state.tradeRows[0],latest=latestAnchorTrade();
     if(first&&tradeKey(trade)===tradeKey(first))setHistoryMilestoneMode("first",{syncAnchor:false,force:false});
     else if(latest&&tradeKey(trade)===tradeKey(latest))setHistoryMilestoneMode("latest",{syncAnchor:false,force:false});
+    else setHistoryMilestoneMode("custom",{syncAnchor:false,force:false});
   });
 
   $("firstAnchorBtn").addEventListener("click",()=>{
