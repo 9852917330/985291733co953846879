@@ -4169,6 +4169,8 @@
 <style id="history-backup-status-style">
 .sheet-sync-status{display:inline-flex;align-items:center;font-size:11px;line-height:1.5;color:#6ee7c8;padding:6px 9px;border:1px solid rgba(82,230,177,.26);background:rgba(82,230,177,.07);border-radius:8px;max-width:100%}
 .sheet-sync-status.is-backup{color:#ffcf82;border-color:rgba(255,207,130,.3);background:rgba(255,207,130,.07)}
+.sheet-trade-monitor{margin:0 12px 7px;padding:6px 10px;border:1px solid rgba(100,190,173,.20);border-radius:9px;background:rgba(86,165,157,.065);color:#a7d8ce;font-size:11px;line-height:1.5;text-align:center}
+.sheet-trade-monitor.is-backup{color:#ffcf82;border-color:rgba(255,207,130,.28);background:rgba(255,207,130,.06)}
 </style>
 <style id="coin-watchlist-v1">
 .header-actions{gap:8px!important;display:flex!important;align-items:center!important;flex-wrap:wrap!important}
@@ -4237,7 +4239,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <button class="app-nav-btn" data-page-target="growth" type="button"><span class="nav-number">02</span><span class="nav-copy"><strong>Số lượng</strong><small>Qua từng lần mua</small></span></button>
 <button class="app-nav-btn" data-page-target="trades" type="button"><span class="nav-number">03</span><span class="nav-copy"><strong>Lịch sử</strong><small>Mua · bán</small></span></button>
 <button class="app-nav-btn" data-page-target="benchmark" type="button"><span class="nav-number">04</span><span class="nav-copy"><strong>Coin chuẩn</strong><small>Các chương</small></span></button>
-<div class="nav-live-state" id="navLiveState">Đang khởi tạo dữ liệu…</div></div></nav><section class="global-portfolio-strip" id="globalPortfolioStrip">
+<div class="nav-live-state" id="navLiveState">Đang khởi tạo dữ liệu…</div></div></nav><div id="sheetTradeMonitor" class="sheet-trade-monitor" role="status" aria-live="polite">Google Sheet: đang kiểm tra giao dịch mới…</div><section class="global-portfolio-strip" id="globalPortfolioStrip">
 <article class="global-summary-card global-nav-card strategy-primary"><span>NAV hiện tại</span><strong id="globalNavValue">—</strong><small id="globalNavInfo">Đang chờ dữ liệu live</small></article>
 <article class="global-summary-card global-equivalent-card strategy-primary"><span id="globalEquivalentLabel">Tiền hiện tại quy ra coin chuẩn</span><strong id="globalBenchmarkEquivalent">—</strong><small id="globalBenchmarkEquivalentInfo">NAV ÷ giá coin chuẩn</small></article>
 <article class="global-summary-card global-growth-card strategy-primary"><span>Tăng coin chuẩn từ đầu chương</span><strong id="globalBenchmarkGrowth">—</strong><small id="globalBenchmarkGrowthInfo">Tính từ số lượng đầu chương</small></article>
@@ -4713,7 +4715,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   const ICON_KEY = "fullCapitalIcons_v40_cg";
   const SHEET_ID = "1oXTD35cnMZEeiGX9oQ4XepH7jWCNilHIXfNHLnrjXs0";
   const SHEET_NAME = "Trang tính1";
-  const SHEET_REFRESH_MS = 60_000;
+  const SHEET_REFRESH_MS = 30_000;
   const HISTORY_PRICE_CACHE_KEY = "cryptoTradeHistoryPriceCache_v8_gram_direct";
   const HISTORY_ROWS_BACKUP_KEY = "cryptoTradeHistoryRowsBackup_v1"; // Giữ bản sao lịch sử theo trình duyệt, không xóa khi Sheet lỗi.
   const DAILY_7AM_CACHE_KEY = "cryptoDaily7amCache_v22_14coin";
@@ -5045,6 +5047,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     tradeComparisonBenchmark:localStorage.getItem(TRADE_COMPARISON_BENCHMARK_KEY)||DEFAULT_BENCHMARK,tradeComparisonSnapshots:[],tradeComparisonLoading:false,
     selectedHistoryTradeKey:"",historySelectionExplicit:false,latestTradeKeySeen:"",
     historyLoading:false,historyPriceCache:{},sheetRefreshTimer:null,lastSheetSync:null,
+    sheetSyncPromise:null,historyBuildRevision:0,historyBuildPending:false,tradeFingerprint:null,
     historyChartData:[],historyButtonBaselines:{},historyButtonLoading:false,
     historyMilestoneMode:(()=>{const value=localStorage.getItem(HISTORY_MILESTONE_MODE_KEY);return ["pre","latest"].includes(value)?value:"pre"})(),
     historyBaselineCache:{},historyMilestoneLoadToken:0,allEquivalentCache:{},equivalentLoading:false,
@@ -5156,7 +5159,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
        applyTradeVisibilityFilter();
         updateTradeSelector();updateAnchorTradeSelector();
         const lastRaw=state.rawAllValidTradeRows[state.rawAllValidTradeRows.length-1];
-        state.syncedHoldingSymbol=lastRaw&&isCoinVisibleTrade(lastRaw)?lastRaw.buyCoin:"";
+        state.syncedHoldingSymbol=lastRaw&&isActiveSymbol(lastRaw.buyCoin)?lastRaw.buyCoin:"";
         // Hiển thị bảng ngay trước khi gọi giá lịch sử, tránh lịch sử cũ lọt lại trong lúc tải.
         const fastRows=state.tradeLogRows.map(row=>({...row,
           holdingPrice:row.sheetBuyPrice>0?{price:row.sheetBuyPrice}:null,
@@ -7157,13 +7160,26 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   }
 
   function updateTradeHistorySource(isBackup=false,detail=""){
-    const timestamp=state.lastSheetSync
-      ?new Date(state.lastSheetSync).toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"})
-      :"không rõ thời gian";
+    const checked=state.lastSheetSync
+      ?new Date(state.lastSheetSync).toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"})
+      :"chưa có";
+    const latest=state.rawTradeLogRows.at(-1)||null;
+    const latestLabel=latest
+      ?`Lần ${latest.round} · ${latest.sellCoin} → ${latest.buyCoin} · ${formatTradeDate(latest.timestamp)}`
+      :"chưa nhận được giao dịch";
+    const visibility=latest&&!isActiveSymbol(latest.buyCoin)
+      ?` · ${latest.buyCoin} đang bị ẩn trong Cài đặt coin` : "";
+    const message=detail||(isBackup?`Đang dùng bản lưu: ${latestLabel} · đồng bộ ${checked}`:
+      `Đã kiểm tra Sheet ${checked} · mới nhất: ${latestLabel}${visibility}`);
     document.querySelectorAll(".sheet-sync-status").forEach(node=>{
       node.classList.toggle("is-backup",isBackup);
-      node.textContent=detail||(isBackup?`Bản sao lịch sử · đồng bộ lần cuối ${timestamp}`:`Google Sheet · cập nhật ${timestamp}`);
+      node.textContent=message;
     });
+    const monitor=$("sheetTradeMonitor");
+    if(monitor){
+      monitor.classList.toggle("is-backup",isBackup);
+      monitor.textContent=message;
+    }
   }
 
   // Giao dịch gốc không bị lọc/xóa. Chỉ tạo bản sao hiển thị; một dòng chỉ hiện khi cả coin bán và mua được tick.
@@ -7173,7 +7189,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     state.tradeRows=[...state.allValidTradeRows];
   }
 
-  // Khôi phục từ bản sao đã đồng bộ nếu Google Sheet không truy cập được.
+  // Khôi phục thật nhanh từ bản sao khi Sheet lỗi; định giá ở tác vụ riêng.
   async function restoreTradeHistoryBackup(){
     const backup=readTradeHistoryBackup();
     if(!backup)return false;
@@ -7184,29 +7200,27 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     );
     applyTradeVisibilityFilter();
     state.lastSheetSync=backup.syncedAt;
+    updateTradeSelector();updateAnchorTradeSelector();
+    renderQuickTradeHistory();
     updateTradeHistorySource(true);
-    updateTradeSelector();
-    updateAnchorTradeSelector();
-    const current=currentHoldingTrade();
-    $("rotationCurrentHolding").innerHTML=current
-      ?`Đang dùng bản sao Sheet · giữ: <strong>${formatQtyExact(current.buyQty)} ${current.buyCoin}</strong>`
-      :"Đang dùng bản sao lịch sử gần nhất; chưa xác định coin đang giữ trong rổ theo dõi.";
-    // Ưu tiên phục hồi bảng giao dịch ngay, không đợi các API giá lịch sử phản hồi.
-    renderTradeLog(state.tradeLogRows.map(row=>({
+    state.historyBuildRevision++;
+    requestHistoryRebuild();
+    return true;
+  }
+
+  function renderQuickTradeHistory(){
+    // Không đợi biểu đồ/nến lịch sử mới hiển thị được giao dịch mới.
+    const rows=state.tradeLogRows.map(row=>({
       ...row,
       holdingPrice:row.sheetBuyPrice>0?{price:row.sheetBuyPrice}:null,
       sellPrice:row.sheetSellPrice>0?{price:row.sheetSellPrice}:null
-    })),state.tradeComparisonBenchmark,false);
+    }));
+    state.tradeComparisonSnapshots=rows;
+    renderTradeLog(rows,state.tradeComparisonBenchmark,false);
     renderGlobalPortfolioSummary();
-    if(state.tradeRows.length){
-      state.tradeSnapshots=await buildTradeSnapshots(state.tradeRows,state.historyBenchmark,(partial,b,l)=>renderTradeHistory(partial,b,l));
-      renderTradeHistory(state.tradeSnapshots,state.historyBenchmark,false);
-    }
-    state.tradeComparisonSnapshots=await buildTradeLogSnapshots(state.tradeLogRows,(partial,b,l)=>renderTradeLog(partial,b,l));
-    renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false);
-    renderHistoryBenchmarkButtons();
     renderRebuyQuantityComparison(true);
-    return true;
+    renderHistoryBenchmarkButtons();
+    scheduleRender();
   }
 
   function historyCacheKey(symbol,ts){
@@ -7964,7 +7978,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
   function currentHoldingTrade(){
     const latest=currentLogHoldingTrade();
-    return latest&&isCoinVisibleTrade(latest)?latest:null;
+    // Giá trị danh mục phụ thuộc coin đang NẮM GIỮ (coin mua). Không được mất NAV
+    // chỉ vì coin đã bán ở giao dịch gần nhất đang bị bỏ tick.
+    return latest&&isActiveSymbol(latest.buyCoin)?latest:null;
   }
 
   function selectedBasisTrade(){
@@ -8228,133 +8244,151 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     }
   }
 
+  // Sheet và giá lịch sử là 2 đường xử lý độc lập.
+  // Nút làm mới + bộ hẹn giờ chỉ đợi mạng Google Sheet, không đợi ~76 coin x nhiều nến.
   async function refreshTradeHistory(force=false){
-    if(state.historyLoading)return;
-    state.historyLoading=true;
-    $("refreshSheetBtn").disabled=true;
-    $("tradeBenchmark").disabled=true;
-    if(!state.tradeLogRows.length)$("rotationCurrentHolding").textContent="Đang kết nối Google Sheet…";
-    showHistoryError("");
-    if(!state.tradeLogRows.length){
-      $("historyBody").innerHTML=`<tr class="loading-row"><td colspan="8">Đang đọc Google Sheet…</td></tr>`;
-      $("historyMobileList").innerHTML=`<div class="history-mobile-card">Đang đọc Google Sheet…</div>`;
-    }
-
-    try{
-      const response=await loadGoogleSheetJSONP();
-      const freshRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
-      const savedBackup=readTradeHistoryBackup();
-      if(savedBackup&&freshRows.length<savedBackup.rows.length){
-        throw new Error(`Google Sheet chỉ trả ${freshRows.length}/${savedBackup.rows.length} giao dịch từng lưu. Giữ bản sao để tránh mất lịch sử.`);
+    if(state.sheetSyncPromise)return state.sheetSyncPromise;
+    state.sheetSyncPromise=(async()=>{
+      const refreshBtn=$("refreshSheetBtn");
+      if(refreshBtn)refreshBtn.disabled=true;
+      if(!state.rawTradeLogRows.length){
+        $("rotationCurrentHolding").textContent="Đang kết nối Google Sheet…";
+        updateTradeHistorySource(false,"Đang đọc giao dịch mới nhất trên Google Sheet…");
       }
-      state.rawTradeLogRows=freshRows;
-      saveTradeHistoryBackup(state.rawTradeLogRows);
-      state.rawAllValidTradeRows=state.rawTradeLogRows.filter(r=>Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0);
-      applyTradeVisibilityFilter(); // Lọc giao diện; dữ liệu gốc và bản sao luôn đầy đủ.
-      state.lastSheetSync=Date.now();
-      updateTradeHistorySource(false);
-      state.allEquivalentCache={};
-      state.historyBaselineCache={};
-      state.historyButtonBaselines={};
-
-      const rawLatest=currentLogHoldingTrade();
-      const sheetLatest=currentHoldingTrade();
-      const holdingChanged=Boolean(sheetLatest&&state.syncedHoldingSymbol!==sheetLatest.buyCoin);
-      if(sheetLatest){
-        state.syncedHoldingSymbol=sheetLatest.buyCoin;
-        state.selectedHistoryTradeKey=tradeKey(sheetLatest);
-        state.historySelectionExplicit=false;
-        if(holdingChanged&&ASSETS[sheetLatest.buyCoin]){
-          state.historyBenchmark=sheetLatest.buyCoin;
-          localStorage.setItem(HISTORY_BENCHMARK_KEY,sheetLatest.buyCoin);
-          state.historyButtonBaselines={};
-          state.historyBaselineCache={};
-          const historySelect=$("historyBenchmark");
-          if(historySelect&&Array.from(historySelect.options).some(option=>option.value===sheetLatest.buyCoin)){
-            historySelect.value=sheetLatest.buyCoin;
-          }
+      try{
+        const response=await loadGoogleSheetJSONP();
+        const freshRows=reconcileTradeChainRows(parseTradeRows(response,{includeIncomplete:true}));
+        if(!freshRows.length){
+          throw new Error("Sheet không trả về giao dịch có tuyến coin và số lượng hợp lệ. Kiểm tra tên tab / cột A–F / quyền chia sẻ.");
         }
-      }else{
-        state.syncedHoldingSymbol="";
-      }
-
-      if(sheetLatest){
-        $("rotationCurrentHolding").innerHTML=
-          `Đã kết nối Sheet · đang giữ: <strong>${formatQtyExact(sheetLatest.buyQty)} ${sheetLatest.buyCoin}</strong><br>`+
-          `Đang tải dữ liệu giá lịch sử cho ${symbols.length} coin…`;
-      }else if(rawLatest){
-        $("rotationCurrentHolding").textContent="Coin đang giữ không được tick nên tạm ẩn khỏi các trang phân tích. Lịch sử gốc vẫn được bảo toàn.";
-      }else{
-        $("rotationCurrentHolding").textContent="Đã kết nối Sheet nhưng chưa có giao dịch hợp lệ.";
-      }
-      updateTradeSelector();
-      updateAnchorTradeSelector();
-      await loadHistoryBenchmarkBaselines(true);
-
-      const latestAnchorChanged=applyLatestTradeAsAnchor(false);
-      if(latestAnchorChanged){
-        fetchAnchorPrices(false);
-      }
-      scheduleRender();
-
-      if(!state.tradeRows.length&&!state.tradeLogRows.length){
-        $("rotationCurrentHolding").textContent="Đã kết nối Sheet nhưng chưa có giao dịch hợp lệ.";
-        state.tradeSnapshots=[];
-        state.tradeComparisonSnapshots=[];
-        renderTradeHistory([],state.historyBenchmark,false);
-        renderTradeLog([],state.tradeComparisonBenchmark,false);
-        $("snapshotProgress").textContent="Google Sheet chưa có giao dịch hợp lệ.";
-        $("equivalentGrid").innerHTML='<div class="equivalent-card"><div class="equivalent-meta">Chưa có dữ liệu.</div></div>';
-        renderGlobalPortfolioSummary();
-        renderHistoryBenchmarkButtons();
-        renderRebuyQuantityComparison(true);
-        return;
-      }
-
-      state.tradeSnapshots=await buildTradeSnapshots(state.tradeRows,state.historyBenchmark,(partial,b,l)=>renderTradeHistory(partial,b,l));
-      renderTradeHistory(state.tradeSnapshots,state.historyBenchmark,false);
-      state.tradeComparisonSnapshots=await buildTradeLogSnapshots(state.tradeLogRows,(partial,b,l)=>renderTradeLog(partial,b,l));
-      renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false);
-      await loadAllEquivalentsForSelectedTrade();
-      await loadRotationEngine(false);
-      renderGlobalPortfolioSummary();
-      renderHistoryBenchmarkButtons();
-      renderRebuyQuantityComparison(true);
-    }catch(e){
-      // Không được xóa bảng và biểu đồ đã có khi một lần làm mới gặp lỗi mạng.
-      const hadHistory=Boolean(state.tradeLogRows.length);
-      const restored=hadHistory?true:await restoreTradeHistoryBackup();
-      if(restored){
-        if(hadHistory)renderTradeLog(state.tradeComparisonSnapshots,state.tradeComparisonBenchmark,false);
+        const savedBackup=readTradeHistoryBackup();
+        const previousLast=state.rawTradeLogRows.at(-1);
+        const incomingLast=freshRows.at(-1);
+        // Nếu dữ liệu trên Sheet chưa đủ hàng (Google cache hoặc trả bảng sai), giữ dữ liệu đã đọc trước.
+        const biggestKnownRound=Math.max(0,Number(previousLast?.round)||0,Number(savedBackup?.rows.at(-1)?.round)||0);
+        if((savedBackup&&freshRows.length<savedBackup.rows.length)||
+          (Number(incomingLast?.round)||0)<biggestKnownRound){
+          throw new Error(`Sheet trả dữ liệu cũ (mới nhất lần ${incomingLast?.round||"?"}; đã lưu đến lần ${biggestKnownRound||"?"}). Không ghi đè lịch sử mới hơn.`);
+        }
+        const fingerprint=JSON.stringify(freshRows);
+        const changed=fingerprint!==state.tradeFingerprint;
+        state.lastSheetSync=Date.now();
+        if(changed){
+          state.tradeFingerprint=fingerprint;
+          state.rawTradeLogRows=freshRows;
+          saveTradeHistoryBackup(freshRows);
+          state.rawAllValidTradeRows=freshRows.filter(r=>
+            Number.isFinite(r.timestamp)&&r.timestamp>=Date.UTC(2020,0,1)&&
+            r.timestamp<=Date.now()+24*60*60*1000&&r.buyCoin&&Number.isFinite(r.buyQty)&&r.buyQty>0
+          );
+          applyTradeVisibilityFilter();
+          state.allEquivalentCache={};state.historyBaselineCache={};state.historyButtonBaselines={};
+          const current=currentHoldingTrade();
+          const rawLatest=currentLogHoldingTrade();
+          const holdingChanged=Boolean(current&&state.syncedHoldingSymbol!==current.buyCoin);
+          state.syncedHoldingSymbol=current?.buyCoin||"";
+          if(current){
+            state.selectedHistoryTradeKey=tradeKey(current);
+            state.historySelectionExplicit=false;
+            if(holdingChanged&&isActiveSymbol(current.buyCoin)){
+              state.historyBenchmark=current.buyCoin;
+              try{localStorage.setItem(HISTORY_BENCHMARK_KEY,current.buyCoin)}catch(_){}
+              if($("historyBenchmark")?.querySelector(`option[value="${current.buyCoin}"]`)){
+                $("historyBenchmark").value=current.buyCoin;
+              }
+            }
+          }
+          updateTradeSelector();updateAnchorTradeSelector();
+          if(current){
+            $("rotationCurrentHolding").innerHTML=`Sheet mới nhất · đang giữ: <strong>${formatQtyExact(current.buyQty)} ${current.buyCoin}</strong>`;
+          }else if(rawLatest){
+            $("rotationCurrentHolding").textContent=`Giao dịch mới nhất là ${rawLatest.buyCoin} nhưng coin đang bị bỏ tick, hoặc thiếu thời gian/số lượng hợp lệ.`;
+          }else{
+            $("rotationCurrentHolding").textContent="Đã tải bảng nhưng chưa xác định được vị thế (kiểm tra ngày giờ và số lượng mua).";
+          }
+          renderQuickTradeHistory();
+          state.historyBuildRevision++;
+          requestHistoryRebuild();
+        }
+        updateTradeHistorySource(false);
+        showHistoryError("");
+        return {ok:true,changed,lastRound:freshRows.at(-1)?.round};
+      }catch(e){
+        const hadHistory=Boolean(state.rawTradeLogRows.length);
+        if(!hadHistory)await restoreTradeHistoryBackup();
         const cached=readTradeHistoryBackup();
-        updateTradeHistorySource(true,cached
-          ?`Đang giữ lịch sử đã lưu · lần đồng bộ ${new Date(cached.syncedAt||state.lastSheetSync||Date.now()).toLocaleString("vi-VN")}`
-          :"Đang giữ lịch sử đã tải · Google Sheet tạm lỗi");
-        showHistoryError(`Google Sheet chưa cập nhật được: ${e.message}. Lịch sử đã lưu vẫn hiển thị.`);
-      }else{
-        showHistoryError(e.message);
-        $("rotationCurrentHolding").innerHTML=
-          `Không đọc được Google Sheet.<br><strong>Bấm nút “Cập nhật” ở góc phải để thử lại.</strong>`;
-        $("latestTradeAnchorInfo").textContent="Không đọc được Sheet · dùng mốc tạm";
-        if(!Object.keys(state.anchor.prices||{}).length&&!state.anchorLoading){fetchAnchorPrices(false)}
-        $("historyBody").innerHTML=`<tr class="loading-row"><td colspan="8">Không đọc được Google Sheet; chưa có bản sao trên thiết bị.</td></tr>`;
-        $("historyMobileList").innerHTML=`<div class="history-mobile-card">Không đọc được Google Sheet; chưa có bản sao trên thiết bị.</div>`;
-        updateTradeHistorySource(true,"Chưa có bản sao lịch sử; cần đồng bộ Sheet ít nhất một lần");
-        renderGlobalPortfolioSummary();
-        renderHistoryBenchmarkButtons();
-        renderRebuyQuantityComparison(true);
+        updateTradeHistorySource(true,hadHistory||cached
+          ?`Không đồng bộ được Sheet · đang giữ đến lần ${state.rawTradeLogRows.at(-1)?.round||"?"} · ${e.message}`
+          :`Không đọc được Sheet và chưa có bản sao · ${e.message}`);
+        showHistoryError(`Google Sheet chưa cập nhật được: ${e.message}. Không xoá dữ liệu cũ.`);
+        if(!hadHistory&&!cached){
+          $("rotationCurrentHolding").textContent="Không truy cập được Google Sheet; kiểm tra quyền chia sẻ và kết nối mạng.";
+        }
+        return {ok:false,error:e.message||String(e)};
+      }finally{
+        if(refreshBtn)refreshBtn.disabled=false;
       }
-    }finally{
-      state.historyLoading=false;
-      $("refreshSheetBtn").disabled=false;
-      $("tradeBenchmark").disabled=false;
+    })();
+    try{return await state.sheetSyncPromise}
+    finally{
+      state.sheetSyncPromise=null;
+      // Lần quét tiếp theo KHÔNG phụ thuộc trạng thái tải biểu đồ/nến lịch sử.
       clearTimeout(state.sheetRefreshTimer);
       state.sheetRefreshTimer=setTimeout(()=>refreshTradeHistory(false),SHEET_REFRESH_MS);
     }
   }
 
+  function requestHistoryRebuild(){
+    if(state.historyLoading){state.historyBuildPending=true;return;}
+    // Không chặn đồng bộ: định giá từ các API chạy theo lịch riêng.
+    void rebuildHistoryAnalytics(state.historyBuildRevision);
+  }
 
-
+  async function rebuildHistoryAnalytics(revision){
+    if(state.historyLoading){state.historyBuildPending=true;return;}
+    state.historyLoading=true;
+    state.historyBuildPending=false;
+    try{
+      await loadHistoryBenchmarkBaselines(true);
+      if(revision!==state.historyBuildRevision)return;
+      const changed=applyLatestTradeAsAnchor(false);
+      if(changed)void fetchAnchorPrices(false);
+      scheduleRender();
+      const isCurrent=()=>revision===state.historyBuildRevision;
+      if(!state.tradeRows.length&&!state.tradeLogRows.length){
+        state.tradeSnapshots=[];
+        state.tradeComparisonSnapshots=[];
+        renderTradeHistory([],state.historyBenchmark,false);
+        renderTradeLog([],state.tradeComparisonBenchmark,false);
+        return;
+      }
+      const snapshots=await buildTradeSnapshots([...state.tradeRows],state.historyBenchmark,
+        (part,b,l)=>{if(isCurrent())renderTradeHistory(part,b,l)});
+      if(!isCurrent())return;
+      state.tradeSnapshots=snapshots;
+      renderTradeHistory(snapshots,state.historyBenchmark,false);
+      const logSnapshots=await buildTradeLogSnapshots([...state.tradeLogRows],
+        (part,b,l)=>{if(isCurrent())renderTradeLog(part,b,l)});
+      if(!isCurrent())return;
+      state.tradeComparisonSnapshots=logSnapshots;
+      renderTradeLog(logSnapshots,state.tradeComparisonBenchmark,false);
+      // Không chặn Sheet khi tính các chỉ báo tăng trưởng, giá NAV và vòng xoay.
+      await loadAllEquivalentsForSelectedTrade();
+      if(!isCurrent())return;
+      void loadRotationEngine(false);
+      renderGlobalPortfolioSummary();
+      renderHistoryBenchmarkButtons();
+      renderRebuyQuantityComparison(true);
+    }catch(e){
+      showHistoryError(`Đã đọc giao dịch nhưng chưa tính xong giá lịch sử: ${e.message||e}`);
+    }finally{
+      state.historyLoading=false;
+      if(state.historyBuildPending||revision!==state.historyBuildRevision){
+        state.historyBuildPending=false;
+        setTimeout(()=>requestHistoryRebuild(),0);
+      }
+    }
+  }
 
   function syncBenchmarkSelect(symbol,force=false){
     const select=$("benchmarkSelect");
@@ -8550,7 +8584,12 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       ["globalNavValue","globalHoldingValue","globalHoldingPnl","globalBenchmarkEquivalent","globalBenchmarkGrowth"].forEach(id=>$(id).textContent="—");
       $("globalNavInfo").textContent="Đang chờ dữ liệu live";
       $("globalBenchmarkEquivalentInfo").textContent="NAV ÷ giá coin chuẩn";
-      $("globalHoldingInfo").textContent="Đọc từ giao dịch mới nhất trên Sheet";
+      const rawLatest=currentLogHoldingTrade();
+      $("globalHoldingInfo").textContent=rawLatest&&!isActiveSymbol(rawLatest.buyCoin)
+        ?`${rawLatest.buyCoin} đang bỏ tick · mở Cài đặt coin để hiện NAV`
+        :state.rawTradeLogRows.length
+          ?"Giao dịch gần nhất thiếu ngày giờ hoặc số lượng mua hợp lệ"
+          :"Chờ đồng bộ Google Sheet";
       $("globalHoldingPnlInfo").textContent="So với giá mua gần nhất";
       $("globalBenchmarkGrowthInfo").textContent="Tính từ số lượng đầu chương";
       return;
@@ -10464,6 +10503,11 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   setInterval(ensureDaily7amWindow,60_000);
   setInterval(()=>refreshDivergenceSignals(false),60_000);
   setInterval(()=>{if(!state.rotation.loading&&state.tradeRows.length&&Object.keys(state.rotation.firstPrices).length)renderRotationAnalytics()},ROTATION_REFRESH_MS);
+
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden)void refreshTradeHistory(false);
+  });
+  window.addEventListener("online",()=>void refreshTradeHistory(true));
 
   (async()=>{
     // Lịch sử phải hoạt động độc lập: không chờ API niêm yết coin/giá live khởi tạo.

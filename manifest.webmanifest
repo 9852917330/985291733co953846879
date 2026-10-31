@@ -4,7 +4,7 @@
   "short_name": "Millionaire",
   "description": "Bảng theo dõi danh mục, lịch sử giao dịch và biểu đồ nến TradingView với chỉ báo bật tắt tức thì.",
   "lang": "vi",
-  "start_url": "./millionaire.html?v=53-coin-settings",
+  "start_url": "./millionaire.html?v=54-trade-fast-sync",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -37,7 +37,7 @@
     {
       "name": "Millionaire",
       "short_name": "Millionaire",
-      "url": "./millionaire.html?v=53-coin-settings",
+      "url": "./millionaire.html?v=54-trade-fast-sync",
       "icons": [
         {
           "src": "./millionaire-icon-192-v14.png",
