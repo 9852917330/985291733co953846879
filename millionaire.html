@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Millionaire"/>
-<link rel="manifest" href="./manifest.webmanifest?v=56-pnl-anchor">
+<link rel="manifest" href="./manifest.webmanifest?v=57-sheet-sync">
 <link rel="shortcut icon" href="./millionaire-favicon-v14.ico?v=14" type="image/x-icon"/>
 <link rel="icon" href="./millionaire-favicon-v14.ico" sizes="any" type="image/x-icon"/>
 <link rel="icon" type="image/png" sizes="16x16" href="./millionaire-favicon-16-v14.png"/>
@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
-<meta name="app-build" content="v56-pnl-anchor">
+<meta name="app-build" content="v57-sheet-sync">
 <style>
     :root{
       --bg:#080b11;--panel:#10151e;--panel2:#151c27;--line:#273244;
@@ -6994,46 +6994,73 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     return String(cell?.v??cell?.f??"").trim();
   }
 
-  function loadGoogleSheetJSONP(){
+  // v57: GViz có thể chỉ cung cấp A–F (6 cột), không nhất thiết có G/H.
+  // Tuyệt đối không cố SELECT cột cố định không tồn tại. Lấy bảng thực có,
+  // rồi parse theo tên tiêu đề với fallback chỉ số cột A–F.
+  function requestSheetJSONP(params,timeoutMs=12000){
     return new Promise((resolve,reject)=>{
-      const callback="__sheetHistory_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+      const callback="__sheetHistory_"+Date.now()+"_"+Math.floor(Math.random()*1000000);
       const script=document.createElement("script");
-      const timer=setTimeout(()=>{
-        cleanup();
-        reject(new Error("Google Sheet phản hồi quá chậm"));
-      },18000);
-
-      function cleanup(){
+      let finished=false;
+      let timer;
+      const cleanup=()=>{
+        if(finished)return false;
+        finished=true;
         clearTimeout(timer);
         try{delete window[callback]}catch(_){window[callback]=undefined}
         script.remove();
-      }
-
+        return true;
+      };
+      timer=setTimeout(()=>{
+        if(cleanup())reject(new Error("Google Sheet phản hồi quá chậm"));
+      },timeoutMs);
       window[callback]=data=>{
-        cleanup();
+        if(!cleanup())return;
         if(data?.status==="error"){
-          reject(new Error(data.errors?.[0]?.detailed_message||"Google Sheet trả về lỗi"));
-          return;
-        }
-        resolve(data);
+          const detail=data.errors?.[0]?.detailed_message||data.errors?.[0]?.message||"Google Sheet trả về lỗi";
+          reject(new Error(detail));
+        }else if(!data?.table?.cols||!Array.isArray(data.table.rows)){
+          reject(new Error("Google Sheet trả về bảng không hợp lệ"));
+        }else resolve(data);
       };
-
       script.onerror=()=>{
-        cleanup();
-        reject(new Error("Không tải được Google Sheet. Hãy kiểm tra quyền chia sẻ 'Bất kỳ ai có đường liên kết đều có thể xem'."));
+        if(cleanup())reject(new Error("Không truy cập được Google Sheet. Kiểm tra kết nối Internet hoặc quyền xem công khai."));
       };
-
-      const params=new URLSearchParams({
-        sheet:SHEET_NAME,
-        range:"A1:H1000",
-        headers:"1",
-        tq:"select A,B,C,D,E,F,G,H",
+      const query=new URLSearchParams({
+        ...params,
         tqx:`out:json;responseHandler:${callback}`,
         cacheBust:String(Date.now())
       });
-      script.src=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params.toString()}`;
+      script.src=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${query.toString()}`;
       document.head.appendChild(script);
     });
+  }
+
+  async function loadGoogleSheetJSONP(){
+    const candidates=[
+      // Ưu tiên tab có tên cố định; select * trả đúng số cột thực tế (6, 8, ...).
+      {sheet:SHEET_NAME,headers:"1",tq:"select *"},
+      // Google đôi khi xử lý query khác nhau với bảng có cột trống: thử không có tq.
+      {sheet:SHEET_NAME,headers:"1"},
+      // Bản dự phòng 6 cột cốt lõi khi schema ở cuối bảng có ô lỗi/cột không tồn tại.
+      {sheet:SHEET_NAME,range:"A1:F2000",headers:"1",tq:"select *"},
+      // Nếu tab đã đổi tên, đọc tab đầu tiên nhưng chỉ nhận khi có giao dịch hợp lệ.
+      {gid:"0",headers:"1",tq:"select *"}
+    ];
+    let lastError=null;
+    for(let i=0;i<candidates.length;i++){
+      try{
+        const table=await requestSheetJSONP(candidates[i],i===0?12000:8000);
+        const preview=parseTradeRows(table,{includeIncomplete:true});
+        if(preview.length>0)return table;
+        lastError=new Error("Tab không có giao dịch hợp lệ (cần cột lần, ngày giờ, coin bán/mua và số lượng).");
+      }catch(e){
+        lastError=e;
+        // Lỗi mạng thuần túy không được sửa bằng cách thử lại nhiều query khác nhau.
+        if(/không truy cập được|quá chậm/i.test(String(e?.message||"")))break;
+      }
+    }
+    throw lastError||new Error("Không đọc được dữ liệu giao dịch từ Google Sheet");
   }
 
   function parseTradeRows(response,{includeIncomplete=false}={}){
