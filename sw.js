@@ -1,4 +1,4 @@
-const CACHE_NAME="millionaire-v58-coin-quantity-history";
+const CACHE_NAME="millionaire-v59-minimal-watchlist-qty";
 const APP_SHELL=[
   "./","./index.html","./millionaire.html","./manifest.webmanifest",
   "./millionaire-favicon-v14.ico","./millionaire-icon-192-v14.png","./millionaire-icon-512-v14.png",
