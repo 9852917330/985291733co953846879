@@ -4218,6 +4218,35 @@ body.coin-watch-open{overflow:hidden!important}
 body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 @media(max-width:620px){.coin-watch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.coin-settings-btn{padding:8px 10px}.coin-watch-modal{max-height:94dvh}.coin-watch-head{padding:15px}.coin-watch-foot-actions button{flex:1}}
 </style>
+
+<style id="millionaire-v58-quantity-ui">
+  #page-comparison .coin-buyable{min-width:164px!important;max-width:164px!important;width:164px!important;text-align:left!important}
+  #page-comparison th:nth-child(3){min-width:164px!important;max-width:164px!important;width:164px!important;text-align:left!important}
+  #page-comparison .coin-buyable strong{display:block;font-size:13px!important;color:#EAECEF!important;white-space:nowrap}
+  #page-comparison .coin-buyable small,#page-comparison .coin-nav-value small{display:block;margin-top:3px;font-size:9px;color:#848E9C}
+  #page-comparison .coin-nav-value strong{color:#F0B90B!important;font-size:12px!important}
+  #page-comparison .coin-nav-value{text-align:left!important}
+  #page-comparison th:nth-child(4),#page-comparison td:nth-child(4){width:118px!important;min-width:118px!important;max-width:118px!important}
+  #page-growth .rebuy-current-nav{color:#F0B90B!important;font-size:12px!important}
+  #page-growth .rebuy-entry-usd{color:#B7BDC6!important;font-size:11px!important}
+  #page-growth .rebuy-coin-current{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  #page-growth .rebuy-entry{grid-template-columns:65px minmax(0,1fr) 90px}
+  #page-growth .rebuy-coin-toggle{grid-template-columns:minmax(60px,.7fr) minmax(0,1.8fr) 20px}
+  #page-growth .history-coin-chip small,#page-comparison .history-coin-chip small{font-size:9px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;display:block}
+  #page-comparison #overviewHistoryMilestoneSwitch,
+  #page-growth #historyMilestoneSwitch{display:none!important}
+  #page-comparison #overviewMilestoneLabel,
+  #page-growth #historyMilestoneLabel{display:none!important}
+  @media(max-width:620px){
+    #page-growth .rebuy-coin-toggle{grid-template-columns:58px minmax(0,1fr) 18px!important;gap:4px!important}
+    #page-growth .rebuy-coin-current{align-items:flex-end!important;gap:2px!important}
+    #page-growth .rebuy-current-qty{display:block!important;font-size:10px!important;white-space:normal!important;text-align:right;line-height:1.2}
+    #page-growth .rebuy-current-nav{font-size:10px!important}
+    #page-growth .rebuy-entry{grid-template-columns:52px minmax(0,1fr) 72px!important;gap:5px!important}
+    #page-growth .rebuy-entry-qty{white-space:normal!important;font-size:11px!important}
+    #page-growth .rebuy-entry-usd{font-size:10px!important}
+  }
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4445,8 +4474,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </section></section><section class="app-page active" data-page="comparison" id="page-comparison"><div class="page-banner" data-theme="comparison"><div class="page-banner-copy"><div class="page-kicker">SỨC MẠNH TƯƠNG ĐỐI</div><h2>Danh mục coin và sức mạnh tương đối</h2><p>Giữ nguyên bảng phân tích chi tiết; tập trung nhận diện coin mạnh, coin yếu và vị trí của coin đang giữ.</p></div><div class="page-priority" id="coinWatchHeadline">15 tài sản · một rổ xoay thống nhất</div></div><section class="rebuy-top-signal-section" id="rebuyTopSignalSection">
   <div class="rebuy-section-head">
     <div>
-      <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
-      <h3>Tín hiệu tăng số lượng</h3>
+      <div class="rebuy-section-kicker">THEO NAV HIỆN TẠI</div>
+      <h3>Coin có thể mua nhiều hơn lần trước</h3>
     </div>
     <div class="rebuy-nav-badge" id="rebuyNavBadgeTop">NAV hiện tại: —</div>
   </div>
@@ -4456,7 +4485,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </section>
 <section class="overview-history-chip-section overview-quantity-section" id="overviewHistoryMilestoneSection">
   <div class="overview-quantity-head">
-    <div><div class="rebuy-section-kicker">SO VỚI MỐC</div><h3>Tăng số lượng so với mốc</h3></div>
+    <div><div class="rebuy-section-kicker">SỨC MUA HIỆN TẠI</div><h3>Số lượng coin mua được bằng NAV</h3></div>
     <span class="overview-milestone-caption" id="overviewMilestoneCaption">So với mốc đang chọn</span>
   </div>
   <div class="history-chip-toolbar overview-history-chip-toolbar">
@@ -4470,9 +4499,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   </div>
 </section><section class="toolbar">
 <div class="toolbar-summary">
-<span class="badge badge-capital">Vốn mỗi coin: <strong>$100</strong></span>
+<span class="badge badge-capital">Sức mua dùng: <strong id="capitalNavBadge">NAV hiện tại</strong></span>
 <span class="badge badge-count">Danh sách so sánh: <strong id="comparisonAnchorAssetCount">15 tài sản</strong></span>
-<span class="badge badge-total">Mô hình vốn: <strong>100% một coin</strong></span>
+<span class="badge badge-total">Phép tính: <strong>NAV ÷ giá live</strong></span>
 <span class="badge badge-anchor">Mốc mặc định: <strong id="latestTradeAnchorInfo">Đang đọc lần xoay gần nhất…</strong></span>
 </div>
 <div class="toolbar-grid">
@@ -4500,8 +4529,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <div class="control-field control-field-grow">
 <label for="sortMode">Sắp xếp:</label>
 <select id="sortMode">
-<option selected="" value="currentValue">Giá trị hiện tại cao → thấp</option>
-<option value="returnPct">% mô phỏng từ mốc cao → thấp</option>
+<option selected="" value="currentValue">Hiệu suất lịch sử cao → thấp</option>
+<option value="returnPct">Biến động giá lịch sử cao → thấp</option>
 <option value="qualityScore">Chất lượng tổng hợp cao → thấp</option>
 <option value="symbol">Tên coin A → Z</option>
 </select>
@@ -4518,7 +4547,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </div>
 </section><section class="stats">
 <div class="stat"><div class="k">Danh sách so sánh</div><div class="v" id="comparisonStatAssetCount">15 tài sản</div><div class="s">Một rổ duy nhất · BTC và OKB cũng là ứng viên xoay</div></div>
-<div class="stat"><div class="k">Tổng giá trị hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
+<div class="stat"><div class="k">NAV hiện tại</div><div class="v" id="portfolioValue">—</div><div class="s" id="portfolioReturn">—</div></div>
 <div class="stat"><div class="k">Coin mạnh nhất</div><div class="v" id="bestCoin">—</div><div class="s" id="bestCoinInfo">—</div></div>
 <div class="stat"><div class="k">Khoảng cách mạnh/yếu</div><div class="v" id="spreadValue">—</div><div class="s" id="spreadInfo">—</div></div>
 <div class="stat"><div class="k">Mốc giá mua</div><div class="v" id="anchorCoverage">0/15</div><div class="s" id="anchorStatus">Đang tải nến lịch sử</div></div>
@@ -4531,7 +4560,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <div class="card-head">
 <div>
 <h2>Bảng danh mục coin</h2>
-<span>Mỗi coin được mô phỏng mua 100 USDT tại mốc đang chọn. Riêng coin đang giữ có nhãn “THỰC TẾ TỪ MUA” tính cùng công thức với ô tổng quan.</span>
+<span>Sức mua = giá trị danh mục (NAV) ÷ giá live của mỗi coin, chưa trừ phí. Coin đang giữ lấy số lượng thực nhận trên Sheet. Không phải số coin đã khớp lệnh.</span>
 </div>
 <span id="comparisonTableAssetCount">15 tài sản</span>
 </div>
@@ -4551,8 +4580,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <tr>
 <th>Hạng</th>
 <th>Coin</th>
-<th title="Giả lập đầu tư 100 USDT cho MỖI coin tại mốc đã chọn, không phải NAV thực tế">Mô phỏng $100</th>
-<th title="Lãi/lỗ giả định nếu mua từng coin tại mốc được chọn. Lãi/lỗ THỰC TẾ của coin đang giữ ở nhãn THỰC TẾ TỪ MUA ngay dưới tên coin">% từ mốc</th>
+<th title="Số lượng ước tính có thể mua bằng toàn bộ NAV hiện tại. Coin đang nắm giữ là số lượng thực tế từ Sheet.">Mua được bằng NAV</th>
+<th title="Tổng giá trị coin đang nắm giữ quy ra USDT, dùng làm vốn giả định cho từng coin">Vốn hiện tại</th>
 <th>Từ 07:00 VN</th>
 <th>Giá live</th>
 <th>Giá mua</th>
@@ -4573,11 +4602,11 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </tbody>
 </table>
 </div>
-</div></section><section class="app-page" data-page="growth" id="page-growth"><div class="page-banner" data-theme="growth"><div class="page-banner-copy"><div class="page-kicker">THÀNH TÍCH THỰC</div><h2>Số lượng coin qua từng lần mua</h2><p>Chọn một coin để xem số lượng mua được ở từng vòng và số lượng mua được ngay lúc này.</p></div><div class="page-priority">Số lượng thực · cập nhật live</div></div><section class="rebuy-comparison-section" id="rebuyComparisonSection">
+</div></section><section class="app-page" data-page="growth" id="page-growth"><div class="page-banner" data-theme="growth"><div class="page-banner-copy"><div class="page-kicker">THÀNH TÍCH THỰC</div><h2>Số lượng coin qua từng lần mua</h2><p>Số lượng từng lần mua lấy từ Sheet. Sức mua hôm nay dùng toàn bộ NAV chia giá live, chưa trừ phí.</p></div><div class="page-priority">Số lượng thực · cập nhật live</div></div><section class="rebuy-comparison-section" id="rebuyComparisonSection">
   <div class="rebuy-section-head">
     <div>
-      <div class="rebuy-section-kicker">SO VỚI LẦN MUA GẦN NHẤT</div>
-      <h3>Tín hiệu tăng số lượng</h3>
+      <div class="rebuy-section-kicker">THEO NAV HIỆN TẠI</div>
+      <h3>Coin có thể mua nhiều hơn lần trước</h3>
     </div>
     <div class="rebuy-nav-badge" id="rebuyNavBadge">NAV hiện tại: —</div>
   </div>
@@ -4585,7 +4614,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     <div class="rebuy-empty">Đang chờ dữ liệu giá live…</div>
   </div>
   <div class="rebuy-detail-head">
-    <h3>Chi tiết qua các lần mua</h3>
+    <h3>Các lần mua và giá trị hôm nay</h3>
   </div>
   <div class="rebuy-history-list" id="rebuyHistoryList">
     <div class="rebuy-empty">Đang đọc lịch sử mua bán…</div>
@@ -5087,7 +5116,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     {name:"DeFi · RWA · Hạ tầng",symbols:["MORPHO","PENDLE","ENA","LDO","CAKE","JTO","EIGEN","TIA","ZRO","PYTH","GRT","FIL","AR","SKY","RESOLV","LIT","CARDS","WLFI"]},
     {name:"AI · Gaming · Meme · Khác",symbols:["TAO","RENDER","VIRTUAL","SAND","JASMY","BONK","WIF","PEPE","SHIB"]}
   ];
-  const isCoinVisibleTrade=trade=>Boolean(trade&&isActiveSymbol(trade.sellCoin)&&isActiveSymbol(trade.buyCoin));
+  // Hiển thị lịch sử theo từng coin đã tick, kể cả khi đối tác của lệnh bị bỏ tick.
+  // Bên bị bỏ tick sẽ được che ở phần vẽ giao dịch, KHÔNG xóa khỏi nguồn Sheet.
+  const isCoinVisibleTrade=trade=>Boolean(trade&&(isActiveSymbol(trade.sellCoin)||isActiveSymbol(trade.buyCoin)));
   function overwriteSymbols(target,values){target.splice(0,target.length,...values)}
   function setWatchedSymbols(selected){
     const unique=ALL_COIN_SYMBOLS.filter(symbol=>selected.includes(symbol));
@@ -5334,7 +5365,9 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
 
   function buildRebuyQuantityComparison(){
-    const sourceRows=(state.tradeRows||[])
+    // Lịch sử mua sử dụng bản gốc, bao gồm các giao dịch đầu kỳ chưa ghi thời gian,
+    // để việc bỏ tick coin bán KHÔNG làm biến mất lần mua của coin đã tick.
+    const sourceRows=(state.rawTradeLogRows||[])
       .filter(row=>row&&isActiveSymbol(row.buyCoin)&&Number.isFinite(Number(row.buyQty))&&Number(row.buyQty)>0)
       .slice()
       .sort((a,b)=>{
@@ -5356,6 +5389,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     const heldPrice=Number(state.live[holding?.buyCoin]?.price);
     const nav=holding&&Number(holding.buyQty)>0&&heldPrice>0?Number(holding.buyQty)*heldPrice:null;
     const items=[];
+    // Coin đã tick luôn xuất hiện trong danh mục số lượng, kể cả khi chưa mua lần nào.
+    symbols.forEach(symbol=>{grouped.has(symbol)||grouped.set(symbol,[])});
     grouped.forEach((actuals,symbol)=>{
       const livePrice=Number(state.live[symbol]?.price);
       const currentQty=Number.isFinite(nav)&&nav>0&&livePrice>0?nav/livePrice:null;
@@ -5371,10 +5406,13 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       }
       items.push({symbol,actuals,entries,lastActualQty:lastActual?.qty||null,currentQty,currentPct,livePrice});
     });
+    // Lịch sử theo thứ tự dễ tìm: coin đang giữ trước, các coin từng mua theo A–Z,
+    // coin chưa có lần mua đặt cuối; không xếp hạng dựa trên phần trăm ẩn.
     items.sort((a,b)=>{
-      const ap=Number.isFinite(a.currentPct)?a.currentPct:-Infinity;
-      const bp=Number.isFinite(b.currentPct)?b.currentPct:-Infinity;
-      if(bp!==ap)return bp-ap;
+      const held=holding?.buyCoin||'';
+      if(a.symbol===held)return -1;
+      if(b.symbol===held)return 1;
+      if(Boolean(a.actuals.length)!==Boolean(b.actuals.length))return b.actuals.length-a.actuals.length;
       return a.symbol.localeCompare(b.symbol);
     });
     return {items,nav,holding};
@@ -5417,29 +5455,29 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     const signalHtml=positive.length
       ?positive.map(item=>`<button class="rebuy-signal-chip" data-rebuy-signal="${item.symbol}" type="button">
           <div><strong>${item.symbol}</strong><small>${formatQtyExact(item.currentQty)} ${item.symbol}</small></div>
-          <span>${formatSignedPct(item.currentPct)}</span>
+          <span>+${formatQtyExact(item.currentQty-item.lastActualQty)} ${item.symbol}</span>
         </button>`).join('')
       :'<div class="rebuy-empty">Hiện chưa có coin nào mua được nhiều hơn lần mua thực tế gần nhất.</div>';
     signalHosts.forEach(host=>{host.innerHTML=signalHtml});
 
     const historyHtml=model.items.map(item=>{
       const isOpen=state.rebuyExpandedSymbol===item.symbol;
-      const pctText=Number.isFinite(item.currentPct)?formatSignedPct(item.currentPct):'—';
-      const qtyText=Number.isFinite(item.currentQty)?`${formatQtyExact(item.currentQty)} ${item.symbol}`:'Đang chờ giá live';
+      const qtyText=Number.isFinite(item.currentQty)?`≈ ${formatQtyExact(item.currentQty)} ${item.symbol}`:'Đang chờ giá live';
+      const navText=Number.isFinite(model.nav)?formatUSD(model.nav):'Chờ NAV';
       const entryHtml=item.entries.map(entry=>{
-        const pctClass=rebuyPctClass(entry.pct);
-        const pct=Number.isFinite(entry.pct)?formatSignedPct(entry.pct):'—';
-        const meta=entry.hypothetical?'Giả định với NAV hiện tại':`Mua thực tế${Number.isFinite(Number(entry.tradeRound))?` · Giao dịch #${entry.tradeRound}`:''}`;
+        const estimatedValue=item.livePrice>0&&Number.isFinite(entry.qty)?entry.qty*item.livePrice:null;
+        const meta=entry.hypothetical?'Sức mua ước tính · chưa trừ phí':`Mua từ Sheet${Number.isFinite(Number(entry.tradeRound))?` · Giao dịch #${entry.tradeRound}`:''}`;
+        const label=entry.hypothetical?'Hiện tại':`Lần ${entry.sequence}`;
         return `<div class="rebuy-entry ${entry.hypothetical?'is-hypothetical':''}">
-          <div class="rebuy-entry-round">Lần ${entry.sequence}<small>${meta}</small></div>
+          <div class="rebuy-entry-round">${label}<small>${meta}</small></div>
           <div class="rebuy-entry-qty">${formatQtyExact(entry.qty)} ${item.symbol}</div>
-          <div class="rebuy-entry-pct ${pctClass}">${pct}</div>
+          <div class="rebuy-entry-pct rebuy-entry-usd" title="Giá trị ước tính theo giá live hiện tại">${Number.isFinite(estimatedValue)?formatUSD(estimatedValue):'—'}</div>
         </div>`;
-      }).join('');
+      }).join('')||'<div class="rebuy-empty">Coin đã chọn nhưng chưa thấy lần mua nào trong dữ liệu Sheet.</div>';
       return `<article class="rebuy-coin-card ${isOpen?'is-open':''}" data-rebuy-card="${item.symbol}">
         <button class="rebuy-coin-toggle" data-rebuy-toggle="${item.symbol}" type="button" aria-expanded="${isOpen?'true':'false'}">
           <span class="rebuy-coin-symbol">${item.symbol}</span>
-          <span class="rebuy-coin-current"><span class="rebuy-current-qty">${qtyText}</span><span class="rebuy-current-pct ${rebuyPctClass(item.currentPct)}">${pctText}</span></span>
+          <span class="rebuy-coin-current"><span class="rebuy-current-qty">${qtyText}</span><span class="rebuy-current-pct rebuy-current-nav" title="Vốn tính từ coin đang nắm giữ, không phải lợi nhuận">${navText}</span></span>
           <span class="rebuy-chevron">⌄</span>
         </button>
         <div class="rebuy-coin-detail">${entryHtml}</div>
@@ -5591,40 +5629,29 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
     // Xếp hạng theo phần trăm thay đổi số lượng so với mốc đang chọn.
     const rankedSymbols=visibleHistorySymbols.map((symbol,originalIndex)=>{
-      const {pct}=quantityGrowthFromFirst(symbol);
-      return {symbol,pct,originalIndex,isCurrentHolding:symbol===latest?.buyCoin};
-    }).sort((a,b)=>{
-      const aValid=Number.isFinite(a.pct);
-      const bValid=Number.isFinite(b.pct);
-      if(aValid&&bValid){
-        const difference=b.pct-a.pct;
-        return Math.abs(difference)>1e-12?difference:a.originalIndex-b.originalIndex;
-      }
-      if(aValid)return -1;
-      if(bValid)return 1;
-      return a.originalIndex-b.originalIndex;
-    });
+      const {pct,currentQty}=quantityGrowthFromFirst(symbol);
+      return {symbol,pct,currentQty,originalIndex,isCurrentHolding:symbol===latest?.buyCoin};
+    }); // Thứ tự cố định của rổ tick, không còn xếp hạng theo % mốc đã ẩn.
 
     const milestoneTitle=historyMilestoneContext().title;
-    const chipsHtml=rankedSymbols.map(({symbol,pct,isCurrentHolding})=>{
+    const chipsHtml=rankedSymbols.map(({symbol,pct,currentQty,isCurrentHolding})=>{
       const tone=Number.isFinite(pct)?(pct>0?'up':pct<0?'down':'flat'):'neutral';
       const selected=symbol===state.historyBenchmark?'selected':'';
       const btcSpecial=symbol==='BTC'?'btc-special':'';
       const holdingClass=isCurrentHolding?'current-holding':'';
-      const pctText=Number.isFinite(pct)?`${pct>0?'+':''}${pct.toFixed(2)}%`:(state.historyButtonLoading?'...':'—');
+      const qtyText=Number.isFinite(currentQty)?formatQty(currentQty):(state.historyButtonLoading?'...':'—');
       return `<button class="history-coin-chip ${tone} ${selected} ${btcSpecial} ${holdingClass}" data-history-chip="${symbol}" type="button" title="${isCurrentHolding?'Coin đang nắm giữ · ':''}${milestoneTitle}" ${state.historyLoading?'disabled':''}>
-        <span class="chip-copy"><strong>${symbol}</strong><small>${pctText}</small></span>
+        <span class="chip-copy"><strong>${symbol}</strong><small>${qtyText} ${symbol}</small></span>
       </button>`;
     }).join('');
 
     hosts.forEach(host=>{
       const isOverview=host.id==='overviewHistoryBenchmarkButtons';
       if(isOverview){
-        const positive=rankedSymbols.filter(item=>Number.isFinite(item.pct)&&item.pct>0.005);
-        host.innerHTML=positive.length?positive.map(({symbol,pct})=>{
-          return `<button class="history-coin-chip up" data-history-chip="${symbol}" type="button" title="${milestoneTitle}"><span class="chip-copy"><strong>${symbol}</strong><small>+${pct.toFixed(2)}%</small></span></button>`;
-        }).join(''):`<div class="history-chip-placeholder">Không có tín hiệu tăng số lượng so với ${historyMilestoneContext().shortLabel}.</div>`;
-        const caption=$("overviewMilestoneCaption");if(caption)caption.textContent=milestoneTitle;
+        host.innerHTML=rankedSymbols.map(({symbol,currentQty})=>{
+          return `<button class="history-coin-chip ${Number.isFinite(currentQty)?'up':'neutral'}" data-history-chip="${symbol}" type="button" title="Sức mua bằng NAV hiện tại"><span class="chip-copy"><strong>${symbol}</strong><small>${Number.isFinite(currentQty)?formatQty(currentQty):'—'} ${symbol}</small></span></button>`;
+        }).join('')||'<div class="history-chip-placeholder">Chưa chọn coin theo dõi.</div>';
+        const caption=$("overviewMilestoneCaption");if(caption)caption.textContent='NAV hiện tại ÷ giá live, chưa trừ phí';
       }else host.innerHTML=chipsHtml;
       host.querySelectorAll('[data-history-chip]').forEach(btn=>{
         btn.addEventListener('click',async()=>{
@@ -7239,7 +7266,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       :"chưa có";
     const latest=state.rawTradeLogRows.at(-1)||null;
     const latestLabel=latest
-      ?`Lần ${latest.round} · ${latest.sellCoin} → ${latest.buyCoin} · ${formatTradeDate(latest.timestamp)}`
+      ?`Lần ${latest.round} · ${isActiveSymbol(latest.sellCoin)?latest.sellCoin:'coin bán ẩn'} → ${isActiveSymbol(latest.buyCoin)?latest.buyCoin:'coin mua ẩn'} · ${formatTradeDate(latest.timestamp)}`
       :"chưa nhận được giao dịch";
     const visibility=latest&&!isActiveSymbol(latest.buyCoin)
       ?` · ${latest.buyCoin} đang bị ẩn trong Cài đặt coin` : "";
@@ -7256,7 +7283,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     }
   }
 
-  // Giao dịch gốc không bị lọc/xóa. Chỉ tạo bản sao hiển thị; một dòng chỉ hiện khi cả coin bán và mua được tick.
+  // Dữ liệu gốc không bị lọc/xóa. Hiện giao dịch khi coin mua HOẶC coin bán được tick, che phía không tick khi vẽ.
   function applyTradeVisibilityFilter(){
     state.tradeLogRows=state.rawTradeLogRows.filter(isCoinVisibleTrade);
     state.allValidTradeRows=state.rawAllValidTradeRows.filter(isCoinVisibleTrade);
@@ -7713,7 +7740,8 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     select.innerHTML=`<option value="${FIXED_PRE_MILESTONE_KEY}">Mốc 01/08/2025 · 07:00</option>`+visible.map(trade=>{
       const currentlyHeld=latest&&tradeKey(trade)===tradeKey(latest);
       const from=isActiveSymbol(trade.sellCoin)?trade.sellCoin:"coin bán ẩn";
-      return `<option value="${tradeKey(trade)}">${currentlyHeld?"HIỆN TẠI · ":""}Lần ${trade.round} · ${formatTradeDate(trade.timestamp)} · ${from} → ${trade.buyCoin}</option>`;
+      const to=isActiveSymbol(trade.buyCoin)?trade.buyCoin:'coin mua ẩn';
+      return `<option value="${tradeKey(trade)}">${currentlyHeld?"HIỆN TẠI · ":""}Lần ${trade.round} · ${formatTradeDate(trade.timestamp)} · ${from} → ${to}</option>`;
     }).join("");
     const exists=state.selectedAnchorTradeKey===FIXED_PRE_MILESTONE_KEY||visible.some(trade=>tradeKey(trade)===state.selectedAnchorTradeKey);
     if(state.anchorAutoLatest||!exists){
@@ -8011,7 +8039,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     const current=currentLogHoldingTrade();
     const totalNode=document.getElementById("tradeTotalCount");
     const latestBtn=document.getElementById("goLatestTradeBtn");
-    if(totalNode)totalNode.textContent=`Tổng ${snapshots.length} lần`;
+    if(totalNode)totalNode.textContent=`Hiện ${snapshots.length}/${state.rawTradeLogRows.length} giao dịch (theo coin đã tick)`;
     if(latestBtn)latestBtn.disabled=!snapshots.length;
     $("historyEquivalentHeader").textContent="Giá mua";
     $("tradeComparisonCoin").textContent=benchmark;
@@ -8025,14 +8053,19 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     const rows=snapshots.map(s=>{
       const isCurrent=Boolean(current&&tradeKey(s)===tradeKey(current));
       const rowClass=isCurrent?"trade-current-row":"";
-      const sellQty=Number.isFinite(s.sellQty)?`${formatQtyExact(s.sellQty)} ${s.sellCoin}`:"—";
-      const buyQty=Number.isFinite(s.buyQty)?`${formatQtyExact(s.buyQty)} ${s.buyCoin}`:"—";
-      const sellPrice=s.sellPrice?.price>0?formatPrice(s.sellPrice.price,ASSETS[s.sellCoin]?.d||6):"—";
-      const buyPrice=s.holdingPrice?.price>0?formatPrice(s.holdingPrice.price,ASSETS[s.buyCoin]?.d||6):"—";
-      const warningHtml=s.warning?`<div class="history-card-source neg">${s.warning}</div>`:"";
+      const showSell=isActiveSymbol(s.sellCoin),showBuy=isActiveSymbol(s.buyCoin);
+      const sellName=showSell?s.sellCoin:'Coin ẩn';
+      const buyName=showBuy?s.buyCoin:'Coin ẩn';
+      const sellQty=showSell&&Number.isFinite(s.sellQty)?`${formatQtyExact(s.sellQty)} ${s.sellCoin}`:"—";
+      const buyQty=showBuy&&Number.isFinite(s.buyQty)?`${formatQtyExact(s.buyQty)} ${s.buyCoin}`:"—";
+      const sellPrice=showSell&&s.sellPrice?.price>0?formatPrice(s.sellPrice.price,ASSETS[s.sellCoin]?.d||6):"—";
+      const buyPrice=showBuy&&s.holdingPrice?.price>0?formatPrice(s.holdingPrice.price,ASSETS[s.buyCoin]?.d||6):"—";
+      // Cảnh báo API có thể chứa tên coin bỏ tick: không đưa tên đó lên giao diện.
+      const warningMessage=s.warning?(!showSell||!showBuy?'Giá của một phía giao dịch chưa được xác minh.':escapeHTML(s.warning)):'';
+      const warningHtml=warningMessage?`<div class="history-card-source neg">${warningMessage}</div>`:"";
       return {
-        html:`<tr class="${rowClass}"><td><span class="rank">${s.round}</span></td><td>${formatTradeDate(s.timestamp)}</td><td><strong>${s.sellCoin||"—"}</strong></td><td class="num">${sellQty}</td><td class="num">${sellPrice}</td><td><strong>${s.buyCoin||"—"}</strong></td><td class="num"><strong>${buyQty}</strong></td><td class="num"><strong>${buyPrice}</strong>${s.warning?`<div class="source neg">${s.warning}</div>`:""}</td></tr>`,
-        mobile:`<article class="history-mobile-card ${rowClass}"><div class="history-mobile-card-top"><div class="history-round">Lần ${s.round}</div><div class="history-date">${formatTradeDate(s.timestamp)}</div></div><div class="history-route">${s.sellCoin||"—"} → ${s.buyCoin||"—"}</div><div class="history-card-grid"><div class="history-card-item"><div class="k">Bán</div><div class="v">${sellQty}</div></div><div class="history-card-item"><div class="k">Giá bán</div><div class="v">${sellPrice}</div></div><div class="history-card-item"><div class="k">Mua</div><div class="v">${buyQty}</div></div><div class="history-card-item"><div class="k">Giá mua</div><div class="v">${buyPrice}</div></div></div>${warningHtml}</article>`
+        html:`<tr class="${rowClass}"><td><span class="rank">${s.round}</span></td><td>${formatTradeDate(s.timestamp)}</td><td><strong>${sellName}</strong></td><td class="num">${sellQty}</td><td class="num">${sellPrice}</td><td><strong>${buyName}</strong></td><td class="num"><strong>${buyQty}</strong></td><td class="num"><strong>${buyPrice}</strong>${warningMessage?`<div class="source neg">${warningMessage}</div>`:""}</td></tr>`,
+        mobile:`<article class="history-mobile-card ${rowClass}"><div class="history-mobile-card-top"><div class="history-round">Lần ${s.round}</div><div class="history-date">${formatTradeDate(s.timestamp)}</div></div><div class="history-route">${sellName} → ${buyName}</div><div class="history-card-grid"><div class="history-card-item"><div class="k">Bán</div><div class="v">${sellQty}</div></div><div class="history-card-item"><div class="k">Giá bán</div><div class="v">${sellPrice}</div></div><div class="history-card-item"><div class="k">Mua</div><div class="v">${buyQty}</div></div><div class="history-card-item"><div class="k">Giá mua</div><div class="v">${buyPrice}</div></div></div>${warningHtml}</article>`
       };
     });
     $("historyBody").innerHTML=rows.map(x=>x.html).join("");
@@ -10140,7 +10173,12 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       ?`Đủ giá mua · ${formatAnchorLabel()}`
       :state.anchorLoading?`Đang tải ${anchorCount}/${symbols.length} · ${formatAnchorLabel()}`:`Thiếu ${symbols.length-anchorCount} giá mốc · ${formatAnchorLabel()}`;
 
-    const latestHoldingCoin=currentHoldingTrade()?.buyCoin||null;
+    const actualHolding=currentHoldingTrade();
+    const latestHoldingCoin=actualHolding?.buyCoin||null;
+    const holdingPrice=Number(state.live[latestHoldingCoin]?.price);
+    const currentNav=actualHolding&&Number(actualHolding.buyQty)>0&&holdingPrice>0
+      ?Number(actualHolding.buyQty)*holdingPrice:null;
+    if($("capitalNavBadge"))$("capitalNavBadge").textContent=Number.isFinite(currentNav)?formatUSD(currentNav):'Chờ giá live';
 
     $("tableBody").innerHTML=rows.map((r,i)=>{
       const hasLive=Boolean(r.live&&Number.isFinite(r.live.price));
@@ -10164,15 +10202,16 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       const valueText=hasValue?formatUSD(r.currentValue):(hasLive?"Thiếu giá mốc":"Đang tải live");
       const returnText=hasReturn?`${r.returnPct>=0?"+":""}${r.returnPct.toFixed(2)}%`:"—";
       const dailyText=hasDaily?`${r.daily7amPct>=0?"+":""}${r.daily7amPct.toFixed(2)}%`:(state.daily7am.loading?"Đang tải":"—");
-      const quantityGrowthPct=quantityGrowthFromFirst(r.symbol).pct;
-      const quantityGrowthClass=Number.isFinite(quantityGrowthPct)?(quantityGrowthPct>0?"pos":quantityGrowthPct<0?"neg":"neu"):"neu";
-      const quantityGrowthText=Number.isFinite(quantityGrowthPct)?`${quantityGrowthPct>0?"+":""}${quantityGrowthPct.toFixed(2)}%`:"—";
+      const buyableQty=Number.isFinite(currentNav)&&currentNav>0&&Number(r.live?.price)>0
+        ?(isHeld?Number(actualHolding.buyQty):currentNav/Number(r.live.price)):null;
+      const buyableText=Number.isFinite(buyableQty)?`${isHeld?'':'≈ '}${formatQtyExact(buyableQty)} ${r.symbol}`:'—';
+      const navLabel=Number.isFinite(currentNav)?formatUSD(currentNav):'Chờ giá';
 
       return `<tr class="${rowClasses}">
         <td><span class="rank">${i+1}</span></td>
-        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div><span class="coin-quantity-growth ${quantityGrowthClass}" title="${historyMilestoneContext().title} · thay đổi SỐ LƯỢNG, không phải thay đổi GIÁ">SL vs mốc: ${quantityGrowthText}</span>${realHoldingBadge}<div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
-        <td><span class="value-pill ${valueClass} ${hasValue?"":"value-pending"}">${valueText}</span></td>
-        <td class="num ${pnlClass}" title="Mô phỏng 100 USDT tại ${escapeHTML(formatAnchorLabel())}; KHÔNG phải lãi/lỗ vị thế thực tế"><strong>${returnText}</strong><small class="simulation-note">Mô phỏng</small></td>
+        <td><div class="coin"><div class="logo-wrap">${logoHTML(r)}</div><div class="coin-name"><div class="coin-symbol-line"><strong class="${nameClasses}">${r.symbol}</strong><button type="button" class="tv-candle-btn" data-tv-chart-symbol="${r.symbol}" aria-label="Mở biểu đồ nến ${r.symbol}" title="Mở biểu đồ nến TradingView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m0 8v7m-2-15h4v8H5V6Zm12-3v7m0 8v6m-2-12h4v9h-4V10ZM12 5v4m0 6v4m-2-10h4v6h-4V9Z"/></svg></button></div>${realHoldingBadge}<div class="reference-badges">${referenceBadges}</div>${qualityBadgeHTML(r)}</div></div></td>
+        <td class="num coin-buyable" title="${isHeld?'Số lượng thật từ Sheet':'Ước tính NAV ÷ giá live, chưa trừ phí'}"><strong>${buyableText}</strong><small>${isHeld?'Đang giữ thật':'Ước tính'}</small></td>
+        <td class="num coin-nav-value" title="Vốn hiện tại (NAV), dùng chung cho mọi phương án"><strong>${navLabel}</strong><small>NAV</small></td>
         <td class="num ${dailyClass}" title="${escapeHTML(state.daily7am.sources?.[r.symbol]||state.daily7am.errors?.[r.symbol]||'Đang tải đúng nến 07:00')}"><strong>${dailyText}</strong><small class="daily-7am-note">${formatDaily7amLabel()}</small></td>
         <td class="num"><strong>${hasLive?formatPrice(r.live.price,r.a.d):"—"}</strong></td>
         <td class="num">${Number.isFinite(r.buyPrice)?formatPrice(r.buyPrice,r.a.d):"—"}</td>
@@ -10207,17 +10246,17 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
       const sortedByValue=[...completeRows].sort((a,b)=>b.currentValue-a.currentValue);
       const best=sortedByValue[0],worst=sortedByValue[sortedByValue.length-1],spread=best.currentValue-worst.currentValue;
 
-      $("portfolioValue").textContent=formatUSD(totalValue);
-      $("portfolioValue").className=`v ${totalPnl>0?"pos":totalPnl<0?"neg":""}`;
-      $("portfolioReturn").textContent=`${totalPnl>=0?"+":"−"}$${Math.abs(totalPnl).toFixed(2)} · ${totalReturn>=0?"+":""}${totalReturn.toFixed(2)}%`;
+      $("portfolioValue").textContent=Number.isFinite(currentNav)?formatUSD(currentNav):'—';
+      $("portfolioValue").className='v';
+      $("portfolioReturn").textContent='NAV dùng để tính sức mua của từng coin';
       $("bestCoin").textContent=best.symbol;
       $("bestCoinInfo").textContent=`${formatUSD(best.currentValue)} · ${best.returnPct>=0?"+":""}${best.returnPct.toFixed(2)}%`;
       $("spreadValue").textContent=`$${spread.toFixed(2)}`;
       $("spreadInfo").textContent=`${best.symbol} hơn ${worst.symbol} ${spread.toFixed(2)} điểm`;
     }else{
-      $("portfolioValue").textContent=`Đủ dòng ${rows.length}/${symbols.length}`;
+      $("portfolioValue").textContent=Number.isFinite(currentNav)?formatUSD(currentNav):'Đang chờ NAV';
       $("portfolioValue").className="v";
-      $("portfolioReturn").textContent=`Đã có giá mốc ${anchorCount}/${symbols.length} · mốc 07:00 ${dailyCount}/${symbols.length}`;
+      $("portfolioReturn").textContent='Sức mua dùng NAV và giá live';
       const available=[...completeRows].sort((a,b)=>b.currentValue-a.currentValue);
       const best=available[0];
       $("bestCoin").textContent=best?.symbol||"—";
