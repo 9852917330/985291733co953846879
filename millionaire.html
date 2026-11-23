@@ -23,14 +23,14 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./millionaire-apple-touch-icon-v14.png"/>
 
 <link rel="icon" type="image/png" sizes="512x512" href="./millionaire-icon-512-v14.png"/>
-<meta name="description" content="Millionaire Crypto Dashboard - bảng theo dõi danh mục coin, số lượng, lịch sử giao dịch và coin chuẩn."/>
+<meta name="description" content="Millionaire Crypto Dashboard - bảng theo dõi danh mục coin, số lượng và lịch sử giao dịch."/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="Millionaire"/>
-<meta property="og:description" content="Bảng theo dõi danh mục coin, số lượng, lịch sử giao dịch và coin chuẩn."/>
+<meta property="og:description" content="Bảng theo dõi danh mục coin, số lượng và lịch sử giao dịch."/>
 <meta property="og:image" content="./millionaire-og-image-v14.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Millionaire"/>
-<meta name="twitter:description" content="Bảng theo dõi danh mục coin, số lượng, lịch sử giao dịch và coin chuẩn."/>
+<meta name="twitter:description" content="Bảng theo dõi danh mục coin, số lượng và lịch sử giao dịch."/>
 <meta name="twitter:image" content="./millionaire-og-image-v14.png"/>
 <link rel="preload" as="image" href="./millionaire-icon-192-v14.png"/>
 <title>Millionaire</title>
@@ -4231,6 +4231,24 @@ body.coin-watch-open{overflow:hidden!important}
 body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 @media(max-width:620px){.coin-watch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.coin-settings-btn{padding:8px 10px}.coin-watch-modal{max-height:94dvh}.coin-watch-head{padding:15px}.coin-watch-foot-actions button{flex:1}}
 </style>
+
+<style id="millionaire-v61-no-benchmark-btc-hold">
+  /* Keep the benchmark engine working internally; remove its standalone UI only. */
+  .app-nav-btn[data-page-target="benchmark"], #page-benchmark, #compactHistoryBtn,
+  #globalBenchmarkCard{display:none!important}
+  #globalNavCard .combo-subgrid{display:none!important}
+  .benchmark-mini{display:none!important}
+  #btcHoldCard{display:flex!important;min-width:0!important;border-top:2px solid #f0b90b!important;background:#1e2329!important}
+  #btcHoldCard .combo-main{font-size:clamp(12px,2.9vw,19px)!important}
+  #btcHoldCard .combo-pill{padding:4px 5px!important}
+  #btcHoldCard .combo-pill .label{font-size:clamp(7px,1.5vw,10px)!important;letter-spacing:normal!important;text-transform:none!important}
+  #btcHoldCard #btcHoldPnl{font-size:clamp(10px,2vw,14px)!important}
+  #btcHoldCard .btc-hold-status{display:none!important}
+  #btcHoldCard.btc-hold-missing .btc-hold-status,
+  #btcHoldCard.btc-hold-incomplete .btc-hold-status{display:block!important;font-size:8px!important;line-height:1.25!important;color:#f0b90b!important;margin-top:4px!important}
+  #btcHoldCard.btc-hold-missing .combo-subgrid{display:none!important}
+  @media(max-width:430px){#btcHoldCard{padding-left:6px!important;padding-right:6px!important}}
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -4253,14 +4271,14 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
     <div class="coin-watch-search"><input id="coinWatchSearch" type="search" placeholder="Tìm mã hoặc tên coin…" autocomplete="off" aria-label="Tìm coin"></div>
     <div class="coin-watch-tools"><button id="coinWatchAll" type="button">Chọn tất cả</button><button id="coinWatchNone" type="button">Bỏ chọn</button><button id="coinWatchDefaults" type="button">Mặc định 15 coin</button><strong class="coin-watch-counter" id="coinWatchPendingCount">15 coin</strong></div>
     <div class="coin-watch-list" id="coinWatchList" role="group" aria-label="Danh sách coin có thể chọn"></div>
-    <div class="coin-watch-foot"><p>Danh sách tham khảo để theo dõi, không phải khuyến nghị mua. Coin chưa có dữ liệu hoặc niêm yết phù hợp có thể hiển thị “—”. Giao dịch chỉ hiện khi <strong>cả coin bán và coin mua</strong> đều được tick.</p><p class="coin-watch-error" id="coinWatchError" role="alert"></p><div class="coin-watch-foot-actions"><button id="coinWatchCancel" type="button">Hủy</button><button id="coinWatchApply" class="primary" type="button">Áp dụng lựa chọn</button></div></div>
+    <div class="coin-watch-foot"><p>Danh sách tham khảo để theo dõi, không phải khuyến nghị mua. Coin chưa có dữ liệu hoặc niêm yết phù hợp có thể hiển thị “—”. Lịch sử của coin được tick vẫn hiển thị kể cả khi coin đối ứng bị ẩn.</p><p class="coin-watch-error" id="coinWatchError" role="alert"></p><div class="coin-watch-foot-actions"><button id="coinWatchCancel" type="button">Hủy</button><button id="coinWatchApply" class="primary" type="button">Áp dụng lựa chọn</button></div></div>
   </section>
 </div>
 <nav class="app-nav" id="appNav"><div class="app-nav-inner">
 <button class="app-nav-btn active" data-page-target="comparison" type="button"><span class="nav-number">01</span><span class="nav-copy"><strong>Danh mục</strong><small>Tổng quan</small></span></button>
 <button class="app-nav-btn" data-page-target="growth" type="button"><span class="nav-number">02</span><span class="nav-copy"><strong>Số lượng</strong><small>Qua từng lần mua</small></span></button>
 <button class="app-nav-btn" data-page-target="trades" type="button"><span class="nav-number">03</span><span class="nav-copy"><strong>Lịch sử</strong><small>Mua · bán</small></span></button>
-<button class="app-nav-btn" data-page-target="benchmark" type="button"><span class="nav-number">04</span><span class="nav-copy"><strong>Coin chuẩn</strong><small>Các chương</small></span></button>
+
 <div class="nav-live-state" id="navLiveState">Đang khởi tạo dữ liệu…</div></div></nav><div id="sheetTradeMonitor" class="sheet-trade-monitor" role="status" aria-live="polite">Google Sheet: đang kiểm tra giao dịch mới…</div><section class="global-portfolio-strip" id="globalPortfolioStrip">
 <article class="global-summary-card global-nav-card strategy-primary"><span>NAV hiện tại</span><strong id="globalNavValue">—</strong><small id="globalNavInfo">Đang chờ dữ liệu live</small></article>
 <article class="global-summary-card global-equivalent-card strategy-primary"><span id="globalEquivalentLabel">Tiền hiện tại quy ra coin chuẩn</span><strong id="globalBenchmarkEquivalent">—</strong><small id="globalBenchmarkEquivalentInfo">NAV ÷ giá coin chuẩn</small></article>
@@ -5288,6 +5306,15 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
           </div>
           <small class="combo-foot" id="globalBenchmarkInfo">Đang chờ giá live</small>
           <small class="combo-foot" id="globalBenchmarkGrowthInfo">Tính từ số lượng đầu chương</small>
+        </article>
+        <article class="global-summary-card strategy-combo-card" id="btcHoldCard" aria-label="Coin Hold BTC từ Google Sheet">
+          <span class="combo-title">Coin Hold BTC</span>
+          <strong class="combo-main" id="btcHoldValue">—</strong>
+          <div class="combo-subgrid"><div class="combo-pill">
+            <span class="label" id="btcHoldQuantity">— BTC</span>
+            <strong id="btcHoldPnl">—</strong>
+          </div></div>
+          <small id="btcHoldStatus" class="btc-hold-status" title="Dữ liệu Coin Hold BTC từ cột H–J trên Trang tính1">Đang đọc Sheet…</small>
         </article>
         <article class="global-summary-card strategy-combo-card" id="globalHoldingCard">
           <span class="combo-title">Coin đang giữ</span>
@@ -10593,7 +10620,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 
   // ===== Multi-page Navigation V30 =====
   const APP_PAGE_KEY="fullCapitalActivePage_v37";
-  const VALID_APP_PAGES=new Set(["comparison","growth","trades","benchmark"]);
+  const VALID_APP_PAGES=new Set(["comparison","growth","trades"]);
 
   function showAppPage(page,{updateHash=true}={}){
     if(!VALID_APP_PAGES.has(page))page="comparison";
@@ -12283,6 +12310,236 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 </script>
 <!-- ===== END V7 PAGE-SCOPED HEADER + STABLE STICKY SYSTEM ===== -->
 
+
+<script id="millionaire-v62-btc-hold-HJ">
+(() => {
+  "use strict";
+  // Coin Hold BTC lives in columns H:J of the same worksheet as Rotation (A:G).
+  // Keep both portfolios separate; never derive Hold BTC from Rotation transactions.
+  const WORKBOOK_ID="1oXTD35cnMZEeiGX9oQ4XepH7jWCNilHIXfNHLnrjXs0";
+  const SHEET_NAME="Trang tính1";
+  const STORE_KEY="millionaireBTC_HJ_verified_v62";
+  const card=document.getElementById("btcHoldCard");
+  const valueEl=document.getElementById("btcHoldValue");
+  const qtyEl=document.getElementById("btcHoldQuantity");
+  const pnlEl=document.getElementById("btcHoldPnl");
+  const statusEl=document.getElementById("btcHoldStatus");
+  const ticker=document.getElementById("btcLivePrice");
+  if(!card||!valueEl||!qtyEl||!pnlEl||!statusEl)return;
+
+  let holding=null,livePrice=null,refreshing=false,lastChecked=0,lastError="";
+  const clean=text=>String(text??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase().replace(/[^a-z0-9%]+/g," ").trim();
+  const numeric=v=>{
+    if(typeof v==="number")return Number.isFinite(v)?v:null;
+    let s=String(v??"").trim();
+    if(!s||!/[0-9]/.test(s))return null;
+    s=s.replace(/[\s\u00a0$₫%]/g,"").replace(/usd|usdt|btc|vnd/gi,"");
+    if(!/^[+-]?[0-9.,]+$/.test(s))return null;
+    const comma=s.lastIndexOf(","),dot=s.lastIndexOf(".");
+    if(comma>=0&&dot>=0)s=comma>dot?s.replace(/\./g,"").replace(",","."):s.replace(/,/g,"");
+    else if(comma>=0){
+      const parts=s.split(",");
+      s=parts.length===2&&parts[1].length===3&&parts[0]!=="0"?s.replace(/,/g,""):s.replace(",",".");
+    }
+    const n=Number(s);return Number.isFinite(n)?n:null;
+  };
+  const valueOf=cell=>{
+    if(cell==null)return null;
+    // Prefer original Sheets value, never a rounded display value.
+    const raw=numeric(cell.v);
+    if(raw!==null)return raw;
+    return numeric(cell.f);
+  };
+  const textOf=cell=>String(cell?.f??cell?.v??"").trim();
+  const good=v=>Number.isFinite(v)&&v>0;
+  const typeOf=t=>{
+    const s=clean(t);
+    if(!s)return "";
+    if(/(^| )(so luong|so btc|sl btc|btc qty|qty|quantity|btc balance|btc amount|btc dang giu|btc nam giu|balance btc|khoi luong btc|btc held|btc holdings|amount btc)( |$)/.test(s))return "qty";
+    if(/(^| )(gia mua|gia von 1 btc|gia trung binh|gia mua trung binh|average buy|avg buy|avg price|entry price|buy price|cost per btc|cost price)( |$)/.test(s))return "avg";
+    if(/(^| )(tong von|von dau tu|von ban dau|von goc|von mua|tien von|tong tien mua|so tien mua|tong tien|tong usdt|so usdt|so tien dau tu|usdt dau tu|cost basis|total cost|capital|invested|investment|spent|total spent|usd spent)( |$)/.test(s))return "invested";
+    if(/(^| )(gia tri hien tai|market value|current value|gia tri btc|so tien hien tai)( |$)/.test(s))return "market";
+    if(/(^| )(lai lo|lai lo %|loi nhuan|pnl|roi|percent return|return %)( |$)/.test(s))return "pct";
+    if(/(^| )(coin|symbol|asset|token)( |$)/.test(s))return "coin";
+    if(/(^| )(ngay|date|thoi gian|time)( |$)/.test(s))return "date";
+    if(/(^| )(hanh dong|loai giao dich|action|type|mua ban)( |$)/.test(s))return "action";
+    return "";
+  };
+  const isHoldTitle=t=>/(coin hold btc|btc hold|hold btc|btc holding|hold bitcoin)/.test(clean(t));
+  const isBtc=t=>/^(btc|bitcoin)$/.test(clean(t));
+  const fmtUsd=v=>good(v)?"$"+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—";
+  const fmtQty=v=>good(v)?v.toLocaleString("en-US",{maximumFractionDigits:8})+" BTC":"— BTC";
+  const fmtPct=v=>Number.isFinite(v)?`${v>0?"+":""}${v.toFixed(2)}%`:"—";
+
+  // Query range H:J only; table rows are ALWAYS [H,I,J], regardless of A:G schema.
+  function parseBtcHold(table){
+    if(!Array.isArray(table?.cols)||!Array.isArray(table?.rows))return null;
+    const head=table.cols.slice(0,3).map(c=>({v:c?.label||""}));
+    const rows=[head,...table.rows.map(r=>Array.from({length:3},(_,i)=>r?.c?.[i]??null))];
+    const labels=rows.map(row=>row.map(c=>clean(textOf(c))));
+    const explicitHold=labels.some(row=>row.some(isHoldTitle));
+    const explicitBtc=labels.some(row=>row.some(isBtc));
+    const hasQtyLabel=labels.some(row=>row.some(t=>typeOf(t)==="qty"));
+    const hasCapitalLabel=labels.some(row=>row.some(t=>["invested","avg"].includes(typeOf(t))));
+    // Never reinterpret unrelated H:J cells as Coin Hold BTC.
+    if(!explicitHold&&!hasQtyLabel&&!(explicitBtc&&hasCapitalLabel))return null;
+
+    const readNumeric=(row,i)=>i>=0&&i<3?valueOf(row?.[i]):null;
+    const candidates=[];
+    const add=(obj,source)=>{
+      if(!obj||!good(obj.qty))return;
+      const invested=good(obj.invested)?obj.invested:(good(obj.avg)?obj.qty*obj.avg:null);
+      candidates.push({qty:obj.qty,invested:good(invested)?invested:null,source});
+    };
+
+    // Layout 1: labels H1:J1, values H2:J2. Also handles several rows of purchases.
+    for(let r=0;r<rows.length;r++){
+      const hdr=labels[r];
+      const fields=hdr.map(typeOf);
+      const qi=fields.indexOf("qty"),ci=fields.indexOf("invested"),pi=fields.indexOf("avg");
+      if(qi<0)continue;
+      const coinCol=fields.indexOf("coin"),dateCol=fields.indexOf("date");
+      const actionCol=fields.indexOf("action");
+      const transactions=[];
+      for(let i=r+1;i<rows.length;i++){
+        const next=labels[i], data=rows[i];
+        if(next.some(v=>typeOf(v)==="qty"||typeOf(v)==="invested"))break;
+        const qty=readNumeric(data,qi);
+        if(!good(qty)){
+          if(transactions.length&&next.every(v=>!v))break;
+          continue;
+        }
+        if(coinCol>=0&&!isBtc(textOf(data[coinCol])))continue;
+        if(actionCol>=0&&/(sell|ban)/.test(clean(textOf(data[actionCol]))))continue;
+        const cost=readNumeric(data,ci),avg=readNumeric(data,pi);
+        transactions.push({qty,invested:cost,avg});
+        if(dateCol<0&&coinCol>=0)break; // A one-row balance rather than an order log.
+      }
+      if(transactions.length){
+        const isOrderLog=dateCol>=0;
+        if(isOrderLog){
+          const total=transactions.reduce((n,x)=>n+x.qty,0);
+          const totalCost=transactions.reduce((n,x)=>n+(good(x.invested)?x.invested:good(x.avg)?x.qty*x.avg:0),0);
+          add({qty:total,invested:totalCost||null},"H:J · lịch sử mua BTC");
+        }else{
+          const last=transactions[transactions.length-1];
+          add(last,"H:J · bảng BTC Hold");
+        }
+      }
+    }
+
+    // Layout 2: H = label, I / J = corresponding value (or transposed H:J).
+    const labeled={};
+    for(let r=0;r<rows.length;r++){
+      for(let col=0;col<3;col++){
+        const field=typeOf(textOf(rows[r][col]));
+        if(!["qty","invested","avg"].includes(field))continue;
+        const neighbors=[rows[r][col+1],rows[r][col+2],rows[r+1]?.[col]];
+        const v=neighbors.map(valueOf).find(good);
+        if(good(v))labeled[field]=v;
+      }
+    }
+    add(labeled,"H:J · nhãn và giá trị");
+
+    // Layout 3: H is an explicit BTC Hold identifier; I = quantity, J = cost.
+    // Accept an unlabelled J as total invested ONLY if an adjacent heading names that field.
+    for(let r=0;r<rows.length;r++){
+      if(!isHoldTitle(textOf(rows[r][0]))&&!isBtc(textOf(rows[r][0])))continue;
+      const qty=valueOf(rows[r][1]),cost=valueOf(rows[r][2]);
+      if(!good(qty))continue;
+      const costHint=labels.slice(0,r+1).some(a=>typeOf(a[2])==="invested");
+      const avgHint=labels.slice(0,r+1).some(a=>typeOf(a[2])==="avg");
+      if(costHint)add({qty,invested:cost},"H:J · BTC Hold");
+      else if(avgHint)add({qty,avg:cost},"H:J · BTC Hold");
+      else add({qty},"H:J · BTC Hold (không rõ vốn)");
+    }
+
+    if(!candidates.length)return null;
+    // Prefer a verified cost basis, then a labeled pair, then quantity-only.
+    const priority=x=>(/lich su mua/.test(clean(x.source))?200:0)+(good(x.invested)?100:0)+(/nhan/.test(clean(x.source))?20:0)+(/bang/.test(clean(x.source))?10:0);
+    candidates.sort((a,b)=>priority(b)-priority(a));
+    const best=candidates[0];
+    return {...best,range:"H:J",sheet:SHEET_NAME};
+  }
+
+  function queryRange({sheet=SHEET_NAME,gid=null,range="H1:J2000",timeoutMs=11000}={}){
+    return new Promise((resolve,reject)=>{
+      const cb=`__millionaireHoldHJ_${Date.now()}_${Math.floor(Math.random()*1e9)}`;
+      const script=document.createElement("script");let done=false;
+      const timer=setTimeout(()=>{if(cleanup())reject(new Error("Google Sheet phản hồi quá chậm"));},timeoutMs);
+      function cleanup(){if(done)return false;done=true;clearTimeout(timer);try{delete window[cb]}catch(_){window[cb]=undefined}script.remove();return true;}
+      window[cb]=payload=>{
+        if(!cleanup())return;
+        if(payload?.status==="error")reject(new Error(payload?.errors?.[0]?.detailed_message||payload?.errors?.[0]?.message||"Google Sheet báo lỗi"));
+        else if(payload?.table?.rows&&payload?.table?.cols)resolve(payload.table);
+        else reject(new Error("Dữ liệu vùng H:J không hợp lệ"));
+      };
+      script.onerror=()=>{if(cleanup())reject(new Error("Không kết nối được Google Sheet"));};
+      const params=new URLSearchParams({headers:"0",range,tqx:`out:json;responseHandler:${cb}`,cacheBust:String(Date.now())});
+      if(gid!==null)params.set("gid",String(gid));else params.set("sheet",sheet);
+      // IMPORTANT: No SELECT H/I/J. A select based on absolute column letter can fail NO_COLUMN.
+      script.src=`https://docs.google.com/spreadsheets/d/${WORKBOOK_ID}/gviz/tq?${params}`;
+      document.head.appendChild(script);
+    });
+  }
+  function updateLive(){
+    const price=numeric(String(ticker?.textContent||"").replace(/\s/g,""));
+    livePrice=good(price)?price:null;
+    render();
+  }
+  function render(){
+    if(!holding){
+      card.classList.add("btc-hold-missing");card.classList.remove("btc-hold-incomplete");
+      valueEl.textContent="—";qtyEl.textContent="— BTC";pnlEl.textContent="—";
+      statusEl.textContent=lastError?`H:J · ${lastError}`:lastChecked?"Không nhận diện được BTC Hold trong cột H–J":"Đang đọc cột H–J…";
+      return;
+    }
+    card.classList.remove("btc-hold-missing");
+    qtyEl.textContent=fmtQty(holding.qty);
+    const market=good(holding.qty)&&good(livePrice)?holding.qty*livePrice:null;
+    valueEl.textContent=fmtUsd(market);
+    const pct=good(market)&&good(holding.invested)?(market/holding.invested-1)*100:null;
+    pnlEl.textContent=fmtPct(pct);
+    pnlEl.className=Number.isFinite(pct)?pct>0?"pos":pct<0?"neg":"":"";
+    const incomplete=!good(holding.invested)||!good(livePrice)||Boolean(lastError);
+    card.classList.toggle("btc-hold-incomplete",incomplete);
+    statusEl.textContent=lastError?`Dùng dữ liệu đã lưu · ${lastError}`:!good(holding.invested)?"Cột H–J chưa xác định được vốn mua BTC":!good(livePrice)?"Đang chờ giá BTC live":"";
+    card.title=`Coin Hold BTC · ${holding.source} · ${fmtQty(holding.qty)} · Vốn ${fmtUsd(holding.invested)} · Giá live ${fmtUsd(livePrice)}`;
+  }
+  async function refresh(){
+    if(refreshing)return;
+    refreshing=true;
+    let last=null,found=null;
+    try{
+      // Same worksheet, explicit H:J. Try gid=0 only when tab name is changed.
+      for(const params of [{sheet:SHEET_NAME},{gid:0}]){
+        try{
+          const table=await queryRange(params);
+          found=parseBtcHold(table);
+          if(found)break;
+          last=new Error("Vùng H:J không có bảng BTC Hold nhận diện được");
+        }catch(error){last=error;}
+      }
+      lastChecked=Date.now();
+      if(found){
+        holding=found;lastError="";
+        try{localStorage.setItem(STORE_KEY,JSON.stringify({holding,checked:lastChecked}));}catch(_){ }
+      }else{
+        lastError=String(last?.message||"Chưa tìm thấy dữ liệu BTC Hold");
+      }
+      render();
+    }finally{refreshing=false;}
+  }
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORE_KEY)||"null");
+    if(saved?.holding?.range==="H:J"&&good(saved.holding.qty))holding=saved.holding;
+  }catch(_){ }
+  if(ticker)new MutationObserver(updateLive).observe(ticker,{childList:true,characterData:true,subtree:true});
+  updateLive();
+  refresh();
+  setInterval(refresh,30000);
+})();
+</script>
 
 <script id="pwa-service-worker-registration">
 (() => {
