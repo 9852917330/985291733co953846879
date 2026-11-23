@@ -12311,7 +12311,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
 <!-- ===== END V7 PAGE-SCOPED HEADER + STABLE STICKY SYSTEM ===== -->
 
 
-<script id="millionaire-v62-btc-hold-HJ">
+<script id="millionaire-v63-btc-hold-HJ-fix">
 (() => {
   "use strict";
   // Coin Hold BTC lives in columns H:J of the same worksheet as Rotation (A:G).
@@ -12355,7 +12355,7 @@ body.coin-watch-btc-hidden #btcStickyRegion{display:none!important}
   const typeOf=t=>{
     const s=clean(t);
     if(!s)return "";
-    if(/(^| )(so luong|so btc|sl btc|btc qty|qty|quantity|btc balance|btc amount|btc dang giu|btc nam giu|balance btc|khoi luong btc|btc held|btc holdings|amount btc)( |$)/.test(s))return "qty";
+    if(/(^| )(so huu btc|btc so huu|so btc so huu|so btc dang so huu|luong btc so huu|so luong|so btc|sl btc|btc qty|qty|quantity|btc balance|btc amount|btc dang giu|btc nam giu|balance btc|khoi luong btc|btc held|btc holdings|amount btc)( |$)/.test(s))return "qty";
     if(/(^| )(gia mua|gia von 1 btc|gia trung binh|gia mua trung binh|average buy|avg buy|avg price|entry price|buy price|cost per btc|cost price)( |$)/.test(s))return "avg";
     if(/(^| )(tong von|von dau tu|von ban dau|von goc|von mua|tien von|tong tien mua|so tien mua|tong tien|tong usdt|so usdt|so tien dau tu|usdt dau tu|cost basis|total cost|capital|invested|investment|spent|total spent|usd spent)( |$)/.test(s))return "invested";
     if(/(^| )(gia tri hien tai|market value|current value|gia tri btc|so tien hien tai)( |$)/.test(s))return "market";
